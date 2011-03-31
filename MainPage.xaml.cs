@@ -9,18 +9,42 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using System.IO.IsolatedStorage;
+using System.IO;
+using System.Collections.Generic;
 
 namespace TouchScreenComicViewer {
 	public partial class MainPage : UserControl {
 		private const double _originalWidth = 970;
 		private const double _originalHeight = 1470;
-		private const double _originalAspectRatio = 
+		private const double _originalAspectRatio =
 				_originalWidth / _originalHeight;
+		private List<string> fileList = new List<string>();
+		private int currentIndex = 0;
 		public MainPage() {
 
 			InitializeComponent();
 
 			SizeChanged += new SizeChangedEventHandler(MainPage_SizeChanged);
+			this.MainDisplayImage.MouseLeftButtonUp += new MouseButtonEventHandler(MainDisplayImage_MouseLeftButtonUp);
+
+			
+		}
+
+		void MainDisplayImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+			currentIndex++;
+			if (currentIndex >= this.fileList.Count) {
+				currentIndex = 0;
+			}
+			string data = String.Empty;
+			using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
+				IsolatedStorageFileStream file = isf.OpenFile(this.fileList[currentIndex], FileMode.Open);
+				System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
+				bmp.SetSource(file);
+				this.MainDisplayImage.Source = bmp;
+				this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
+				file.Close();
+			}
 		}
 
 		void MainPage_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -41,6 +65,69 @@ namespace TouchScreenComicViewer {
 					PageScale.ScaleX = e.NewSize.Width / _originalWidth;
 					PageScale.ScaleY = PageScale.ScaleX;
 				}
+			}
+		}
+
+		private void button1_Click(object sender, RoutedEventArgs e) {
+			OpenFileDialog dlg = new OpenFileDialog();
+
+			IsolatedStorageFile iso2 = IsolatedStorageFile.GetUserStoreForApplication();
+			if (iso2.Quota < 204857600) {
+				if (!iso2.IncreaseQuotaTo(iso2.Quota * 10)) {
+					throw new Exception("Can't store the image.");
+				} else {
+					return;
+				}
+			}
+
+			this.button1.Visibility = System.Windows.Visibility.Collapsed;
+			dlg.Multiselect = true;
+			if (dlg.ShowDialog() == true) {
+				// Save all selected files into application's isolated storage
+				IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication();
+				foreach (FileInfo file in dlg.Files) {
+						try {
+							this.fileList.Add(file.Name);
+						} catch (Exception ex) {
+							ex.ToString();
+						}
+
+						//Images files are quite large, we may need to request more space.
+						Int64 spaceToAdd = file.Length;
+						Int64 curAvail = iso.AvailableFreeSpace;
+						if (curAvail < spaceToAdd) {
+							if (!iso.IncreaseQuotaTo(iso.Quota + spaceToAdd)) {
+								throw new Exception("Can't store the image.");
+							}
+						}
+					using (Stream fileStream = file.OpenRead()) {
+						using (IsolatedStorageFileStream isoStream =
+								new IsolatedStorageFileStream(file.Name, FileMode.Create, iso)) {
+
+							// Read and write the data block by block until finish
+							while (true) {
+								byte[] buffer = new byte[100001];
+								int count = fileStream.Read(buffer, 0, buffer.Length);
+								if (count > 0) {
+									isoStream.Write(buffer, 0, count);
+								} else {
+									break;
+								}
+							}
+						}
+					}
+				}
+
+				string data = String.Empty;
+				using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
+					IsolatedStorageFileStream file = isf.OpenFile(this.fileList[currentIndex], FileMode.Open);
+					System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
+					bmp.SetSource(file);
+					this.MainDisplayImage.Source = bmp;
+					this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
+
+				}
+
 			}
 		}
 	}
