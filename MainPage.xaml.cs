@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using System.IO.IsolatedStorage;
 using System.IO;
 using System.Collections.Generic;
+using System.Windows.Interop;
 
 namespace TouchScreenComicViewer {
 	public partial class MainPage : UserControl {
@@ -129,6 +130,16 @@ namespace TouchScreenComicViewer {
 				}
 
 			}
+		}
+
+		private void button2_Click(object sender, RoutedEventArgs e) {
+			Application.Current.Host.Content.IsFullScreen = !Application.Current.Host.Content.IsFullScreen;
+			if (Application.Current.Host.Content.IsFullScreen == true) {
+				this.button2.Visibility = System.Windows.Visibility.Visible;
+			} else {
+				this.button2.Visibility = System.Windows.Visibility.Collapsed;
+			}
+
 		}
 	}
 }
