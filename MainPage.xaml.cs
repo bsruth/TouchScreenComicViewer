@@ -28,6 +28,7 @@ namespace TouchScreenComicViewer {
 
 			SizeChanged += new SizeChangedEventHandler(MainPage_SizeChanged);
 			this.MainDisplayImage.MouseLeftButtonUp += new MouseButtonEventHandler(MainDisplayImage_MouseLeftButtonUp);
+			Application.Current.Host.Content.FullScreenChanged +=new EventHandler(Content_FullScreenChanged);
 
 			
 		}
@@ -126,6 +127,7 @@ namespace TouchScreenComicViewer {
 					bmp.SetSource(file);
 					this.MainDisplayImage.Source = bmp;
 					this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
+					file.Close();
 
 				}
 
@@ -135,11 +137,19 @@ namespace TouchScreenComicViewer {
 		private void button2_Click(object sender, RoutedEventArgs e) {
 			Application.Current.Host.Content.IsFullScreen = !Application.Current.Host.Content.IsFullScreen;
 			if (Application.Current.Host.Content.IsFullScreen == true) {
-				this.button2.Visibility = System.Windows.Visibility.Visible;
+				this.button2.Content = "Exit Full Screen";
 			} else {
-				this.button2.Visibility = System.Windows.Visibility.Collapsed;
+				this.button2.Content = "Full Screen";
 			}
 
+		}
+
+		private void Content_FullScreenChanged(object sender, EventArgs e) {
+			if (Application.Current.Host.Content.IsFullScreen == true) {
+				this.button2.Content = "Exit Full Screen";
+			} else {
+				this.button2.Content = "Full Screen";
+			}
 		}
 	}
 }
