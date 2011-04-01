@@ -72,8 +72,8 @@ namespace TouchScreenComicViewer {
 			OpenFileDialog dlg = new OpenFileDialog();
 
 			IsolatedStorageFile iso2 = IsolatedStorageFile.GetUserStoreForApplication();
-			if (iso2.Quota < 204857600) {
-				if (!iso2.IncreaseQuotaTo(iso2.Quota * 10)) {
+			if (iso2.Quota < 2048576) {
+				if (!iso2.IncreaseQuotaTo(iso2.Quota * 15)) {
 					throw new Exception("Can't store the image.");
 				} else {
 					return;
