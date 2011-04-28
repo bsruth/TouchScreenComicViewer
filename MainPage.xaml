@@ -14,7 +14,7 @@
         <Grid.RenderTransform>
 			<ScaleTransform x:Name="PageScale" ScaleX="1" ScaleY="1"/>
 		</Grid.RenderTransform>
-		<Image Name="MainDisplayImage" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible" Grid.ColumnSpan="2"/>           
+		<Image Name="MainDisplayImage" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible" Grid.ColumnSpan="2" MouseLeftButtonDown="MainDisplayImage_MouseLeftButtonDown" MouseLeftButtonUp="MainDisplayImage_MouseLeftButtonUp" MouseMove="MainDisplayImage_MouseMove"/>           
         <Grid Height="280" Name="MenuGrid" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#9DE5E5E5">
             <Button Content="Open Images..." Height="60" Name="button1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="button1_Click" Margin="0,60,0,0"/>
             <Button Content="Full Screen" Height="60" HorizontalAlignment="Stretch"  Name="FullScreenBtn" VerticalAlignment="Top"  Click="button2_Click"/>

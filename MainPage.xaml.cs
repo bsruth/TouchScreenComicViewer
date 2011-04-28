@@ -22,29 +22,33 @@ namespace TouchScreenComicViewer {
 				_originalWidth / _originalHeight;
 		private List<string> fileList = new List<string>();
 		private int currentIndex = 0;
-		private TouchPoint startPoint;
+		private Point startPoint;
 		private double scaleX = 1.0;
 		private double scaleY = 1.0;
+        private bool touchEventActive = false;
 		public MainPage() {
 
 			InitializeComponent();
 
 			SizeChanged += new SizeChangedEventHandler(MainPage_SizeChanged);
-			this.MainDisplayImage.MouseLeftButtonUp += new MouseButtonEventHandler(MainDisplayImage_MouseLeftButtonUp);
 			Application.Current.Host.Content.FullScreenChanged +=new EventHandler(Content_FullScreenChanged);
 			//Touch.FrameReported += new TouchFrameEventHandler(Touch_FrameReported);
 
 			
 		}
 
-		void Touch_FrameReported(object sender, TouchFrameEventArgs args) {
-			TouchPoint primaryTouchPoint =
-	args.GetPrimaryTouchPoint(null);
+        //Can't use touch events since they don't work in full screen mode
+        //converted the touch events into mouse events
+		/*void Touch_FrameReported(object sender, TouchFrameEventArgs args) {
+			TouchPoint primaryTouchPoint = args.GetPrimaryTouchPoint(null);
+
 
 			// Inhibit mouse promotion
-			if (primaryTouchPoint != null &&
-				primaryTouchPoint.Action == TouchAction.Down)
-				args.SuspendMousePromotionUntilTouchUp();
+            if (primaryTouchPoint != null && primaryTouchPoint.Action == TouchAction.Down)
+            {
+
+            //    args.SuspendMousePromotionUntilTouchUp();
+            }
 
 			TouchPointCollection touchPoints =
 				args.GetTouchPoints(null);
@@ -55,38 +59,66 @@ namespace TouchScreenComicViewer {
 				switch (tp.Action) {
 					case TouchAction.Down:
 						this.startPoint = tp;
+                        this.touchEventActive = true;
 						break;
 
 					case TouchAction.Move:
-						scaleX = 1.0 + (tp.Position.X - this.startPoint.Position.X)/100;
-						//label1.Content = this.MainDisplayImage.ActualWidth * scaleX;
-						this.MainDisplayImage.Width = this.MainDisplayImage.ActualWidth * scaleX;
-						if (this.LayoutRoot.ActualHeight > this.MainDisplayImage.ActualHeight) {
-							this.MainDisplayImage.Width = this.LayoutRoot.ActualHeight;
-						}
+                        if (this.touchEventActive == false)
+                        {
+                            break;
+                        }
+                        if (tp.Position.X < (this.startPoint.Position.X - 100))
+                        {
+                            //swipe left
+                            currentIndex--;
+                            if (currentIndex < 0)
+                            {
+                                currentIndex = this.fileList.Count - 1;
+                            }
+                            string data = String.Empty;
+                            using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
+                            {
+                                IsolatedStorageFileStream file = isf.OpenFile(this.fileList[currentIndex], FileMode.Open);
+                                System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
+                                bmp.SetSource(file);
+                                this.MainDisplayImage.Source = bmp;
+                                this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
+                                file.Close();
+                                this.touchEventActive = false;
+                            }
 
-						break;
+                        }
+                        else if (tp.Position.X > (this.startPoint.Position.X + 100))
+                        {
+                            //swipe right
+                            currentIndex++;
+                            if (currentIndex >= this.fileList.Count)
+                            {
+                                currentIndex = 0;
+                            }
+                            string data = String.Empty;
+                            using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
+                            {
+                                IsolatedStorageFileStream file = isf.OpenFile(this.fileList[currentIndex], FileMode.Open);
+                                System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
+                                bmp.SetSource(file);
+                                this.MainDisplayImage.Source = bmp;
+                                this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
+                                file.Close();
+                                this.touchEventActive = false;
+                            }
 
+                        }
+                        break;
 					case TouchAction.Up:
+                        this.touchEventActive = false;
 						break;
 				}
 			}
-		}
+		}*/
 
 		void MainDisplayImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-			currentIndex++;
-			if (currentIndex >= this.fileList.Count) {
-				currentIndex = 0;
-			}
-			string data = String.Empty;
-			using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
-				IsolatedStorageFileStream file = isf.OpenFile(this.fileList[currentIndex], FileMode.Open);
-				System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
-				bmp.SetSource(file);
-				this.MainDisplayImage.Source = bmp;
-				this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
-				file.Close();
-			}
+            this.touchEventActive = false;
 		}
 
 		void MainPage_SizeChanged(object sender, SizeChangedEventArgs e) {
@@ -207,6 +239,62 @@ namespace TouchScreenComicViewer {
                 System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
                 this.button3.OpacityMask = opacityBrush;
                 this.button3.Content = "Close Menu";
+            }
+        }
+
+        private void MainDisplayImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.startPoint = e.GetPosition(null);  
+            this.touchEventActive = true;
+        }
+
+        private void MainDisplayImage_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (this.touchEventActive == false)
+            {
+                return;
+            }
+            if (e.GetPosition(null).X < (this.startPoint.X - 100))
+            {
+                //swipe left
+                currentIndex--;
+                if (currentIndex < 0)
+                {
+                    currentIndex = this.fileList.Count - 1;
+                }
+                string data = String.Empty;
+                using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    IsolatedStorageFileStream file = isf.OpenFile(this.fileList[currentIndex], FileMode.Open);
+                    System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
+                    bmp.SetSource(file);
+                    this.MainDisplayImage.Source = bmp;
+                    this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
+                    file.Close();
+                    this.touchEventActive = false;
+                }
+
+            }
+            else if (e.GetPosition(null).X > (this.startPoint.X + 100))
+            {
+                //swipe right
+                currentIndex++;
+                if (currentIndex >= this.fileList.Count)
+                {
+                    currentIndex = 0;
+                }
+                string data = String.Empty;
+                using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
+                {
+                    IsolatedStorageFileStream file = isf.OpenFile(this.fileList[currentIndex], FileMode.Open);
+                    System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
+                    bmp.SetSource(file);
+                    this.MainDisplayImage.Source = bmp;
+                    this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
+                    file.Close();
+                    this.touchEventActive = false;
+                }
+
             }
         }
 	}
