@@ -22,6 +22,9 @@ namespace TouchScreenComicViewer {
 				_originalWidth / _originalHeight;
 		private List<string> fileList = new List<string>();
 		private int currentIndex = 0;
+		private TouchPoint startPoint;
+		private double scaleX = 1.0;
+		private double scaleY = 1.0;
 		public MainPage() {
 
 			InitializeComponent();
@@ -29,8 +32,45 @@ namespace TouchScreenComicViewer {
 			SizeChanged += new SizeChangedEventHandler(MainPage_SizeChanged);
 			this.MainDisplayImage.MouseLeftButtonUp += new MouseButtonEventHandler(MainDisplayImage_MouseLeftButtonUp);
 			Application.Current.Host.Content.FullScreenChanged +=new EventHandler(Content_FullScreenChanged);
+			//Touch.FrameReported += new TouchFrameEventHandler(Touch_FrameReported);
 
 			
+		}
+
+		void Touch_FrameReported(object sender, TouchFrameEventArgs args) {
+			TouchPoint primaryTouchPoint =
+	args.GetPrimaryTouchPoint(null);
+
+			// Inhibit mouse promotion
+			if (primaryTouchPoint != null &&
+				primaryTouchPoint.Action == TouchAction.Down)
+				args.SuspendMousePromotionUntilTouchUp();
+
+			TouchPointCollection touchPoints =
+				args.GetTouchPoints(null);
+
+			foreach (TouchPoint tp in touchPoints) {
+				int id = tp.TouchDevice.Id;
+
+				switch (tp.Action) {
+					case TouchAction.Down:
+						this.startPoint = tp;
+						break;
+
+					case TouchAction.Move:
+						scaleX = 1.0 + (tp.Position.X - this.startPoint.Position.X)/100;
+						//label1.Content = this.MainDisplayImage.ActualWidth * scaleX;
+						this.MainDisplayImage.Width = this.MainDisplayImage.ActualWidth * scaleX;
+						if (this.LayoutRoot.ActualHeight > this.MainDisplayImage.ActualHeight) {
+							this.MainDisplayImage.Width = this.LayoutRoot.ActualHeight;
+						}
+
+						break;
+
+					case TouchAction.Up:
+						break;
+				}
+			}
 		}
 
 		void MainDisplayImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
@@ -82,7 +122,6 @@ namespace TouchScreenComicViewer {
 				}
 			}
 
-			this.button1.Visibility = System.Windows.Visibility.Collapsed;
 			dlg.Multiselect = true;
 			if (dlg.ShowDialog() == true) {
 				// Save all selected files into application's isolated storage
@@ -131,25 +170,44 @@ namespace TouchScreenComicViewer {
 
 				}
 
+                this.button1.Visibility = System.Windows.Visibility.Collapsed;
 			}
 		}
 
 		private void button2_Click(object sender, RoutedEventArgs e) {
 			Application.Current.Host.Content.IsFullScreen = !Application.Current.Host.Content.IsFullScreen;
 			if (Application.Current.Host.Content.IsFullScreen == true) {
-				this.button2.Content = "Exit Full Screen";
+                this.FullScreenBtn.Content = "Exit Full Screen";
 			} else {
-				this.button2.Content = "Full Screen";
+                this.FullScreenBtn.Content = "Full Screen";
 			}
 
 		}
 
 		private void Content_FullScreenChanged(object sender, EventArgs e) {
 			if (Application.Current.Host.Content.IsFullScreen == true) {
-				this.button2.Content = "Exit Full Screen";
+                this.FullScreenBtn.Content = "Exit Full Screen";
 			} else {
-				this.button2.Content = "Full Screen";
+                this.FullScreenBtn.Content = "Full Screen";
 			}
 		}
+
+        private void button3_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.FullScreenBtn.Visibility == System.Windows.Visibility.Visible){
+                this.FullScreenBtn.Visibility = System.Windows.Visibility.Collapsed;
+                this.MenuGrid.Height = this.button3.Height;
+                System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(55, 0, 0, 0));
+                this.button3.OpacityMask = opacityBrush;
+                this.button3.Content = "Show Menu";
+
+            } else{
+                this.FullScreenBtn.Visibility = System.Windows.Visibility.Visible;
+                this.MenuGrid.Height = 280;
+                System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+                this.button3.OpacityMask = opacityBrush;
+                this.button3.Content = "Close Menu";
+            }
+        }
 	}
 }

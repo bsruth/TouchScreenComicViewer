@@ -4,14 +4,22 @@
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		mc:Ignorable="d"
-		d:DesignHeight="400" d:DesignWidth="400">
+		d:DesignHeight="400" d:DesignWidth="400" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk">
 
 		<Grid x:Name="LayoutRoot" Background="White" RenderTransformOrigin="0 0">
-		<Grid.RenderTransform>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200*" />
+            <ColumnDefinition Width="200*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RenderTransform>
 			<ScaleTransform x:Name="PageScale" ScaleX="1" ScaleY="1"/>
 		</Grid.RenderTransform>
-		<Image Name="MainDisplayImage" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible" />
-		<Button Content="Open Images..." Height="73" Margin="17,89,0,0" Name="button1" Width="183" VerticalAlignment="Center" HorizontalAlignment="Center" Click="button1_Click" />
-		<Button Content="Full Screen" Height="29" HorizontalAlignment="Left" Margin="-1,-1,0,0" Name="button2" VerticalAlignment="Top" Width="181" Click="button2_Click" />
-	</Grid>
+		<Image Name="MainDisplayImage" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible" Grid.ColumnSpan="2"/>           
+        <Grid Height="280" Name="MenuGrid" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#9DE5E5E5">
+            <Button Content="Open Images..." Height="60" Name="button1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="button1_Click" Margin="0,60,0,0"/>
+            <Button Content="Full Screen" Height="60" HorizontalAlignment="Stretch"  Name="FullScreenBtn" VerticalAlignment="Top"  Click="button2_Click"/>
+            <Button Content="Close Menu" Height="29" HorizontalAlignment="Stretch" Name="button3" VerticalAlignment="Bottom" Click="button3_Click" Background="#FF1F3B53">
+            </Button>
+        </Grid>
+    </Grid>
 </UserControl>
