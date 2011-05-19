@@ -304,5 +304,10 @@ namespace TouchScreenComicViewer {
 
             }
         }
+
+        private void ExitProgramBtn_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.Close();
+        }
 	}
 }
