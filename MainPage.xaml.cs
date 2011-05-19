@@ -22,6 +22,7 @@ namespace TouchScreenComicViewer {
 				_originalWidth / _originalHeight;
 		private List<string> fileList = new List<string>();
 		private int currentIndex = 0;
+        private int totalPages = 0;
 		private Point startPoint;
 		private double scaleX = 1.0;
 		private double scaleY = 1.0;
@@ -204,6 +205,10 @@ namespace TouchScreenComicViewer {
 
                 this.button1.Visibility = System.Windows.Visibility.Collapsed;
 			}
+
+            this.totalPages = this.fileList.Count;
+            this.totalPagesLbl.Content = (totalPages + 1);
+            this.currentPageNumLbl.Content = (currentIndex + 1);
 		}
 
 		private void button2_Click(object sender, RoutedEventArgs e) {
@@ -257,11 +262,12 @@ namespace TouchScreenComicViewer {
             if (e.GetPosition(null).X < (this.startPoint.X - 100))
             {
                 //swipe left
-                currentIndex--;
-                if (currentIndex < 0)
+                currentIndex++;
+                if (currentIndex >= this.fileList.Count)
                 {
-                    currentIndex = this.fileList.Count - 1;
+                    currentIndex = 0;
                 }
+                this.currentPageNumLbl.Content = (currentIndex + 1).ToString();
                 string data = String.Empty;
                 using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
                 {
@@ -278,11 +284,12 @@ namespace TouchScreenComicViewer {
             else if (e.GetPosition(null).X > (this.startPoint.X + 100))
             {
                 //swipe right
-                currentIndex++;
-                if (currentIndex >= this.fileList.Count)
+                currentIndex--;
+                if (currentIndex < 0)
                 {
-                    currentIndex = 0;
+                    currentIndex = this.fileList.Count - 1;
                 }
+                this.currentPageNumLbl.Content = (currentIndex + 1).ToString();
                 string data = String.Empty;
                 using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
                 {
