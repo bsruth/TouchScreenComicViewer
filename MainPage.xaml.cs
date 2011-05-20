@@ -286,6 +286,7 @@ namespace TouchScreenComicViewer {
 					this.MainDisplayImage.Source = bmp;
 					this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
 					file.Close();
+                    touchEventActive = false;
 
 				}
 
@@ -307,7 +308,7 @@ namespace TouchScreenComicViewer {
 					this.MainDisplayImage.Source = bmp;
 					this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
 					file.Close();
-
+                    touchEventActive = false;
 				}
 
 			}
