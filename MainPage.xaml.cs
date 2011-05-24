@@ -174,14 +174,21 @@ namespace TouchScreenComicViewer {
 					}
 
 					if (iso.FileExists(file.Name) == false) {
-						//Images files are quite large, we may need to request more space.
-						Int64 spaceToAdd = file.Length;
-						Int64 curAvail = iso.AvailableFreeSpace;
-						if (curAvail < spaceToAdd) {
-							if (!iso.IncreaseQuotaTo(iso.Quota + spaceToAdd)) {
-								throw new Exception("Can't store the image.");
-							}
-						}
+                        Int64 spaceToAdd = file.Length;
+                        while (iso.AvailableFreeSpace < spaceToAdd)
+                        {
+                            //comic archive files are quite large, we may need to clear more space.
+                                RemoveOldestFileFromIsoStore(iso);
+                        }
+
+                        if (iso.Quota < spaceToAdd)
+                        {
+                            if(iso.IncreaseQuotaTo(iso.AvailableFreeSpace + spaceToAdd) == false) {
+                                throw new Exception("Failed to increase ISO store. " + file.ToString() + " is too large.");
+                            }
+                        }
+                        
+                        
 						using (Stream fileStream = file.OpenRead()) {
 							using (IsolatedStorageFileStream isoStream =
 									new IsolatedStorageFileStream(file.Name, FileMode.Create, iso)) {
@@ -347,5 +354,31 @@ namespace TouchScreenComicViewer {
 			return names.ToArray();
 
 		}
+
+
+        private void RemoveOldestFileFromIsoStore(IsolatedStorageFile isoStore)
+        {
+
+            string[] fileListing = isoStore.GetFileNames();
+            if (fileListing.Length == 0)
+            {
+                //nothing to delete
+                return;
+            }
+
+            string oldestFileName = fileListing[0];
+            DateTimeOffset oldestAccessDate = isoStore.GetLastAccessTime(fileListing[0]);
+            foreach (string file in fileListing)
+            {
+                DateTimeOffset accessDate = isoStore.GetLastAccessTime(file);
+                if (accessDate < oldestAccessDate)
+                {
+                    oldestAccessDate = accessDate;
+                    oldestFileName = file;
+                }
+            }
+
+            isoStore.DeleteFile(oldestFileName);
+        }
 	}
 }
