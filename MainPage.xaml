@@ -16,7 +16,7 @@
 		</Grid.RenderTransform>
 		<Image Name="MainDisplayImage" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible" Grid.ColumnSpan="2" MouseLeftButtonDown="MainDisplayImage_MouseLeftButtonDown" MouseLeftButtonUp="MainDisplayImage_MouseLeftButtonUp" MouseMove="MainDisplayImage_MouseMove"/>           
         <Grid Height="280" Name="MenuGrid" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#9DE5E5E5">
-            <Button Content="Open Images..." Height="60" Name="button1" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="button1_Click" Margin="1,117,-1,0"/>
+            <Button Content="Open Comic..." Height="60" Name="openComicBtn" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="OpenComicBtn_Click" Margin="1,117,-1,0"/>
             <Button Content="Full Screen" Height="60" HorizontalAlignment="Stretch"  Name="FullScreenBtn" VerticalAlignment="Top"  Click="button2_Click"/>
             <Button Content="Close Menu" Height="29" HorizontalAlignment="Stretch" Name="button3" VerticalAlignment="Bottom" Click="button3_Click" Background="#FF1F3B53">
             </Button>

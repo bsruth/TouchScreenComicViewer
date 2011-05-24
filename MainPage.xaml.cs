@@ -146,7 +146,7 @@ namespace TouchScreenComicViewer {
 			}
 		}
 
-		private void button1_Click(object sender, RoutedEventArgs e) {
+		private void OpenComicBtn_Click(object sender, RoutedEventArgs e) {
 			OpenFileDialog dlg = new OpenFileDialog();
 			dlg.Filter = "Zipped Comic Books (*.CBZ)|*.CBZ";
 			IsolatedStorageFile iso2 = IsolatedStorageFile.GetUserStoreForApplication();
@@ -208,26 +208,13 @@ namespace TouchScreenComicViewer {
 					}
 				}
 
-				
-				string data = String.Empty;
-				using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
-					IsolatedStorageFileStream file = isf.OpenFile(this.compressedFilename, FileMode.Open);
-					StreamResourceInfo zipInfo = new StreamResourceInfo(file, null);
-					StreamResourceInfo streamInfo = Application.GetResourceStream(zipInfo, new Uri(this.fileList[currentIndex], UriKind.Relative));
-					Stream fileStream = streamInfo.Stream;
-					System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
-					bmp.SetSource(fileStream);
-					this.MainDisplayImage.Source = bmp;
-					this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
-					file.Close();
 
-				}
-
-				this.button1.Visibility = System.Windows.Visibility.Collapsed;
+                currentIndex = 0;
+                DisplayImage(currentIndex);
 			}
 
 			this.totalPages = this.fileList.Count;
-			this.totalPagesLbl.Content = (totalPages + 1);
+			this.totalPagesLbl.Content = (totalPages);
 			this.currentPageNumLbl.Content = (currentIndex + 1);
 		}
 
@@ -282,20 +269,8 @@ namespace TouchScreenComicViewer {
 					currentIndex = 0;
 				}
 				this.currentPageNumLbl.Content = (currentIndex + 1).ToString();
-				string data = String.Empty;
-				using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
-					IsolatedStorageFileStream file = isf.OpenFile(this.compressedFilename, FileMode.Open);
-					StreamResourceInfo zipInfo = new StreamResourceInfo(file, null);
-					StreamResourceInfo streamInfo = Application.GetResourceStream(zipInfo, new Uri(this.fileList[currentIndex], UriKind.Relative));
-					Stream fileStream = streamInfo.Stream;
-					System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
-					bmp.SetSource(fileStream);
-					this.MainDisplayImage.Source = bmp;
-					this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
-					file.Close();
-                    touchEventActive = false;
-
-				}
+                DisplayImage(currentIndex);
+                touchEventActive = false;
 
 			} else if (e.GetPosition(null).X > (this.startPoint.X + 100)) {
 				//swipe right
@@ -304,20 +279,8 @@ namespace TouchScreenComicViewer {
 					currentIndex = this.fileList.Count - 1;
 				}
 				this.currentPageNumLbl.Content = (currentIndex + 1).ToString();
-				string data = String.Empty;
-				using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
-					IsolatedStorageFileStream file = isf.OpenFile(this.compressedFilename, FileMode.Open);
-					StreamResourceInfo zipInfo = new StreamResourceInfo(file, null);
-					StreamResourceInfo streamInfo = Application.GetResourceStream(zipInfo, new Uri(this.fileList[currentIndex], UriKind.Relative));
-					Stream fileStream = streamInfo.Stream;
-					System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
-					bmp.SetSource(fileStream);
-					this.MainDisplayImage.Source = bmp;
-					this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
-					file.Close();
-                    touchEventActive = false;
-				}
-
+                DisplayImage(currentIndex);
+                touchEventActive = false;
 			}
 		}
 
@@ -379,6 +342,23 @@ namespace TouchScreenComicViewer {
             }
 
             isoStore.DeleteFile(oldestFileName);
+        }
+
+        private void DisplayImage(int imageIndex)
+        {
+            //string data = String.Empty;
+            using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication())
+            {
+                IsolatedStorageFileStream file = isf.OpenFile(this.compressedFilename, FileMode.Open);
+                StreamResourceInfo zipInfo = new StreamResourceInfo(file, null);
+                StreamResourceInfo streamInfo = Application.GetResourceStream(zipInfo, new Uri(this.fileList[imageIndex], UriKind.Relative));
+                Stream fileStream = streamInfo.Stream;
+                System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
+                bmp.SetSource(fileStream);
+                this.MainDisplayImage.Source = bmp;
+                this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
+                file.Close();
+            }
         }
 	}
 }
