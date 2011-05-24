@@ -11,7 +11,6 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.IO.IsolatedStorage;
 using System.IO;
-using System.Collections.Generic;
 using System.Windows.Interop;
 using System.Text;
 using System.Windows.Resources;
@@ -30,8 +29,8 @@ namespace TouchScreenComicViewer
         private int totalPages = 0;
         private Point startPoint; //start point for beginning of a mouse down event
         private const int swipePixelLength = 50; //number of pixels needed to trigger a swipe event.
-        private double scaleX = 1.0;
-        private double scaleY = 1.0;
+        //private double scaleX = 1.0;
+        //private double scaleY = 1.0;
         private bool touchEventActive = false;
         public MainPage()
         {
