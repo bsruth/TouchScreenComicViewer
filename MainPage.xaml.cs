@@ -19,6 +19,7 @@ namespace TouchScreenComicViewer
 {
     public partial class MainPage : UserControl
     {
+        private const long QUOTA_SIZE = 52428800; //TODO: const for quota size until I find a better solution
         private const double _originalWidth = 970;
         private const double _originalHeight = 1470;
         private const double _originalAspectRatio =
@@ -175,10 +176,14 @@ namespace TouchScreenComicViewer
         {
             OpenFileDialog dlg = new OpenFileDialog();
             dlg.Filter = "Zipped Comic Books (*.CBZ)|*.CBZ";
+
+            //TODO: I need to find a way to open a file and be
+            //able to adjust the quota without having to prompt
+            //the user multiple times.
             IsolatedStorageFile iso2 = IsolatedStorageFile.GetUserStoreForApplication();
-            if (iso2.Quota < 2048576)
+            if (iso2.Quota < QUOTA_SIZE)
             {
-                if (!iso2.IncreaseQuotaTo(iso2.Quota * 15))
+                if (!iso2.IncreaseQuotaTo(QUOTA_SIZE)) //50MB
                 {
                     throw new Exception("Can't store the image.");
                 }
@@ -208,6 +213,7 @@ namespace TouchScreenComicViewer
                 if (CopyFileToIsoStorage(dlg.File) == false)
                 {
                     //TODO: error message
+                    return;
                 }
                 currentIndex = 0;
                 DisplayImage(currentIndex);
@@ -340,14 +346,15 @@ namespace TouchScreenComicViewer
 
 
         //*****************************************
-        private void RemoveOldestFileFromIsoStore(IsolatedStorageFile isoStore)
+        //returns the number of bytes removed from the store
+        private long RemoveOldestFileFromIsoStore(IsolatedStorageFile isoStore)
         {
 
             string[] fileListing = isoStore.GetFileNames();
             if (fileListing.Length == 0)
             {
                 //nothing to delete
-                return;
+                return 0;
             }
 
             string oldestFileName = fileListing[0];
@@ -362,7 +369,9 @@ namespace TouchScreenComicViewer
                 }
             }
 
+            long numBytesRemoved = isoStore.OpenFile(oldestFileName, FileMode.Open).Length;
             isoStore.DeleteFile(oldestFileName);
+            return numBytesRemoved;
         }
 
         //*****************************************
@@ -389,25 +398,40 @@ namespace TouchScreenComicViewer
             // Save all selected files into application's isolated storage
             IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication();
             
-
+                
+                //don't copy a file if it is already in the cache
                 if (iso.FileExists(fileToCopy.Name) == false)
                 {
                     Int64 spaceToAdd = fileToCopy.Length;
-                    while (iso.AvailableFreeSpace < spaceToAdd)
-                    {
-                        //comic archive files are quite large, we may need to clear more space.
-                        RemoveOldestFileFromIsoStore(iso);
-                    }
 
+                    //the new file isn't big enough to fit, we need to increase
+                    //the quota
                     if (iso.Quota < spaceToAdd)
                     {
+                        //try and increase without removing any files from cache
                         if (iso.IncreaseQuotaTo(iso.AvailableFreeSpace + spaceToAdd) == false)
                         {
-                            throw new Exception("Failed to increase ISO store. " + fileToCopy.ToString() + " is too large.");
+                            //try and increase quota so the new file barely fits if all other data
+                            //cleared
+                            if (iso.IncreaseQuotaTo(spaceToAdd) == false)
+                            {
+                                return false; //total failure
+                            }
                         }
                     }
 
+                    //see if we can free up space by removing some files.
+                    long numBytesRemoved = 0;
+                    do
+                    {
+                        numBytesRemoved = RemoveOldestFileFromIsoStore(iso);
+                    } while ((numBytesRemoved > 0) && (iso.AvailableFreeSpace < spaceToAdd));
 
+                   
+
+                    
+
+                    //finally, copy file
                     using (Stream fileStream = fileToCopy.OpenRead())
                     {
                         using (IsolatedStorageFileStream isoStream =
