@@ -32,6 +32,8 @@ namespace TouchScreenComicViewer
         //private double scaleX = 1.0;
         //private double scaleY = 1.0;
         private bool touchEventActive = false;
+
+        //*****************************************
         public MainPage()
         {
 
@@ -44,6 +46,7 @@ namespace TouchScreenComicViewer
 
         }
 
+        //*****************************************
         //Can't use touch events since they don't work in full screen mode
         //converted the touch events into mouse events
         /*void Touch_FrameReported(object sender, TouchFrameEventArgs args) {
@@ -124,11 +127,7 @@ namespace TouchScreenComicViewer
             }
         }*/
 
-        void MainDisplayImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            this.touchEventActive = false;
-        }
-
+        //*****************************************
         void MainPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (e.NewSize.Width < _originalWidth ||
@@ -157,6 +156,21 @@ namespace TouchScreenComicViewer
             }
         }
 
+        //*****************************************
+        private void Content_FullScreenChanged(object sender, EventArgs e)
+        {
+            if (Application.Current.Host.Content.IsFullScreen == true)
+            {
+                this.FullScreenBtn.Content = "Exit Full Screen";
+            }
+            else
+            {
+                this.FullScreenBtn.Content = "Full Screen";
+            }
+        }
+
+
+        //*****************************************
         private void OpenComicBtn_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dlg = new OpenFileDialog();
@@ -204,7 +218,8 @@ namespace TouchScreenComicViewer
             this.currentPageNumLbl.Content = (currentIndex + 1);
         }
 
-        private void button2_Click(object sender, RoutedEventArgs e)
+        //*****************************************
+        private void FullScreenBtn_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Host.Content.IsFullScreen = !Application.Current.Host.Content.IsFullScreen;
             if (Application.Current.Host.Content.IsFullScreen == true)
@@ -218,27 +233,22 @@ namespace TouchScreenComicViewer
 
         }
 
-        private void Content_FullScreenChanged(object sender, EventArgs e)
+        //*****************************************
+        private void ExitProgramBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (Application.Current.Host.Content.IsFullScreen == true)
-            {
-                this.FullScreenBtn.Content = "Exit Full Screen";
-            }
-            else
-            {
-                this.FullScreenBtn.Content = "Full Screen";
-            }
+            Application.Current.MainWindow.Close();
         }
 
-        private void button3_Click(object sender, RoutedEventArgs e)
+        //*****************************************
+        private void CloseMenuBtn_Click(object sender, RoutedEventArgs e)
         {
             if (this.FullScreenBtn.Visibility == System.Windows.Visibility.Visible)
             {
                 this.FullScreenBtn.Visibility = System.Windows.Visibility.Collapsed;
-                this.MenuGrid.Height = this.button3.Height;
+                this.MenuGrid.Height = this.CloseMenuBtn.Height;
                 System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(55, 0, 0, 0));
-                this.button3.OpacityMask = opacityBrush;
-                this.button3.Content = "Show Menu";
+                this.CloseMenuBtn.OpacityMask = opacityBrush;
+                this.CloseMenuBtn.Content = "Show Menu";
 
             }
             else
@@ -246,17 +256,25 @@ namespace TouchScreenComicViewer
                 this.FullScreenBtn.Visibility = System.Windows.Visibility.Visible;
                 this.MenuGrid.Height = 280;
                 System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
-                this.button3.OpacityMask = opacityBrush;
-                this.button3.Content = "Close Menu";
+                this.CloseMenuBtn.OpacityMask = opacityBrush;
+                this.CloseMenuBtn.Content = "Close Menu";
             }
         }
 
+        //*****************************************
         private void MainDisplayImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             this.startPoint = e.GetPosition(null);
             this.touchEventActive = true;
         }
 
+        //*****************************************
+        void MainDisplayImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            this.touchEventActive = false;
+        }
+
+        //*****************************************
         private void MainDisplayImage_MouseMove(object sender, MouseEventArgs e)
         {
             if (this.touchEventActive == false)
@@ -290,13 +308,6 @@ namespace TouchScreenComicViewer
             }
         }
 
-        private void ExitProgramBtn_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.MainWindow.Close();
-        }
-
-
-
         /// <summary>
         /// Reads the file names from the header of the zip file
         /// </summary>
@@ -328,6 +339,7 @@ namespace TouchScreenComicViewer
         }
 
 
+        //*****************************************
         private void RemoveOldestFileFromIsoStore(IsolatedStorageFile isoStore)
         {
 
@@ -353,6 +365,7 @@ namespace TouchScreenComicViewer
             isoStore.DeleteFile(oldestFileName);
         }
 
+        //*****************************************
         private void DisplayImage(int imageIndex)
         {
             //string data = String.Empty;
@@ -370,6 +383,7 @@ namespace TouchScreenComicViewer
             }
         }
 
+        //*****************************************
         private bool CopyFileToIsoStorage(FileInfo fileToCopy)
         {
             // Save all selected files into application's isolated storage
