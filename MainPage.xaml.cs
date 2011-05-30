@@ -369,7 +369,9 @@ namespace TouchScreenComicViewer
                 }
             }
 
-            long numBytesRemoved = isoStore.OpenFile(oldestFileName, FileMode.Open).Length;
+            IsolatedStorageFileStream oldestFile = isoStore.OpenFile(oldestFileName, FileMode.Open);
+            long numBytesRemoved = oldestFile.Length;
+            oldestFile.Close();
             isoStore.DeleteFile(oldestFileName);
             return numBytesRemoved;
         }
@@ -406,28 +408,32 @@ namespace TouchScreenComicViewer
 
                     //the new file isn't big enough to fit, we need to increase
                     //the quota
-                    if (iso.Quota < spaceToAdd)
+                    if (iso.AvailableFreeSpace < spaceToAdd)
                     {
                         //try and increase without removing any files from cache
                         if (iso.IncreaseQuotaTo(iso.AvailableFreeSpace + spaceToAdd) == false)
                         {
                             //try and increase quota so the new file barely fits if all other data
                             //cleared
-                            if (iso.IncreaseQuotaTo(spaceToAdd) == false)
+                            if (iso.IncreaseQuotaTo(spaceToAdd + 1) == false)
                             {
                                 return false; //total failure
                             }
                         }
                     }
 
-                    //see if we can free up space by removing some files.
-                    long numBytesRemoved = 0;
-                    do
+                    //there is enough space, but we need to remove some files
+                    //evidently we couldn't allocate any more space
+                    if (iso.AvailableFreeSpace < spaceToAdd)
                     {
-                        numBytesRemoved = RemoveOldestFileFromIsoStore(iso);
-                    } while ((numBytesRemoved > 0) && (iso.AvailableFreeSpace < spaceToAdd));
+                        //see if we can free up space by removing some files.
+                        long numBytesRemoved = 0;
+                        do
+                        {
+                            numBytesRemoved = RemoveOldestFileFromIsoStore(iso);
+                        } while ((numBytesRemoved > 0) && (iso.AvailableFreeSpace < spaceToAdd));
 
-                   
+                    }
 
                     
 
