@@ -7,22 +7,22 @@
 		d:DesignHeight="400" d:DesignWidth="400" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk">
 
 		<Grid x:Name="LayoutRoot" Background="Black" RenderTransformOrigin="0 0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200*" />
-            <ColumnDefinition Width="200*" />
-        </Grid.ColumnDefinitions>
-        <Grid.RenderTransform>
+				<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="200*" />
+						<ColumnDefinition Width="200*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RenderTransform>
 			<ScaleTransform x:Name="PageScale" ScaleX="1" ScaleY="1"/>
 		</Grid.RenderTransform>
 		<Image Name="MainDisplayImage" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible" Grid.ColumnSpan="2" MouseLeftButtonDown="MainDisplayImage_MouseLeftButtonDown" MouseLeftButtonUp="MainDisplayImage_MouseLeftButtonUp" MouseMove="MainDisplayImage_MouseMove"/>           
-        <Grid Height="280" Name="MenuGrid" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#9DE5E5E5">
-            <Button Content="Open Comic..." Height="60" Name="openComicBtn" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="OpenComicBtn_Click" Margin="1,117,-1,0"/>
-            <Button Content="Full Screen" Height="60" HorizontalAlignment="Stretch"  Name="FullScreenBtn" VerticalAlignment="Top"  Click="FullScreenBtn_Click"/>
-            <Button Content="Close Menu" Height="40" HorizontalAlignment="Stretch" Name="CloseMenuBtn" VerticalAlignment="Bottom" Click="CloseMenuBtn_Click" Background="#FF1F3B53">
-            </Button>
-            <Button Content="Exit Program" Height="60" HorizontalAlignment="Stretch" Margin="0,57,0,0" Name="ExitProgramBtn" VerticalAlignment="Top" Click="ExitProgramBtn_Click" />
-        </Grid>
-        <sdk:Label Height="19" HorizontalAlignment="Right" Name="currentPageNumLbl" VerticalAlignment="Bottom" Width="33" Foreground="Black" HorizontalContentAlignment="Right" Background="#9DE5E5E5" Margin="0,0,2,0" />
-        <sdk:Label Grid.Column="1" Height="19" HorizontalAlignment="Left" Margin="4,0,0,0" Name="totalPagesLbl" VerticalAlignment="Bottom" Width="35" Foreground="Black" DataContext="{Binding}" Background="#9DE5E5E5" />
-    </Grid>
+				<Grid Height="280" Name="MenuGrid" Grid.Column="0" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#9DE5E5E5">
+						<Button Content="Open Comic..." Height="60" Name="openComicBtn" VerticalAlignment="Top" HorizontalAlignment="Stretch" Click="OpenComicBtn_Click" Margin="1,117,-1,0"/>
+						<Button Content="Full Screen" Height="60" HorizontalAlignment="Stretch"  Name="FullScreenBtn" VerticalAlignment="Top"  Click="FullScreenBtn_Click"/>
+						<Button Content="Close Menu" Height="40" HorizontalAlignment="Stretch" Name="CloseMenuBtn" VerticalAlignment="Bottom" Click="CloseMenuBtn_Click" Background="#FF1F3B53">
+						</Button>
+						<Button Content="Exit Program" Height="60" HorizontalAlignment="Stretch" Margin="0,57,0,0" Name="ExitProgramBtn" VerticalAlignment="Top" Click="ExitProgramBtn_Click" />
+				</Grid>
+				<sdk:Label Height="19" HorizontalAlignment="Right" Name="currentPageNumLbl" VerticalAlignment="Bottom" Width="33" Foreground="Black" HorizontalContentAlignment="Right" Background="#9DE5E5E5" Margin="0,0,2,0" />
+				<sdk:Label Grid.Column="1" Height="19" HorizontalAlignment="Left" Margin="4,0,0,0" Name="totalPagesLbl" VerticalAlignment="Bottom" Width="35" Foreground="Black" DataContext="{Binding}" Background="#9DE5E5E5" />
+		</Grid>
 </UserControl>
