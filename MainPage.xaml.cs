@@ -406,36 +406,46 @@ namespace TouchScreenComicViewer
                 {
                     Int64 spaceToAdd = fileToCopy.Length;
 
+                    //check if it is even possible to store this file
+                    //without a quota increase
+                    if (iso.Quota < spaceToAdd)
+                    {
+                        if (iso.IncreaseQuotaTo(iso.Quota + (spaceToAdd - iso.AvailableFreeSpace)) == false)
+                        {
+                            //no way we can fit the file no matter what we do
+                            return false;
+                        }
+                    }
+
                     //the new file isn't big enough to fit, we need to increase
                     //the quota
                     if (iso.AvailableFreeSpace < spaceToAdd)
                     {
                         //try and increase without removing any files from cache
-                        if (iso.IncreaseQuotaTo(iso.AvailableFreeSpace + spaceToAdd) == false)
+                        if (iso.IncreaseQuotaTo(iso.Quota + (spaceToAdd - iso.AvailableFreeSpace) )== false)
                         {
-                            //try and increase quota so the new file barely fits if all other data
-                            //cleared
-                            if (iso.IncreaseQuotaTo(spaceToAdd + 1) == false)
+                            //there is enough space, but we need to remove some files
+                            //evidently we couldn't allocate any more space
+                            if (iso.AvailableFreeSpace < spaceToAdd)
                             {
-                                return false; //total failure
+                                //see if we can free up space by removing some files.
+                                long numBytesRemoved = 0;
+                                do
+                                {
+                                    numBytesRemoved = RemoveOldestFileFromIsoStore(iso);
+                                } while ((numBytesRemoved > 0) && (iso.AvailableFreeSpace < spaceToAdd));
+
                             }
                         }
                     }
 
-                    //there is enough space, but we need to remove some files
-                    //evidently we couldn't allocate any more space
+                    //sanity check
                     if (iso.AvailableFreeSpace < spaceToAdd)
                     {
-                        //see if we can free up space by removing some files.
-                        long numBytesRemoved = 0;
-                        do
-                        {
-                            numBytesRemoved = RemoveOldestFileFromIsoStore(iso);
-                        } while ((numBytesRemoved > 0) && (iso.AvailableFreeSpace < spaceToAdd));
-
+                        //we should have been able to clear things out,
+                        //this should never be hit.
+                        return false;
                     }
-
-                    
 
                     //finally, copy file
                     using (Stream fileStream = fileToCopy.OpenRead())
