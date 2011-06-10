@@ -3,7 +3,7 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:Comics="clr-namespace:TouchScreenComicViewer"
+		xmlns:TSComicV="clr-namespace:TouchScreenComicViewer"
 		mc:Ignorable="d"
 		d:DesignHeight="300" d:DesignWidth="400" Name="ComicArchiveDisplayPage" Loaded="ComicArchiveDisplayPage_Loaded">
 		
@@ -11,7 +11,7 @@
 			<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="200*" />
 		</Grid.ColumnDefinitions>
-		<ListBox MinHeight="276" Background="Black" Foreground="White" HorizontalAlignment="Stretch" Margin="12,12,12,12" Name="ComicArchiveListBox" VerticalAlignment="Top">
+		<ListBox  Background="Black" Foreground="White" Margin="12,12,12,49" Name="ComicArchiveListBox">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<StackPanel Orientation="Horizontal" Height="50" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp">
@@ -21,5 +21,7 @@
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
+		<Button Content="Add Comics..." Height="31" Name="openComicBtn" Margin="12,0,0,11" VerticalAlignment="Bottom" Click="OpenComicBtn_Click" HorizontalAlignment="Left" Width="110" />
+		<TSComicV:MainPage x:Name="ComicViewer" Visibility="Collapsed"/>
 	</Grid>
 </UserControl>

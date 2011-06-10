@@ -19,7 +19,6 @@ namespace TouchScreenComicViewer
 {
 	public partial class MainPage : UserControl
 	{
-		private const long QUOTA_SIZE = 500 * 1024 * 1024; //TODO: const for quota size until I find a better solution
 		private const double _originalWidth = 970;
 		private const double _originalHeight = 1470;
 		private const double _originalAspectRatio =
@@ -33,7 +32,6 @@ namespace TouchScreenComicViewer
 		//private double scaleX = 1.0;
 		//private double scaleY = 1.0;
 		private bool touchEventActive = false;
-		private UserControl ParentPage;
 		//*****************************************
 		public MainPage()
 		{
@@ -43,13 +41,6 @@ namespace TouchScreenComicViewer
 			SizeChanged += new SizeChangedEventHandler(MainPage_SizeChanged);
 			Application.Current.Host.Content.FullScreenChanged += new EventHandler(Content_FullScreenChanged);
 			//Touch.FrameReported += new TouchFrameEventHandler(Touch_FrameReported);
-
-
-		}
-
-		public MainPage(UserControl parent) : this()
-		{
-			ParentPage = parent;
 		}
 
 		//*****************************************
@@ -197,42 +188,6 @@ namespace TouchScreenComicViewer
 		}
 
 		//*****************************************
-		private void OpenComicBtn_Click(object sender, RoutedEventArgs e)
-		{
-			OpenFileDialog dlg = new OpenFileDialog();
-			dlg.Filter = "Zipped Comic Books (*.CBZ)|*.CBZ";
-			dlg.Multiselect = true;
-
-			//TODO: I need to find a way to open a file and be
-			//able to adjust the quota without having to prompt
-			//the user multiple times.
-			IsolatedStorageFile iso2 = IsolatedStorageFile.GetUserStoreForApplication();
-			if (iso2.Quota < QUOTA_SIZE)
-			{
-				if (!iso2.IncreaseQuotaTo(QUOTA_SIZE)) //50MB
-				{
-					throw new Exception("Can't store the image.");
-				}
-				else
-				{
-					return;
-				}
-			}
-
-			if (dlg.ShowDialog() == true)
-			{
-				foreach( FileInfo file in dlg.Files) {
-
-				if (IsoStorageUtilities.CopyFileToIsoStorage(file) == false)
-				{
-					//TODO: error message
-					return;
-				}
-				}
-			}
-		}
-
-		//*****************************************
 		private void FullScreenBtn_Click(object sender, RoutedEventArgs e)
 		{
 			Application.Current.Host.Content.IsFullScreen = !Application.Current.Host.Content.IsFullScreen;
@@ -260,7 +215,9 @@ namespace TouchScreenComicViewer
 			{
 				this.FullScreenBtn.Visibility = System.Windows.Visibility.Collapsed;
 				this.MenuGrid.Height = this.CloseMenuBtn.Height;
-				System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(55, 0, 0, 0));
+				System.Windows.Media.SolidColorBrush backgroundBrush = new SolidColorBrush(Color.FromArgb(20, 229, 229, 229));
+				this.MenuGrid.Background = backgroundBrush;
+				System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(20, 0, 0, 0));
 				this.CloseMenuBtn.OpacityMask = opacityBrush;
 				this.CloseMenuBtn.Content = "Show Menu";
 
@@ -268,7 +225,9 @@ namespace TouchScreenComicViewer
 			else
 			{
 				this.FullScreenBtn.Visibility = System.Windows.Visibility.Visible;
-				this.MenuGrid.Height = 280;
+				this.MenuGrid.Height = 335;
+				System.Windows.Media.SolidColorBrush backgroundBrush = new SolidColorBrush(Color.FromArgb(157, 229, 229, 229));
+				this.MenuGrid.Background = backgroundBrush;
 				System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
 				this.CloseMenuBtn.OpacityMask = opacityBrush;
 				this.CloseMenuBtn.Content = "Close Menu";
@@ -342,7 +301,7 @@ namespace TouchScreenComicViewer
 		}
 
 		private void CloseComicBtn_Click(object sender, RoutedEventArgs e) {
-			((UserControlContainer)Application.Current.RootVisual).SwitchControl(ParentPage);
+			Visibility = System.Windows.Visibility.Collapsed;
 		}
 
 		
