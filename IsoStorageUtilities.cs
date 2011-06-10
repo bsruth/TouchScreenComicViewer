@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.IO.IsolatedStorage;
 using System.IO;
+using System.Collections.Generic;
 
 namespace TouchScreenComicViewer {
 	public class IsoStorageUtilities {
@@ -107,6 +108,7 @@ namespace TouchScreenComicViewer {
 			return true;
 		}
 
+		//*****************************************
 		static public bool DoesFileExist(string fileName)
 		{
 			using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication() ) {
@@ -114,6 +116,7 @@ namespace TouchScreenComicViewer {
 			}
 		}
 
+		//*****************************************
 		static public bool CreateIsolatedStorageFile(string fileName) 
 		{
 			try {
@@ -128,6 +131,7 @@ namespace TouchScreenComicViewer {
 			return DoesFileExist(fileName);
 		}
 
+		//*****************************************
 		static public FileStream OpenIsolatedStorageFileStream(string fileName) 
 		{
 			try {
@@ -139,6 +143,24 @@ namespace TouchScreenComicViewer {
 				return null;
 			}
 		}
+
+		//*****************************************
+		static public List<string> GetIsolatedStorageFilesWithExtension(string fileExtension) 
+		{
+			List<string> filesWithExt = new List<string>();
+			try {
+				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
+					if(fileExtension.StartsWith(".")) {
+						fileExtension = "." + fileExtension;
+					}
+					filesWithExt.AddRange(iso.GetFileNames("*" + fileExtension));
+				}
+			} catch (Exception e) {
+				return new List<string>(); //empty list
+			}
+			return filesWithExt;
+		}
+
 
 	}
 }
