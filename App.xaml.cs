@@ -22,9 +22,15 @@ namespace TouchScreenComicViewer {
 		}
 
 		private void Application_Startup(object sender, StartupEventArgs e) {
-			this.RootVisual = new MainPage();
+			// this.RootVisual = new MainPage();
+			this.RootVisual = new UserControlContainer();
+			((UserControlContainer)this.RootVisual).SwitchControl(new ComicArchiveDisplay());
 		}
 
+		public void SetRootVisual(UserControl control)
+		{
+				this.RootVisual = control;
+		}
 		private void Application_Exit(object sender, EventArgs e) {
 
 		}

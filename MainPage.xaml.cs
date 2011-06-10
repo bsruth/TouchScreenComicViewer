@@ -19,7 +19,7 @@ namespace TouchScreenComicViewer
 {
 	public partial class MainPage : UserControl
 	{
-		private const long QUOTA_SIZE = 52428800; //TODO: const for quota size until I find a better solution
+		private const long QUOTA_SIZE = 500 * 1024 * 1024; //TODO: const for quota size until I find a better solution
 		private const double _originalWidth = 970;
 		private const double _originalHeight = 1470;
 		private const double _originalAspectRatio =
@@ -33,7 +33,7 @@ namespace TouchScreenComicViewer
 		//private double scaleX = 1.0;
 		//private double scaleY = 1.0;
 		private bool touchEventActive = false;
-
+		private UserControl ParentPage;
 		//*****************************************
 		public MainPage()
 		{
@@ -45,6 +45,11 @@ namespace TouchScreenComicViewer
 			//Touch.FrameReported += new TouchFrameEventHandler(Touch_FrameReported);
 
 
+		}
+
+		public MainPage(UserControl parent) : this()
+		{
+			ParentPage = parent;
 		}
 
 		//*****************************************
@@ -170,12 +175,33 @@ namespace TouchScreenComicViewer
 			}
 		}
 
+		//*****************************************
+		public void SetComic(string comicToOpen)
+		{
+			try {
+				using (Stream fileStream = IsoStorageUtilities.OpenIsolatedStorageFileStream(comicToOpen)) {
+					this.fileList = ZipFileUtilities.GetZipContents(fileStream).ToList<string>();
+					fileStream.Close();
+					this.compressedFilename = comicToOpen;
+				}
+			} catch (Exception ex) {
+				ex.ToString();
+			}
+
+			currentIndex = 0;
+			DisplayImage(currentIndex);
+
+			this.totalPages = this.fileList.Count;
+			this.totalPagesLbl.Content = (totalPages);
+			this.currentPageNumLbl.Content = (currentIndex + 1);
+		}
 
 		//*****************************************
 		private void OpenComicBtn_Click(object sender, RoutedEventArgs e)
 		{
 			OpenFileDialog dlg = new OpenFileDialog();
 			dlg.Filter = "Zipped Comic Books (*.CBZ)|*.CBZ";
+			dlg.Multiselect = true;
 
 			//TODO: I need to find a way to open a file and be
 			//able to adjust the quota without having to prompt
@@ -193,35 +219,17 @@ namespace TouchScreenComicViewer
 				}
 			}
 
-			dlg.Multiselect = false;
 			if (dlg.ShowDialog() == true)
 			{
-				try
-				{
-					using (Stream fileStream = dlg.File.OpenRead())
-					{
-						this.fileList = ZipFileUtilities.GetZipContents(fileStream).ToList<string>();
-						fileStream.Close();
-						this.compressedFilename = dlg.File.Name;
-					}
-				}
-				catch (Exception ex)
-				{
-					ex.ToString();
-				}
+				foreach( FileInfo file in dlg.Files) {
 
-				if (IsoStorageUtilities.CopyFileToIsoStorage(dlg.File) == false)
+				if (IsoStorageUtilities.CopyFileToIsoStorage(file) == false)
 				{
 					//TODO: error message
 					return;
 				}
-				currentIndex = 0;
-				DisplayImage(currentIndex);
+				}
 			}
-
-			this.totalPages = this.fileList.Count;
-			this.totalPagesLbl.Content = (totalPages);
-			this.currentPageNumLbl.Content = (currentIndex + 1);
 		}
 
 		//*****************************************
@@ -331,6 +339,10 @@ namespace TouchScreenComicViewer
 				this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
 				currentImageStream.Close();
 			}
+		}
+
+		private void CloseComicBtn_Click(object sender, RoutedEventArgs e) {
+			((UserControlContainer)Application.Current.RootVisual).SwitchControl(ParentPage);
 		}
 
 		

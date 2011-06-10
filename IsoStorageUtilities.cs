@@ -150,7 +150,7 @@ namespace TouchScreenComicViewer {
 			List<string> filesWithExt = new List<string>();
 			try {
 				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
-					if(fileExtension.StartsWith(".")) {
+					if(!fileExtension.StartsWith(".")) {
 						fileExtension = "." + fileExtension;
 					}
 					filesWithExt.AddRange(iso.GetFileNames("*" + fileExtension));
