@@ -12,6 +12,9 @@ using System.Windows.Shapes;
 using System.IO;
 
 namespace TouchScreenComicViewer {
+	public class ComicListItem {
+		public string ItemText { get; set; }
+	}
 
 	public partial class ComicArchiveDisplay : UserControl {
 		const string COMIC_ARCHIVE_ZIP_EXT = ".cbz";
@@ -22,7 +25,13 @@ namespace TouchScreenComicViewer {
 
 		private void ComicArchiveDisplayPage_Loaded(object sender, RoutedEventArgs e) {
 			List<string> comics = IsoStorageUtilities.GetIsolatedStorageFilesWithExtension(COMIC_ARCHIVE_ZIP_EXT);
-			ComicArchiveListBox.ItemsSource = comics;
+			//ComicArchiveListBox.ItemsSource = comics;
+			foreach (string comic in comics) {
+				ComicListItem cli = new ComicListItem();
+				cli.ItemText = comic;
+				ComicArchiveListBox.Items.Add(cli);
+
+			}
 			comicDisplay = new MainPage(this);
 		}
 

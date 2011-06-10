@@ -3,6 +3,7 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:Comics="clr-namespace:TouchScreenComicViewer"
 		mc:Ignorable="d"
 		d:DesignHeight="300" d:DesignWidth="400" Name="ComicArchiveDisplayPage" Loaded="ComicArchiveDisplayPage_Loaded">
 		
@@ -14,7 +15,7 @@
 			<ListBox.ItemTemplate>
 				<DataTemplate>
 					<StackPanel Height="50" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp">
-						<TextBlock x:Name="ItemText" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding}" ></TextBlock>
+						<TextBlock x:Name="ItemText" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Text="{Binding ItemText}" ></TextBlock>
 					</StackPanel>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
