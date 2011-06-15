@@ -132,11 +132,11 @@ namespace TouchScreenComicViewer {
 		}
 
 		//*****************************************
-		static public FileStream OpenIsolatedStorageFileStream(string fileName) 
+		static public FileStream OpenIsolatedStorageFileStream(string fileName, FileMode openMode = FileMode.Open) 
 		{
 			try {
 				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
-					IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(fileName, FileMode.Open, iso);
+					IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(fileName, openMode, iso);
 					return fileStream;
 				}
 			} catch (Exception e) {
