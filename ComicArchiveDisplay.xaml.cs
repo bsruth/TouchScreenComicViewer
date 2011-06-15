@@ -24,9 +24,12 @@ namespace TouchScreenComicViewer {
 		const string COMIC_ARCHIVE_ZIP_EXT = ".cbz";
 		private const long QUOTA_SIZE = 500 * 1024 * 1024; //TODO: const for quota size until I find a better solution
 
+		ComicArchiveManager mComicArchiveMgr;
 		//*****************************************
 		public ComicArchiveDisplay() {
 			InitializeComponent();
+
+			mComicArchiveMgr = new ComicArchiveManager();
 		}
 
 		//*****************************************
@@ -36,33 +39,28 @@ namespace TouchScreenComicViewer {
 
 		//*****************************************
 		private void RefreshComicList() {
+			
 			ComicArchiveListBox.Items.Clear();
-			List<string> comics = IsoStorageUtilities.GetIsolatedStorageFilesWithExtension(COMIC_ARCHIVE_ZIP_EXT);
+
+			List<string> comics = mComicArchiveMgr.GetAvailableComics();
 			//ComicArchiveListBox.ItemsSource = comics;
 			foreach (string comic in comics) {
 				ComicListItem cli = new ComicListItem();
 				cli.ItemText = comic;
 				//now get the cover image
-				Stream comicStream = IsoStorageUtilities.OpenIsolatedStorageFileStream(comic);
-				string[] comicFiles = ZipFileUtilities.GetZipContents(comicStream);
-				comicStream.Close();
-				if (comicFiles.GetLength(0) > 0) {
-					Stream coverFileStream = ZipFileUtilities.GetFileStreamFromZIPFile(comic, comicFiles[0]);
-					if (coverFileStream != null) {
-						cli.ItemBMP = new BitmapImage();
-						cli.ItemBMP.SetSource(coverFileStream);
-						coverFileStream.Close();
-					}
-				}
-
+				cli.ItemBMP = mComicArchiveMgr.GetComicCover(comic);
 				ComicArchiveListBox.Items.Add(cli);
 			}
+
+			LastComicLabel.Content = mComicArchiveMgr.GetLastOpenedComic();
 		}
 
 		//*****************************************
 		private void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
 			ComicListItem selectedItem = ((ComicListItem)ComicArchiveListBox.SelectedItem);
 			ComicViewer.SetComic(selectedItem.ItemText);
+			mComicArchiveMgr.SetLastOpenedComic(selectedItem.ItemText);
+			LastComicLabel.Content = selectedItem.ItemText;
 			ComicViewer.Visibility = System.Windows.Visibility.Visible;
 		}
 
