@@ -14,9 +14,8 @@
 		<ListBox  Background="Black" Foreground="White" Margin="12,12,12,49" Name="ComicArchiveListBox">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<StackPanel Orientation="Horizontal" Height="50" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp">
-						<Image Source="{Binding ItemBMP}" Height ="48" HorizontalAlignment="Left"/>
-						<TextBlock HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding ItemText}" ></TextBlock>
+					<StackPanel Orientation="Horizontal" Height="100" HorizontalAlignment="Stretch" Background="Transparent" MouseLeftButtonUp="TextBlock_MouseLeftButtonUp">
+						<TSComicV:ComicCoverTile Height="98" VerticalAlignment="Stretch"/>
 					</StackPanel>
 				</DataTemplate>
 			</ListBox.ItemTemplate>

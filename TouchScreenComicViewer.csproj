@@ -78,6 +78,9 @@
       <DependentUpon>ComicArchiveDisplay.xaml</DependentUpon>
     </Compile>
     <Compile Include="ComicArchiveManager.cs" />
+    <Compile Include="ComicCoverTile.xaml.cs">
+      <DependentUpon>ComicCoverTile.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IsoStorageUtilities.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -94,6 +97,10 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Page Include="ComicArchiveDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ComicCoverTile.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
