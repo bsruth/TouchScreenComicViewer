@@ -3,6 +3,17 @@
              x:Class="TouchScreenComicViewer.App"
              >
     <Application.Resources>
-        
-    </Application.Resources>
+		<Style x:Key="WP7Button" TargetType="Button">
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border Background="Black" BorderBrush="White" BorderThickness="2">
+							<ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Center"></ContentPresenter>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Application.Resources>
 </Application>

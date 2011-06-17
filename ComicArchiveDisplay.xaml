@@ -16,7 +16,7 @@
 			<controls:WrapPanel Background="Black" Name="ComicArchiveWrapPanel" Orientation="Horizontal" >
 			</controls:WrapPanel>
 		</ScrollViewer>
-		<Button Content="Add Comics..." Height="31" Name="openComicBtn" Margin="12,0,0,11" VerticalAlignment="Bottom" Click="OpenComicBtn_Click" HorizontalAlignment="Left" Width="110" />
+		<Button Content="Add Comics..." Height="31" Style="{StaticResource WP7Button}" Name="openComicBtn" Margin="12,0,0,11" VerticalAlignment="Bottom" Click="OpenComicBtn_Click" HorizontalAlignment="Left" Width="110" />
 		<sdk:Label Margin="197,0,24,11" Name="LastComicLabel" Foreground="White" Height="28" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
 		<sdk:Label Margin="128,0,0,11" Name="label1" Foreground="White" Content="Last Comic:" HorizontalAlignment="Left" Width="71" Height="28" VerticalAlignment="Bottom" />
 		<TSComicV:MainPage x:Name="ComicViewer" Visibility="Collapsed"/>
