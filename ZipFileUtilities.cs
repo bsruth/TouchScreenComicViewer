@@ -48,15 +48,13 @@ namespace TouchScreenComicViewer {
 		public static Stream GetFileStreamFromZIPFile(string zipFileName, string requestedFileName)
 		{
 			Stream requestedFileStream = null;
-
-			//string data = String.Empty;
 			using (IsolatedStorageFile isf = IsolatedStorageFile.GetUserStoreForApplication()) {
-				IsolatedStorageFileStream file = isf.OpenFile(zipFileName, FileMode.Open);
-				StreamResourceInfo zipInfo = new StreamResourceInfo(file, null);
-				StreamResourceInfo streamInfo = Application.GetResourceStream(zipInfo, new Uri(requestedFileName, UriKind.Relative));
-				requestedFileStream = streamInfo.Stream;
+				using (IsolatedStorageFileStream file = isf.OpenFile(zipFileName, FileMode.Open)) {
+					StreamResourceInfo zipInfo = new StreamResourceInfo(file, null);
+					StreamResourceInfo streamInfo = Application.GetResourceStream(zipInfo, new Uri(requestedFileName, UriKind.Relative));
+					requestedFileStream = streamInfo.Stream;
+				}
 			}
-
 			return requestedFileStream;
 
 		}
