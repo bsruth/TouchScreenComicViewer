@@ -82,6 +82,9 @@
     <Compile Include="ComicCoverTile.xaml.cs">
       <DependentUpon>ComicCoverTile.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ComicViewingMenu.xaml.cs">
+      <DependentUpon>ComicViewingMenu.xaml</DependentUpon>
+    </Compile>
     <Compile Include="IsoStorageUtilities.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -102,6 +105,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ComicCoverTile.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ComicViewingMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

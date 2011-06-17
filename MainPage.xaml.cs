@@ -215,7 +215,7 @@ namespace TouchScreenComicViewer
 			{
 				this.FullScreenBtn.Visibility = System.Windows.Visibility.Collapsed;
 				this.MenuGrid.Height = this.CloseMenuBtn.Height;
-				System.Windows.Media.SolidColorBrush backgroundBrush = new SolidColorBrush(Color.FromArgb(20, 229, 229, 229));
+				System.Windows.Media.SolidColorBrush backgroundBrush = new SolidColorBrush(Color.FromArgb(20, 0, 0, 0));
 				this.MenuGrid.Background = backgroundBrush;
 				System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(20, 0, 0, 0));
 				this.CloseMenuBtn.OpacityMask = opacityBrush;
@@ -226,7 +226,7 @@ namespace TouchScreenComicViewer
 			{
 				this.FullScreenBtn.Visibility = System.Windows.Visibility.Visible;
 				this.MenuGrid.Height = 335;
-				System.Windows.Media.SolidColorBrush backgroundBrush = new SolidColorBrush(Color.FromArgb(157, 229, 229, 229));
+				System.Windows.Media.SolidColorBrush backgroundBrush = new SolidColorBrush(Color.FromArgb(157, 0,0, 0));
 				this.MenuGrid.Background = backgroundBrush;
 				System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
 				this.CloseMenuBtn.OpacityMask = opacityBrush;
