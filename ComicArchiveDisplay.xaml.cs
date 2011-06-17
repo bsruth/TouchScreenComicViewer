@@ -39,8 +39,8 @@ namespace TouchScreenComicViewer {
 
 		//*****************************************
 		private void RefreshComicList() {
-			
-			ComicArchiveListBox.Items.Clear();
+
+			ComicArchiveWrapPanel.Children.Clear();
 
 			List<string> comics = mComicArchiveMgr.GetAvailableComics();
 			//ComicArchiveListBox.ItemsSource = comics;
@@ -49,18 +49,24 @@ namespace TouchScreenComicViewer {
 				cli.ItemText = comic;
 				//now get the cover image
 				cli.ItemBMP = mComicArchiveMgr.GetComicCover(comic);
-				ComicArchiveListBox.Items.Add(cli);
+				ComicCoverTile cct = new ComicCoverTile();
+				cct.Height = 150;
+				cct.Width = cct.Height * cli.ItemBMP.PixelWidth / cli.ItemBMP.PixelHeight;
+				cct.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+				cct.DataContext = cli;
+				cct.MouseLeftButtonUp +=new MouseButtonEventHandler(ComicCover_MouseLeftButtonUp);
+				ComicArchiveWrapPanel.Children.Add(cct);
 			}
 
 			LastComicLabel.Content = mComicArchiveMgr.GetLastOpenedComic();
 		}
 
 		//*****************************************
-		private void TextBlock_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-			ComicListItem selectedItem = ((ComicListItem)ComicArchiveListBox.SelectedItem);
-			ComicViewer.SetComic(selectedItem.ItemText);
-			mComicArchiveMgr.SetLastOpenedComic(selectedItem.ItemText);
-			LastComicLabel.Content = selectedItem.ItemText;
+		private void ComicCover_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+			string selectedComic = ((ComicListItem)((ComicCoverTile)sender).DataContext).ItemText;
+			ComicViewer.SetComic(selectedComic);
+			mComicArchiveMgr.SetLastOpenedComic(selectedComic);
+			LastComicLabel.Content = selectedComic;
 			ComicViewer.Visibility = System.Windows.Visibility.Visible;
 		}
 

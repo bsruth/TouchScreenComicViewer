@@ -6,7 +6,7 @@
     mc:Ignorable="d"
 						 >
     
-    <Grid x:Name="LayoutRoot" Background="White">
-		<Image Height="Auto" HorizontalAlignment="Left" Name="image1" Source="{Binding Path=ItemBMP}" Stretch="Fill" VerticalAlignment="Top" Width="Auto" ToolTipService.ToolTip="{Binding Path=ItemText}"/>
+    <Grid x:Name="LayoutRoot" Background="Black">
+		<Image Height="Auto" HorizontalAlignment="Left" Name="image1" Source="{Binding Path=ItemBMP}" Stretch="Fill" Margin="5" VerticalAlignment="Top" Width="Auto" ToolTipService.ToolTip="{Binding Path=ItemText}"/>
 	</Grid>
 </UserControl>
