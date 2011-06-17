@@ -1,8 +1,8 @@
 ﻿<Application xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-             x:Class="TouchScreenComicViewer.App"
-             >
-    <Application.Resources>
+						 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+						 x:Class="TouchScreenComicViewer.App"
+						 >
+		<Application.Resources>
 		<Style x:Key="WP7Button" TargetType="Button">
 			<Setter Property="Foreground" Value="White"/>
 			<Setter Property="Template">
