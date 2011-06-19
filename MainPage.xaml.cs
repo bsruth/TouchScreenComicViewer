@@ -14,6 +14,7 @@ using System.IO;
 using System.Windows.Interop;
 using System.Text;
 using System.Windows.Resources;
+using System.Windows.Media.Imaging;
 
 namespace TouchScreenComicViewer
 {
@@ -23,15 +24,15 @@ namespace TouchScreenComicViewer
 		private const double _originalHeight = 1470;
 		private const double _originalAspectRatio =
 						_originalWidth / _originalHeight;
-		private List<string> fileList = new List<string>();
-		private string compressedFilename = "";
-		private int currentIndex = 0;
-		private int totalPages = 0;
+
 		private Point startPoint; //start point for beginning of a mouse down event
 		private const int swipePixelLength = 50; //number of pixels needed to trigger a swipe event.
 		//private double scaleX = 1.0;
 		//private double scaleY = 1.0;
 		private bool touchEventActive = false;
+
+		private ComicBook _currentComicBook;
+
 		//*****************************************
 		public MainPage()
 		{
@@ -167,24 +168,15 @@ namespace TouchScreenComicViewer
 		}
 
 		//*****************************************
-		public void SetComic(string comicToOpen)
+		public void SetComic(ComicBook comicToOpen)
 		{
-			try {
-				using (Stream fileStream = IsoStorageUtilities.OpenIsolatedStorageFileStream(comicToOpen)) {
-					this.fileList = ZipFileUtilities.GetZipContents(fileStream).ToList<string>();
-					fileStream.Close();
-					this.compressedFilename = comicToOpen;
-				}
-			} catch (Exception ex) {
-				ex.ToString();
-			}
 
-			currentIndex = 0;
-			DisplayImage(currentIndex);
+			_currentComicBook = comicToOpen;
 
-			this.totalPages = this.fileList.Count;
-			this.totalPagesLbl.Content = (totalPages);
-			this.currentPageNumLbl.Content = (currentIndex + 1);
+			DisplayImage(_currentComicBook.GetCoverImage());
+
+			this.totalPagesLbl.Content = _currentComicBook.TotalPages;
+			this.currentPageNumLbl.Content = _currentComicBook.CurrentPageNumber;
 		}
 
 		//*****************************************
@@ -257,26 +249,22 @@ namespace TouchScreenComicViewer
 			if (e.GetPosition(null).X < (this.startPoint.X - swipePixelLength))
 			{
 				//swipe left
-				currentIndex++;
-				if (currentIndex >= this.fileList.Count)
-				{
-					currentIndex = 0;
+				BitmapImage comicImage = _currentComicBook.GetNextPageImage();
+				if (comicImage != null) {
+					DisplayImage(comicImage);
+					this.currentPageNumLbl.Content = _currentComicBook.CurrentPageNumber.ToString();
 				}
-				this.currentPageNumLbl.Content = (currentIndex + 1).ToString();
-				DisplayImage(currentIndex);
 				touchEventActive = false;
 
 			}
 			else if (e.GetPosition(null).X > (this.startPoint.X + swipePixelLength))
 			{
 				//swipe right
-				currentIndex--;
-				if (currentIndex < 0)
-				{
-					currentIndex = this.fileList.Count - 1;
+				BitmapImage comicImage = _currentComicBook.GetPreviousPageImage();
+				if (comicImage != null) {
+					DisplayImage(comicImage);
+					this.currentPageNumLbl.Content = _currentComicBook.CurrentPageNumber.ToString();
 				}
-				this.currentPageNumLbl.Content = (currentIndex + 1).ToString();
-				DisplayImage(currentIndex);
 				touchEventActive = false;
 			}
 		}
@@ -287,17 +275,10 @@ namespace TouchScreenComicViewer
 		
 
 		//*****************************************
-		private void DisplayImage(int imageIndex)
+		private void DisplayImage(BitmapImage imageToDisplay)
 		{
-			Stream currentImageStream = ZipFileUtilities.GetFileStreamFromZIPFile(this.compressedFilename, this.fileList[imageIndex]);
-			if (currentImageStream != null)
-			{
-				System.Windows.Media.Imaging.BitmapImage bmp = new System.Windows.Media.Imaging.BitmapImage();
-				bmp.SetSource(currentImageStream);
-				this.MainDisplayImage.Source = bmp;
-				this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
-				currentImageStream.Close();
-			}
+			this.MainDisplayImage.Source = imageToDisplay;
+			this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
 		}
 
 		private void CloseComicBtn_Click(object sender, RoutedEventArgs e) {

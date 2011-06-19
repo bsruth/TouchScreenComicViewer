@@ -66,7 +66,7 @@ namespace TouchScreenComicViewer {
 			string selectedComic = ((ComicListItem)((ComicCoverTile)sender).DataContext).ItemText;
 			ComicBook openedComic = mComicArchiveMgr.OpenComic(selectedComic);
 			if (openedComic != null) {
-				ComicViewer.SetComic(selectedComic);
+				ComicViewer.SetComic(openedComic);
 				LastComicLabel.Content = selectedComic;
 				ComicViewer.Visibility = System.Windows.Visibility.Visible;
 			}

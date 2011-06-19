@@ -19,7 +19,8 @@ namespace TouchScreenComicViewer {
 		private string[] _filesInComicBook;
 		private int _currentPageIndex = 0;
 
-		private int CurrentPageNumber { get { return _currentPageIndex; } }
+		public int CurrentPageNumber { get { return _currentPageIndex + 1; } }
+		public int TotalPages { get { return _filesInComicBook.Length; } }
 
 		//*****************************************
 		public ComicBook(string comicBookFileName) {
@@ -46,7 +47,10 @@ namespace TouchScreenComicViewer {
 
 		//*****************************************
 		public BitmapImage GetNextPageImage() {
-			int nextPageIndex = _currentPageIndex--;
+			int nextPageIndex = _currentPageIndex + 1;
+			if (nextPageIndex >= TotalPages) {
+				nextPageIndex = 0;
+			}
 
 			BitmapImage pageImage = GetImageFromComicFile(_filesInComicBook[nextPageIndex]);
 			if (pageImage != null) {
@@ -59,8 +63,10 @@ namespace TouchScreenComicViewer {
 
 		//*****************************************
 		public BitmapImage GetPreviousPageImage() {
-			int prevPageIndex = _currentPageIndex--;
-
+			int prevPageIndex = _currentPageIndex - 1;
+			if (prevPageIndex < 0) {
+				prevPageIndex = TotalPages - 1;
+			}
 			BitmapImage pageImage = GetImageFromComicFile(_filesInComicBook[prevPageIndex]);
 			if (pageImage != null) {
 				_currentPageIndex = prevPageIndex;
