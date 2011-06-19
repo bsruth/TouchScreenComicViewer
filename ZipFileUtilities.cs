@@ -55,10 +55,7 @@ namespace TouchScreenComicViewer {
 					requestedFileStream = streamInfo.Stream;
 				}
 			}
-			string blah = ex.ToString();
-			}
 			return requestedFileStream;
-
 		}
 
 	}
