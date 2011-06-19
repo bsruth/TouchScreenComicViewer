@@ -10,16 +10,24 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using System.IO;
 using System.Windows.Media.Imaging;
+using System.ComponentModel;
 
-namespace TouchScreenComicViewer {
-	public class ComicBook {
+namespace TouchScreenComicViewer{
+	public class ComicBook : INotifyPropertyChanged {
 		//members
 		private string _comicBookFileName;
 		private Stream _comicBookFileStream;
 		private string[] _filesInComicBook;
 		private int _currentPageIndex = 0;
 
-		public int CurrentPageNumber { get { return _currentPageIndex + 1; } }
+		public int CurrentPageNumber {
+			get { return _currentPageIndex + 1;}
+			protected set { 
+				_currentPageIndex = value;
+				RaisePropertyChanged("CurrentPageNumber");
+			}
+		}
+
 		public int TotalPages { get { return _filesInComicBook.Length; } }
 
 		//*****************************************
@@ -54,7 +62,7 @@ namespace TouchScreenComicViewer {
 
 			BitmapImage pageImage = GetImageFromComicFile(_filesInComicBook[nextPageIndex]);
 			if (pageImage != null) {
-				_currentPageIndex = nextPageIndex;
+				CurrentPageNumber = nextPageIndex;
 			}
 
 			return pageImage;
@@ -69,7 +77,7 @@ namespace TouchScreenComicViewer {
 			}
 			BitmapImage pageImage = GetImageFromComicFile(_filesInComicBook[prevPageIndex]);
 			if (pageImage != null) {
-				_currentPageIndex = prevPageIndex;
+				CurrentPageNumber = prevPageIndex;
 			}
 
 			return pageImage;
@@ -128,5 +136,18 @@ namespace TouchScreenComicViewer {
 		}
 
 
+
+		#region INotifyPropertyChanged Members
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		void RaisePropertyChanged(string propertyName) {
+			var handler = PropertyChanged;
+			if (handler != null) {
+				handler(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}      
+
+		#endregion
 	}
 }

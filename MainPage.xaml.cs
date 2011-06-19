@@ -172,11 +172,8 @@ namespace TouchScreenComicViewer
 		{
 
 			_currentComicBook = comicToOpen;
-
+			DataContext = _currentComicBook;
 			DisplayImage(_currentComicBook.GetCoverImage());
-
-			this.totalPagesLbl.Content = _currentComicBook.TotalPages;
-			this.currentPageNumLbl.Content = _currentComicBook.CurrentPageNumber;
 		}
 
 		//*****************************************
@@ -252,7 +249,7 @@ namespace TouchScreenComicViewer
 				BitmapImage comicImage = _currentComicBook.GetNextPageImage();
 				if (comicImage != null) {
 					DisplayImage(comicImage);
-					this.currentPageNumLbl.Content = _currentComicBook.CurrentPageNumber.ToString();
+					//this.currentPageNumLbl.Content = _currentComicBook.CurrentPageNumber;
 				}
 				touchEventActive = false;
 
@@ -263,7 +260,7 @@ namespace TouchScreenComicViewer
 				BitmapImage comicImage = _currentComicBook.GetPreviousPageImage();
 				if (comicImage != null) {
 					DisplayImage(comicImage);
-					this.currentPageNumLbl.Content = _currentComicBook.CurrentPageNumber.ToString();
+					//this.currentPageNumLbl.Content = _currentComicBook.CurrentPageNumber;
 				}
 				touchEventActive = false;
 			}

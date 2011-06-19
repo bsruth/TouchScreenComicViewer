@@ -24,7 +24,7 @@
 			<Button Content="Exit Program" Style="{StaticResource WP7Button}" Height="60" HorizontalAlignment="Stretch" Margin="0,118,0,0" Name="ExitProgramBtn" VerticalAlignment="Top" Click="ExitProgramBtn_Click" />
 			
 		</Grid>
-				<sdk:Label Height="19" HorizontalAlignment="Right" Name="currentPageNumLbl" VerticalAlignment="Bottom" Width="33" Foreground="Black" HorizontalContentAlignment="Right" Background="#9DE5E5E5" Margin="0,0,2,0" />
-				<sdk:Label Grid.Column="1" Height="19" HorizontalAlignment="Left" Margin="4,0,0,0" Name="totalPagesLbl" VerticalAlignment="Bottom" Width="35" Foreground="Black" DataContext="{Binding}" Background="#9DE5E5E5" />
+				<sdk:Label Height="19" Content="{Binding Path=CurrentPageNumber}" HorizontalAlignment="Right" Name="currentPageNumLbl" VerticalAlignment="Bottom" Width="33" Foreground="Black" HorizontalContentAlignment="Right" Background="#9DE5E5E5" Margin="0,0,2,0" />
+				<sdk:Label Grid.Column="1" Content="{Binding TotalPages}" Height="19" HorizontalAlignment="Left" Margin="4,0,0,0" Name="totalPagesLbl" VerticalAlignment="Bottom" Width="35" Foreground="Black" DataContext="{Binding}" Background="#9DE5E5E5" />
 		</Grid>
 </UserControl>
