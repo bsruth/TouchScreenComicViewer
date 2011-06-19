@@ -17,6 +17,9 @@ namespace TouchScreenComicViewer {
 		private string _comicBookFileName;
 		private Stream _comicBookFileStream;
 		private string[] _filesInComicBook;
+		private int _currentPageIndex = 0;
+
+		private int CurrentPageNumber { get { return _currentPageIndex; } }
 
 		//*****************************************
 		public ComicBook(string comicBookFileName) {
@@ -37,16 +40,54 @@ namespace TouchScreenComicViewer {
 					return null;
 				}
 			}
-			BitmapImage coverImage = new BitmapImage();
-			Stream coverFileStream = ZipFileUtilities.GetFileStreamFromZIPFile(_comicBookFileName, _filesInComicBook[0]);
-			if (coverFileStream != null) {
-				coverImage.SetSource(coverFileStream);
-				coverFileStream.Close();
-			}
-
-			return coverImage;
+			BitmapImage coverImg = GetImageFromComicFile(_filesInComicBook[0]);
+			return coverImg;
 		}
 
+		//*****************************************
+		public BitmapImage GetNextPageImage() {
+			int nextPageIndex = _currentPageIndex--;
+
+			BitmapImage pageImage = GetImageFromComicFile(_filesInComicBook[nextPageIndex]);
+			if (pageImage != null) {
+				_currentPageIndex = nextPageIndex;
+			}
+
+			return pageImage;
+
+		}
+
+		//*****************************************
+		public BitmapImage GetPreviousPageImage() {
+			int prevPageIndex = _currentPageIndex--;
+
+			BitmapImage pageImage = GetImageFromComicFile(_filesInComicBook[prevPageIndex]);
+			if (pageImage != null) {
+				_currentPageIndex = prevPageIndex;
+			}
+
+			return pageImage;
+
+		}
+
+		//*****************************************
+		private BitmapImage GetImageFromComicFile(string imageName)
+		{
+			if (IsFileStreamOpen() == false) {
+				if (OpenFileStream() == false) {
+					return null;
+				}
+			}
+
+			BitmapImage imageFile = null;
+			Stream coverFileStream = ZipFileUtilities.GetFileStreamFromZIPFile(_comicBookFileName, imageName);
+			if (coverFileStream != null) {
+				imageFile = new BitmapImage();
+				imageFile.SetSource(coverFileStream);
+				coverFileStream.Close();
+			}
+			return imageFile;
+		}
 
 		//*****************************************
 		private bool IsFileStreamOpen()
