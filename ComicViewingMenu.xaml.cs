@@ -12,6 +12,9 @@ using System.Windows.Shapes;
 
 namespace TouchScreenComicViewer {
 	public partial class ComicViewingMenu : UserControl {
+
+		public event RoutedEventHandler ComicClosedButtonClicked;
+
 		public ComicViewingMenu() {
 			InitializeComponent();
 			
@@ -22,9 +25,21 @@ namespace TouchScreenComicViewer {
 				this.expandedMenu.Visibility = System.Windows.Visibility.Visible;
 				this.LayoutRoot.Background = new SolidColorBrush(Color.FromArgb(200, 0, 0, 0));
 			} else {
-				this.expandedMenu.Visibility = System.Windows.Visibility.Collapsed;
-				this.LayoutRoot.Background = new SolidColorBrush(Colors.Transparent);
+				CollapseExpandedMenu();
 			}
+		}
+
+		private void CloseComicBtn_click (object sender, RoutedEventArgs e) {
+			var handler = ComicClosedButtonClicked;
+			if (handler != null) {
+				handler(sender, e);
+			}
+			CollapseExpandedMenu();
+		}
+
+		private void CollapseExpandedMenu() {
+			this.expandedMenu.Visibility = System.Windows.Visibility.Collapsed;
+			this.LayoutRoot.Background = new SolidColorBrush(Colors.Transparent);
 		}
 	}
 }
