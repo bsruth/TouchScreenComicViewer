@@ -64,10 +64,12 @@ namespace TouchScreenComicViewer {
 		//*****************************************
 		private void ComicCover_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
 			string selectedComic = ((ComicListItem)((ComicCoverTile)sender).DataContext).ItemText;
-			ComicViewer.SetComic(selectedComic);
-			mComicArchiveMgr.SetLastOpenedComic(selectedComic);
-			LastComicLabel.Content = selectedComic;
-			ComicViewer.Visibility = System.Windows.Visibility.Visible;
+			ComicBook openedComic = mComicArchiveMgr.OpenComic(selectedComic);
+			if (openedComic != null) {
+				ComicViewer.SetComic(selectedComic);
+				LastComicLabel.Content = selectedComic;
+				ComicViewer.Visibility = System.Windows.Visibility.Visible;
+			}
 		}
 
 		//*****************************************

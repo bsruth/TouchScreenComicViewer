@@ -49,6 +49,16 @@ namespace TouchScreenComicViewer {
 		}
 
 		//*****************************************
+		public ComicBook OpenComic(string comicFileName) {
+			ComicBook requestedComic = null;
+			_comicBookList.TryGetValue(comicFileName, out requestedComic);
+			if (requestedComic != null) {
+				SetLastOpenedComic(comicFileName);
+			}
+			return requestedComic;
+		}
+
+		//*****************************************
 		public void SetLastOpenedComic(string comicFileName) 
 		{
 			mLastComicOpened = comicFileName;
