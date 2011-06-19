@@ -20,6 +20,5 @@
 		<sdk:Label Margin="197,0,24,11" Name="LastComicLabel" Foreground="White" Height="28" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
 		<sdk:Label Margin="128,0,0,11" Name="label1" Foreground="White" Content="Last Comic:" HorizontalAlignment="Left" Width="71" Height="28" VerticalAlignment="Bottom" />
 		<TSComicV:MainPage x:Name="ComicViewer" Visibility="Collapsed"/>
-		<TSComicV:ComicViewingMenu x:Name="ViewingMenu" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Visibility="Collapsed" />
 	</Grid>
 </UserControl>
