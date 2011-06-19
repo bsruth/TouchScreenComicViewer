@@ -43,7 +43,6 @@ namespace TouchScreenComicViewer {
 			ComicArchiveWrapPanel.Children.Clear();
 
 			List<string> comics = mComicArchiveMgr.GetAvailableComics();
-			//ComicArchiveListBox.ItemsSource = comics;
 			foreach (string comic in comics) {
 				ComicListItem cli = new ComicListItem();
 				cli.ItemText = comic;
