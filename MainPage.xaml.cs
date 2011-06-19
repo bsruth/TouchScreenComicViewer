@@ -249,7 +249,6 @@ namespace TouchScreenComicViewer
 				BitmapImage comicImage = _currentComicBook.GetNextPageImage();
 				if (comicImage != null) {
 					DisplayImage(comicImage);
-					//this.currentPageNumLbl.Content = _currentComicBook.CurrentPageNumber;
 				}
 				touchEventActive = false;
 
@@ -260,7 +259,6 @@ namespace TouchScreenComicViewer
 				BitmapImage comicImage = _currentComicBook.GetPreviousPageImage();
 				if (comicImage != null) {
 					DisplayImage(comicImage);
-					//this.currentPageNumLbl.Content = _currentComicBook.CurrentPageNumber;
 				}
 				touchEventActive = false;
 			}
