@@ -3,6 +3,7 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:TSComicV="clr-namespace:TouchScreenComicViewer"
 		mc:Ignorable="d"
 		d:DesignHeight="400" d:DesignWidth="400" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk">
 
@@ -15,16 +16,14 @@
 			<ScaleTransform x:Name="PageScale" ScaleX="1" ScaleY="1"/>
 		</Grid.RenderTransform>
 		<Image Name="MainDisplayImage" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible" Grid.ColumnSpan="2" MouseLeftButtonDown="MainDisplayImage_MouseLeftButtonDown" MouseLeftButtonUp="MainDisplayImage_MouseLeftButtonUp" MouseMove="MainDisplayImage_MouseMove"/>           
-				<Grid Height="335" Name="MenuGrid" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#9D000000">
+				<Grid Height="335" Name="MenuGrid" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#9D000000" Visibility="Collapsed">
 
 			<Button Content="Full Screen" Style="{StaticResource WP7Button}" Height="60" HorizontalAlignment="Stretch"  Name="FullScreenBtn" VerticalAlignment="Top"  Click="FullScreenBtn_Click"/>
 			<Button Content="Close Menu" Style="{StaticResource WP7Button}" Height="40" HorizontalAlignment="Stretch" Name="CloseMenuBtn" VerticalAlignment="Bottom" Click="CloseMenuBtn_Click" Background="#FF1F3B53" FontWeight="Normal">
 						</Button>
-			<Button Content="Close Comic" Style="{StaticResource WP7Button}" Height="60" HorizontalAlignment="Stretch" Margin="0,59,0,0" Name="CloseComicBtn" VerticalAlignment="Top" Click="CloseComicBtn_Click" />
 			<Button Content="Exit Program" Style="{StaticResource WP7Button}" Height="60" HorizontalAlignment="Stretch" Margin="0,118,0,0" Name="ExitProgramBtn" VerticalAlignment="Top" Click="ExitProgramBtn_Click" />
 			
 		</Grid>
-				<sdk:Label Height="19" Content="{Binding Path=CurrentPageNumber}" HorizontalAlignment="Right" Name="currentPageNumLbl" VerticalAlignment="Bottom" Width="33" Foreground="Black" HorizontalContentAlignment="Right" Background="#9DE5E5E5" Margin="0,0,2,0" />
-				<sdk:Label Grid.Column="1" Content="{Binding TotalPages}" Height="19" HorizontalAlignment="Left" Margin="4,0,0,0" Name="totalPagesLbl" VerticalAlignment="Bottom" Width="35" Foreground="Black" DataContext="{Binding}" Background="#9DE5E5E5" />
-		</Grid>
+		<TSComicV:ComicViewingMenu x:Name="ViewingMenu" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Visibility="Visible" />
+	</Grid>
 </UserControl>

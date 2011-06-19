@@ -41,6 +41,7 @@ namespace TouchScreenComicViewer
 
 			SizeChanged += new SizeChangedEventHandler(MainPage_SizeChanged);
 			Application.Current.Host.Content.FullScreenChanged += new EventHandler(Content_FullScreenChanged);
+			this.ViewingMenu.ComicClosedButtonClicked += new RoutedEventHandler(CloseComicBtn_Click);
 			//Touch.FrameReported += new TouchFrameEventHandler(Touch_FrameReported);
 		}
 
