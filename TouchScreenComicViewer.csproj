@@ -79,6 +79,7 @@
       <DependentUpon>ComicArchiveDisplay.xaml</DependentUpon>
     </Compile>
     <Compile Include="ComicArchiveManager.cs" />
+    <Compile Include="ComicBook.cs" />
     <Compile Include="ComicCoverTile.xaml.cs">
       <DependentUpon>ComicCoverTile.xaml</DependentUpon>
     </Compile>
