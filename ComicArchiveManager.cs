@@ -19,7 +19,7 @@ namespace TouchScreenComicViewer {
 		const string COMIC_ARCHIVE_META_FILE = "comic_archive_meta.txt";
 		const string LAST_COMIC_META_STRING = "lastcomic";
 		private string mLastComicOpened = "";
-		private List<ComicBook> _comicBookList = new List<ComicBook>();
+		private Dictionary<string,ComicBook> _comicBookList = new Dictionary<string,ComicBook>();
 
 		public ComicArchiveManager() {
 			if (IsoStorageUtilities.DoesFileExist(COMIC_ARCHIVE_META_FILE) == false) {
@@ -29,7 +29,7 @@ namespace TouchScreenComicViewer {
 			List<string> comicBookFileNames = IsoStorageUtilities.GetIsolatedStorageFilesWithExtension(COMIC_ARCHIVE_ZIP_EXT);
 			foreach (string fileName in comicBookFileNames) {
 				ComicBook newComic = new ComicBook(fileName);
-				_comicBookList.Add(newComic);
+				_comicBookList.Add(fileName, newComic);
 			}
 
 		}
@@ -41,13 +41,11 @@ namespace TouchScreenComicViewer {
 
 		//*****************************************
 		public BitmapImage GetComicCover(string comicFileName) {
-			BitmapImage coverImage = new BitmapImage();
-			foreach (ComicBook comic in _comicBookList) {
-				if (comic.GetComicFileName() == comicFileName) {
-					return comic.GetCoverImage();
-				}
+			ComicBook requestedComic;
+			if (_comicBookList.TryGetValue(comicFileName, out requestedComic) == true) {
+				return requestedComic.GetCoverImage();
 			}
-			return coverImage;
+			return null;
 		}
 
 		//*****************************************
