@@ -36,9 +36,25 @@ namespace TouchScreenComicViewer {
 
 		//*****************************************
 		public List<string> GetAvailableComics() {
-			return IsoStorageUtilities.GetIsolatedStorageFilesWithExtension(COMIC_ARCHIVE_ZIP_EXT);
+			List<string> comicBookList = new List<string>();
+			foreach (ComicBook comic in _comicBookList.Values) {
+				comicBookList.Add(comic.GetComicFileName());
+			}
+
+			return comicBookList;
 		}
 
+		//*****************************************
+		public bool AddComicToArchive(FileInfo comicFile) {
+
+			if (IsoStorageUtilities.CopyFileToIsoStorage(comicFile) == false) {
+				//TODO: error message
+				return false;
+			}
+			this._comicBookList.Add(comicFile.Name, new ComicBook(comicFile.Name));
+
+			return true;
+		}
 		//*****************************************
 		public BitmapImage GetComicCover(string comicFileName) {
 			ComicBook requestedComic;

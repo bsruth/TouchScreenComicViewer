@@ -92,11 +92,7 @@ namespace TouchScreenComicViewer {
 
 			if (dlg.ShowDialog() == true) {
 				foreach (FileInfo file in dlg.Files) {
-
-					if (IsoStorageUtilities.CopyFileToIsoStorage(file) == false) {
-						//TODO: error message
-						return;
-					}
+					this.mComicArchiveMgr.AddComicToArchive(file);
 				}
 
 				RefreshComicList();
