@@ -42,6 +42,61 @@ namespace TouchScreenComicViewer {
 			return numBytesRemoved;
 		}
 
+		
+
+		//*****************************************
+		static public bool DoesFileExist(string fileName)
+		{
+			using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication() ) {
+				return iso.FileExists(fileName);
+			}
+		}
+
+		//*****************************************
+		static public bool CreateIsolatedStorageFile(string fileName) 
+		{
+			try {
+				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
+					using (IsolatedStorageFileStream isoStream =
+						new IsolatedStorageFileStream(fileName, FileMode.Create, iso)) {
+					}
+				}
+			} catch (Exception e) {
+			}
+
+			return DoesFileExist(fileName);
+		}
+
+		//*****************************************
+		static public FileStream OpenIsolatedStorageFileStream(string fileName, FileMode openMode = FileMode.Open) 
+		{
+			try {
+				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
+					IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(fileName, openMode, iso);
+					return fileStream;
+				}
+			} catch (Exception e) {
+				return null;
+			}
+		}
+
+		//*****************************************
+		static public List<string> GetIsolatedStorageFilesWithExtension(string fileExtension) 
+		{
+			List<string> filesWithExt = new List<string>();
+			try {
+				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
+					if(!fileExtension.StartsWith(".")) {
+						fileExtension = "." + fileExtension;
+					}
+					filesWithExt.AddRange(iso.GetFileNames("*" + fileExtension));
+				}
+			} catch (Exception e) {
+				return new List<string>(); //empty list
+			}
+			return filesWithExt;
+		}
+
 		//*****************************************
 		static public bool CopyFileToIsoStorage(FileInfo fileToCopy) {
 			// Save all selected files into application's isolated storage
@@ -107,60 +162,6 @@ namespace TouchScreenComicViewer {
 			}
 			return true;
 		}
-
-		//*****************************************
-		static public bool DoesFileExist(string fileName)
-		{
-			using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication() ) {
-				return iso.FileExists(fileName);
-			}
-		}
-
-		//*****************************************
-		static public bool CreateIsolatedStorageFile(string fileName) 
-		{
-			try {
-				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
-					using (IsolatedStorageFileStream isoStream =
-						new IsolatedStorageFileStream(fileName, FileMode.Create, iso)) {
-					}
-				}
-			} catch (Exception e) {
-			}
-
-			return DoesFileExist(fileName);
-		}
-
-		//*****************************************
-		static public FileStream OpenIsolatedStorageFileStream(string fileName, FileMode openMode = FileMode.Open) 
-		{
-			try {
-				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
-					IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(fileName, openMode, iso);
-					return fileStream;
-				}
-			} catch (Exception e) {
-				return null;
-			}
-		}
-
-		//*****************************************
-		static public List<string> GetIsolatedStorageFilesWithExtension(string fileExtension) 
-		{
-			List<string> filesWithExt = new List<string>();
-			try {
-				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
-					if(!fileExtension.StartsWith(".")) {
-						fileExtension = "." + fileExtension;
-					}
-					filesWithExt.AddRange(iso.GetFileNames("*" + fileExtension));
-				}
-			} catch (Exception e) {
-				return new List<string>(); //empty list
-			}
-			return filesWithExt;
-		}
-
 
 	}
 }
