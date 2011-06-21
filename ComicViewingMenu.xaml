@@ -18,8 +18,8 @@
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
-			<sdk:Label Grid.Column="0" Content="{Binding Path=CurrentPageNumber}" HorizontalAlignment="Right" Name="currentPageNumLbl" VerticalAlignment="Bottom" Height="15" Width="33" Foreground="Black" HorizontalContentAlignment="Right" Background="#9DE5E5E5" Margin="0,5,2,0" />
-			<sdk:Label Grid.Column="1" Content="{Binding Path=TotalPages}" HorizontalAlignment="Left" Margin="2,5,0,0" Name="totalPagesLbl" VerticalAlignment="Bottom" Height="15" Width="35" Foreground="Black"  Background="#9DE5E5E5" />
+			<sdk:Label Grid.Column="0" Content="{Binding Path=CurrentPageNumber}" HorizontalAlignment="Right" Name="currentPageNumLbl" VerticalAlignment="Bottom" Height="15" Width="33" Foreground="Black" HorizontalContentAlignment="Right" Background="#9DE5E5E5" Margin="0,15,2,15" />
+			<sdk:Label Grid.Column="1" Content="{Binding Path=TotalPages}" HorizontalAlignment="Left" Margin="2,15,0,15" Name="totalPagesLbl" VerticalAlignment="Bottom" Height="15" Width="35" Foreground="Black"  Background="#9DE5E5E5" />
 		</Grid>
 		<Grid Grid.Row="1" Name="expandedMenu" Visibility="Collapsed">
 			<Button Style="{StaticResource WP7Button}" x:Name="CloseComicBtn" Height="35" Content="Close Comic" HorizontalAlignment="Stretch" Margin="20" Click="CloseComicBtn_click"/>
