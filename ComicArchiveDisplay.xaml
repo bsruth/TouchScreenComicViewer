@@ -7,6 +7,14 @@
 		xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Toolkit"
 		mc:Ignorable="d"
 		d:DesignHeight="300" d:DesignWidth="400" Name="ComicArchiveDisplayPage" Loaded="ComicArchiveDisplayPage_Loaded" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk">
+	<UserControl.Resources>
+		<Storyboard x:Name="myStoryboard">
+			<DoubleAnimation x:Name="ZoomX" Storyboard.TargetName="ComicViewer" Storyboard.TargetProperty="Width" From="0.0" Duration="0:0:0.5" />
+			<DoubleAnimation x:Name="ZoomY" Storyboard.TargetName="ComicViewer" Storyboard.TargetProperty="Height" From="0.0" Duration="0:0:0.5"/>
+			<DoubleAnimation x:Name="XLoc" Storyboard.TargetName="ComicViewer" Storyboard.TargetProperty="(UIElement.RenderTransform).blah.X" Duration="0:0:0.5"/>
+			<DoubleAnimation x:Name="YLoc" Storyboard.TargetName="ComicViewer" Storyboard.TargetProperty="(UIElement.RenderTransform).blah.Y" Duration="0:0:0.5"/>
+		</Storyboard>
+	</UserControl.Resources>
 		
 		<Grid x:Name="LayoutRoot" Background="Black">
 			<Grid.ColumnDefinitions>
@@ -19,6 +27,10 @@
 		<Button Content="Add Comics..." Height="31" Style="{StaticResource WP7Button}" Name="openComicBtn" Margin="12,0,0,11" VerticalAlignment="Bottom" Click="OpenComicBtn_Click" HorizontalAlignment="Left" Width="110" />
 		<sdk:Label Margin="197,0,24,11" Name="LastComicLabel" Foreground="White" Height="28" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
 		<sdk:Label Margin="128,0,0,11" Name="label1" Foreground="White" Content="Last Comic:" HorizontalAlignment="Left" Width="71" Height="28" VerticalAlignment="Bottom" />
-		<TSComicV:MainPage x:Name="ComicViewer" Visibility="Collapsed"/>
+		<TSComicV:MainPage x:Name="ComicViewer" Visibility="Collapsed" RenderTransformOrigin="0,0">
+			<TSComicV:MainPage.RenderTransform>
+				<TranslateTransform x:Name="blah"></TranslateTransform>
+			</TSComicV:MainPage.RenderTransform>
+		</TSComicV:MainPage>
 	</Grid>
 </UserControl>

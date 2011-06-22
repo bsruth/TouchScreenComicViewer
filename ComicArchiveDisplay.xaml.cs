@@ -30,6 +30,7 @@ namespace TouchScreenComicViewer {
 			InitializeComponent();
 
 			mComicArchiveMgr = new ComicArchiveManager();
+			blah = new TranslateTransform();
 		}
 
 		//*****************************************
@@ -68,6 +69,28 @@ namespace TouchScreenComicViewer {
 				ComicViewer.SetComic(openedComic);
 				LastComicLabel.Content = selectedComic;
 				ComicViewer.Visibility = System.Windows.Visibility.Visible;
+				myStoryboard.Completed += (ex, a) => { ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Black); };
+				ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Transparent);
+				ZoomX.To = this.ActualWidth;
+				ZoomY.To = this.ActualHeight;
+
+				GeneralTransform objGeneralTransform = ((ComicCoverTile)sender).TransformToVisual(Application.Current.RootVisual as UIElement);
+				Point point = objGeneralTransform.Transform(new Point(0, 0));
+				double myObjTop = point.Y;
+				double myObjLeft = point.X;
+				XLoc.From =  point.X - (this.ActualWidth / 2);
+				XLoc.To = 0.0;
+				YLoc.From = point.Y - (this.ActualHeight / 2);
+				YLoc.To = 0.0;
+				try {
+					//mainPageTransform.X = point.X;
+					//mainPageTransform.Y = point.Y;
+					myStoryboard.Begin();
+				} catch (Exception ex) {
+					string blah = ex.ToString();
+				}
+
+				//ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Black);
 			}
 		}
 

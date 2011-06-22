@@ -6,9 +6,11 @@
 		xmlns:TSComicV="clr-namespace:TouchScreenComicViewer"
 		mc:Ignorable="d"
 		d:DesignHeight="400" d:DesignWidth="400" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk">
-
-		<Grid x:Name="LayoutRoot" Background="Black" RenderTransformOrigin="0 0">
-				<Grid.ColumnDefinitions>
+		<Grid x:Name="LayoutRoot" RenderTransformOrigin="0 0">
+		<Grid.Background>
+			<SolidColorBrush x:Name="backgroundBrush" Color="Black"/>
+		</Grid.Background>
+			<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="200*" />
 						<ColumnDefinition Width="200*" />
 				</Grid.ColumnDefinitions>
@@ -24,6 +26,6 @@
 			<Button Content="Exit Program" Style="{StaticResource WP7Button}" Height="60" HorizontalAlignment="Stretch" Margin="0,118,0,0" Name="ExitProgramBtn" VerticalAlignment="Top" Click="ExitProgramBtn_Click" />
 			
 		</Grid>
-		<TSComicV:ComicViewingMenu x:Name="ViewingMenu" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Visibility="Visible" />
+			<TSComicV:ComicViewingMenu x:Name="ViewingMenu" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Visibility="Visible"/>
 	</Grid>
 </UserControl>
