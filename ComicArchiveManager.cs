@@ -40,7 +40,7 @@ namespace TouchScreenComicViewer {
 			foreach (ComicBook comic in _comicBookList.Values) {
 				comicBookList.Add(comic.GetComicFileName());
 			}
-
+			comicBookList.Sort();
 			return comicBookList;
 		}
 
