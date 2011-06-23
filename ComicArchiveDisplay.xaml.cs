@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.IO.IsolatedStorage;
+using System.ComponentModel;
 
 namespace TouchScreenComicViewer {
 	public class ComicListItem {
@@ -43,20 +44,46 @@ namespace TouchScreenComicViewer {
 
 			ComicArchiveWrapPanel.Children.Clear();
 
-			List<string> comics = mComicArchiveMgr.GetAvailableComics();
-			foreach (string comic in comics) {
-				ComicListItem cli = new ComicListItem();
-				cli.ItemText = comic;
-				//now get the cover image
-				cli.ItemBMP = mComicArchiveMgr.GetComicCover(comic);
-				ComicCoverTile cct = new ComicCoverTile();
-				cct.Height = 150;
-				cct.Width = cct.Height * cli.ItemBMP.PixelWidth / cli.ItemBMP.PixelHeight;
-				cct.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-				cct.DataContext = cli;
-				cct.MouseLeftButtonUp +=new MouseButtonEventHandler(ComicCover_MouseLeftButtonUp);
-				ComicArchiveWrapPanel.Children.Add(cct);
-			}
+			BackgroundWorker comicLoader = new BackgroundWorker();
+
+			comicLoader.WorkerReportsProgress = true;
+			comicLoader.DoWork += (sender, e) =>
+			{
+				try {
+					BackgroundWorker worker = sender as BackgroundWorker;
+
+					List<string> comics = mComicArchiveMgr.GetAvailableComics();
+					foreach (string comic in comics) {
+						
+						//ComicArchiveWrapPanel.Children.Add(cct);
+						worker.ReportProgress(0, comic);
+					}
+				} catch (Exception ex) {
+					string blah = ex.ToString();
+				}
+			};
+
+			comicLoader.ProgressChanged += (sender, e) => {
+				try {
+					string comic = e.UserState as string;
+					ComicListItem cli = new ComicListItem();
+					cli.ItemText = comic;
+					//now get the cover image
+					cli.ItemBMP = mComicArchiveMgr.GetComicCover(comic);
+					ComicCoverTile cct = new ComicCoverTile();
+					cct.Height = 150;
+					cct.Width = cct.Height * cli.ItemBMP.PixelWidth / cli.ItemBMP.PixelHeight;
+					cct.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+					cct.DataContext = cli;
+					cct.MouseLeftButtonUp += new MouseButtonEventHandler(ComicCover_MouseLeftButtonUp);
+					ComicArchiveWrapPanel.Children.Add(cct);
+				} catch (Exception ex) {
+					string blah = ex.ToString();
+				}
+			};
+
+			comicLoader.RunWorkerAsync();
+			
 
 			LastComicLabel.Content = mComicArchiveMgr.GetLastOpenedComic();
 		}
