@@ -11,15 +11,16 @@ using System.Windows.Shapes;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
+using System.Collections.Generic;
 
 namespace TouchScreenComicViewer{
 	public class ComicBook : INotifyPropertyChanged {
 		//members
 		private string _comicBookFileName;
 		private Stream _comicBookFileStream;
-		private string[] _filesInComicBook;
+		private List<string> _filesInComicBook = new List<string>();
 		private int _currentPageIndex = 0;
-
+		private static string[] VALID_IMAGE_FILE_EXT = { ".jpg" };
 		public int CurrentPageNumber {
 			get { return _currentPageIndex + 1;}
 			protected set { 
@@ -28,7 +29,7 @@ namespace TouchScreenComicViewer{
 			}
 		}
 
-		public int TotalPages { get { return _filesInComicBook.Length; } }
+		public int TotalPages { get { return _filesInComicBook.Count; } }
 
 		//*****************************************
 		public ComicBook(string comicBookFileName) {
@@ -122,8 +123,18 @@ namespace TouchScreenComicViewer{
 				if (_comicBookFileStream == null) {
 					return false;
 				}
-				_filesInComicBook = ZipFileUtilities.GetZipContents(_comicBookFileStream);
-				if (_filesInComicBook.Length <= 0) {
+				string[] filesInArchive = ZipFileUtilities.GetZipContents(_comicBookFileStream);
+				_filesInComicBook.Clear();
+				//remove all non-image files from the list of files
+				foreach (string fileName in filesInArchive) {
+					foreach (string ext in VALID_IMAGE_FILE_EXT) {
+						if (fileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)) {
+							_filesInComicBook.Add(fileName);
+							break;
+						}
+					}
+				}
+				if (_filesInComicBook.Count <= 0) {
 					_comicBookFileStream.Close();
 					return false;
 				}
