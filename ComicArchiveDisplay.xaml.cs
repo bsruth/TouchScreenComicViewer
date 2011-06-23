@@ -69,7 +69,12 @@ namespace TouchScreenComicViewer {
 				ComicViewer.SetComic(openedComic);
 				LastComicLabel.Content = selectedComic;
 				ComicViewer.Visibility = System.Windows.Visibility.Visible;
-				myStoryboard.Completed += (ex, a) => { ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Black); };
+				myStoryboard.Completed += (ex, a) => { 
+					ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Black);
+					ComicViewer.Width = Double.NaN;
+					ComicViewer.Height = Double.NaN;
+
+				};
 				ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Transparent);
 				ZoomX.To = this.ActualWidth;
 				ZoomY.To = this.ActualHeight;
