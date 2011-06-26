@@ -13,6 +13,7 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using System.IO.IsolatedStorage;
 using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace TouchScreenComicViewer {
 	public class ComicListItem {
@@ -45,31 +46,19 @@ namespace TouchScreenComicViewer {
 			ComicArchiveWrapPanel.Children.Clear();
 
 			BackgroundWorker comicLoader = new BackgroundWorker();
+			Dispatcher myDisp = Application.Current.RootVisual.Dispatcher;
+			DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(myDisp);
 
-			comicLoader.WorkerReportsProgress = true;
-			comicLoader.DoWork += (sender, e) =>
+			comicLoader.WorkerReportsProgress = false;
+			/*comicLoader.ProgressChanged += (sender, e) =>
 			{
 				try {
-					BackgroundWorker worker = sender as BackgroundWorker;
-
-					List<string> comics = mComicArchiveMgr.GetAvailableComics();
-					foreach (string comic in comics) {
-						
-						//ComicArchiveWrapPanel.Children.Add(cct);
-						worker.ReportProgress(0, comic);
-					}
-				} catch (Exception ex) {
-					string blah = ex.ToString();
-				}
-			};
-
-			comicLoader.ProgressChanged += (sender, e) => {
-				try {
-					string comic = e.UserState as string;
+					string comicString = e.UserState as string;
+					/*
 					ComicListItem cli = new ComicListItem();
-					cli.ItemText = comic;
+					cli.ItemText = comicString;
 					//now get the cover image
-					cli.ItemBMP = mComicArchiveMgr.GetComicCover(comic);
+					cli.ItemBMP = mComicArchiveMgr.GetComicCover(comicString);
 					ComicCoverTile cct = new ComicCoverTile();
 					cct.Height = 150;
 					cct.Width = cct.Height * cli.ItemBMP.PixelWidth / cli.ItemBMP.PixelHeight;
@@ -78,12 +67,50 @@ namespace TouchScreenComicViewer {
 					cct.MouseLeftButtonUp += new MouseButtonEventHandler(ComicCover_MouseLeftButtonUp);
 					ComicArchiveWrapPanel.Children.Add(cct);
 				} catch (Exception ex) {
-					string blah = ex.ToString();
+					string blah2 = ex.ToString();
+				}
+			};*/
+
+
+			List<string> comics = mComicArchiveMgr.GetAvailableComics();
+
+			comicLoader.DoWork += (sender, e) =>
+			{
+				foreach (string comic in comics) {
+					try {
+						BackgroundWorker worker = sender as BackgroundWorker;
+						//worker.ReportProgress(0, comic);
+						myDispSync.Send((obj) =>
+							{
+								try {
+									string comicString = obj as string;
+
+									ComicListItem cli = new ComicListItem();
+									cli.ItemText = comicString;
+									//now get the cover image
+									cli.ItemBMP = mComicArchiveMgr.GetComicCover(comicString);
+									ComicCoverTile cct = new ComicCoverTile();
+									cct.Height = 150;
+									cct.Width = cct.Height * cli.ItemBMP.PixelWidth / cli.ItemBMP.PixelHeight;
+									cct.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
+									cct.DataContext = cli;
+									cct.MouseLeftButtonUp += new MouseButtonEventHandler(ComicCover_MouseLeftButtonUp);
+									ComicArchiveWrapPanel.Children.Add(cct);
+								} catch (Exception ex) {
+									string blah2 = ex.ToString();
+								}
+							}, comic);
+
+					} catch (Exception ex) {
+						string blah3 = ex.ToString();
+					}
 				}
 			};
 
 			comicLoader.RunWorkerAsync();
 			
+
+
 
 			LastComicLabel.Content = mComicArchiveMgr.GetLastOpenedComic();
 		}
