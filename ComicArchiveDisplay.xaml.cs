@@ -45,41 +45,24 @@ namespace TouchScreenComicViewer {
 
 			ComicArchiveWrapPanel.Children.Clear();
 
-			BackgroundWorker comicLoader = new BackgroundWorker();
-			Dispatcher myDisp = Application.Current.RootVisual.Dispatcher;
-			DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(myDisp);
-
-			comicLoader.WorkerReportsProgress = false;
-			/*comicLoader.ProgressChanged += (sender, e) =>
-			{
-				try {
-					string comicString = e.UserState as string;
-					/*
-					ComicListItem cli = new ComicListItem();
-					cli.ItemText = comicString;
-					//now get the cover image
-					cli.ItemBMP = mComicArchiveMgr.GetComicCover(comicString);
-					ComicCoverTile cct = new ComicCoverTile();
-					cct.Height = 150;
-					cct.Width = cct.Height * cli.ItemBMP.PixelWidth / cli.ItemBMP.PixelHeight;
-					cct.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-					cct.DataContext = cli;
-					cct.MouseLeftButtonUp += new MouseButtonEventHandler(ComicCover_MouseLeftButtonUp);
-					ComicArchiveWrapPanel.Children.Add(cct);
-				} catch (Exception ex) {
-					string blah2 = ex.ToString();
-				}
-			};*/
-
 
 			List<string> comics = mComicArchiveMgr.GetAvailableComics();
+
+			//the threading is so that one comic loads at a time and
+			//the UI doesn't look like it locked up as the list is refreshed
+			BackgroundWorker comicLoader = new BackgroundWorker();
+			Dispatcher myDisp = Application.Current.RootVisual.Dispatcher;
+			DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(myDisp); //needed to dispatch synchronously
+			comicLoader.WorkerReportsProgress = false;
 
 			comicLoader.DoWork += (sender, e) =>
 			{
 				foreach (string comic in comics) {
 					try {
 						BackgroundWorker worker = sender as BackgroundWorker;
-						//worker.ReportProgress(0, comic);
+
+						//wait on the UI to finish loading this comic
+						//before we move on to the next comic in the list
 						myDispSync.Send((obj) =>
 							{
 								try {
@@ -97,12 +80,12 @@ namespace TouchScreenComicViewer {
 									cct.MouseLeftButtonUp += new MouseButtonEventHandler(ComicCover_MouseLeftButtonUp);
 									ComicArchiveWrapPanel.Children.Add(cct);
 								} catch (Exception ex) {
-									string blah2 = ex.ToString();
+									string exceptionString = ex.ToString();
 								}
 							}, comic);
 
 					} catch (Exception ex) {
-						string blah3 = ex.ToString();
+						string exceptionString = ex.ToString();
 					}
 				}
 			};
