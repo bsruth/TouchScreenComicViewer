@@ -35,6 +35,9 @@ namespace TouchScreenComicViewer{
 		//*****************************************
 		public ComicBook(string comicBookFileName) {
 			_comicBookFileName = comicBookFileName;
+			if (IsFileStreamOpen() == false) {
+				OpenFileStream();
+			}
 		}
 
 		//*****************************************
@@ -48,13 +51,6 @@ namespace TouchScreenComicViewer{
 		{
 			if (_coverImage == null)
 			{
-				if (IsFileStreamOpen() == false)
-				{
-					if (OpenFileStream() == false)
-					{
-						return null;
-					}
-				}
 				_coverImage = GetImageFromComicFile(_filesInComicBook[0]);
 			}
 			return _coverImage;
