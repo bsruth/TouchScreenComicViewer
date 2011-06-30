@@ -100,39 +100,43 @@ namespace TouchScreenComicViewer {
 
 		//*****************************************
 		private void ComicCover_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-			string selectedComic = ((ComicListItem)((ComicCoverTile)sender).DataContext).ItemText;
-			ComicBook openedComic = mComicArchiveMgr.OpenComic(selectedComic);
+
+			ComicCoverTile selectedComicCoverTile = (ComicCoverTile)sender;
+			string selectedComicFile = ((ComicListItem)(selectedComicCoverTile.DataContext)).ItemText;
+			ComicBook openedComic = mComicArchiveMgr.OpenComic(selectedComicFile);
 			if (openedComic != null) {
 				ComicViewer.SetComic(openedComic);
-				LastComicLabel.Content = selectedComic;
+				LastComicLabel.Content = selectedComicFile;
 				ComicViewer.Visibility = System.Windows.Visibility.Visible;
+
 				myStoryboard.Completed += (ex, a) => { 
 					ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Black);
+					//reset the ComicViewer to stretch mode
 					ComicViewer.Width = Double.NaN;
 					ComicViewer.Height = Double.NaN;
 
 				};
-				ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Transparent);
-				ZoomX.To = this.ActualWidth;
-				ZoomY.To = this.ActualHeight;
 
+				ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Transparent);
+
+				//adjust the animation so that it seems to come from the tile that
+				//was clicked
+				ZoomX.From = selectedComicCoverTile.ActualWidth;
+				ZoomX.To = this.ActualWidth;
+				ZoomY.From = selectedComicCoverTile.ActualHeight;
+				ZoomY.To = this.ActualHeight;
 				GeneralTransform objGeneralTransform = ((ComicCoverTile)sender).TransformToVisual(Application.Current.RootVisual as UIElement);
 				Point point = objGeneralTransform.Transform(new Point(0, 0));
-				double myObjTop = point.Y;
-				double myObjLeft = point.X;
-				XLoc.From =  point.X - (this.ActualWidth / 2);
-				XLoc.To = 0.0;
-				YLoc.From = point.Y - (this.ActualHeight / 2);
-				YLoc.To = 0.0;
+				XLoc.From = point.X - (ComicArchiveWrapPanel.ActualWidth / 2) + ((ComicArchiveScrollViewer.Margin.Left + ComicArchiveScrollViewer.Margin.Right) / 2);
+				XLoc.To = 0;
+				YLoc.From = point.Y - (ComicArchiveWrapPanel.ActualHeight / 2) + ((ComicArchiveScrollViewer.Margin.Top + ComicArchiveScrollViewer.Margin.Bottom) / 2);
+				YLoc.To = 0;
+
 				try {
-					//mainPageTransform.X = point.X;
-					//mainPageTransform.Y = point.Y;
 					myStoryboard.Begin();
 				} catch (Exception ex) {
 					string blah = ex.ToString();
 				}
-
-				//ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Black);
 			}
 		}
 
