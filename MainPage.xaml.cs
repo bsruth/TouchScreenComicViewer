@@ -27,8 +27,9 @@ namespace TouchScreenComicViewer
 
 		private Point startPoint; //start point for beginning of a mouse down event
 		private const int swipePixelLength = 50; //number of pixels needed to trigger a swipe event.
-		//private double scaleX = 1.0;
-		//private double scaleY = 1.0;
+
+		public event RoutedEventHandler ComicClosed;
+
 		private bool touchEventActive = false;
 
 		private ComicBook _currentComicBook;
@@ -277,8 +278,13 @@ namespace TouchScreenComicViewer
 			this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
 		}
 
+		//*****************************************
 		private void CloseComicBtn_Click(object sender, RoutedEventArgs e) {
-			Visibility = System.Windows.Visibility.Collapsed;
+			//Visibility = System.Windows.Visibility.Collapsed;
+			var handler = ComicClosed;
+			if (handler != null) {
+				handler(sender, e);
+			}
 		}
 
 		

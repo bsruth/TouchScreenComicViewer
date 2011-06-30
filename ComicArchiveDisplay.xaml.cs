@@ -26,6 +26,8 @@ namespace TouchScreenComicViewer {
 		const string COMIC_ARCHIVE_ZIP_EXT = ".cbz";
 		private const long QUOTA_SIZE = 500 * 1024 * 1024; //TODO: const for quota size until I find a better solution
 
+		private ComicCoverTile _currentOpenComicCoverTile;
+
 		ComicArchiveManager mComicArchiveMgr;
 		//*****************************************
 		public ComicArchiveDisplay() {
@@ -33,6 +35,38 @@ namespace TouchScreenComicViewer {
 
 			mComicArchiveMgr = new ComicArchiveManager();
 			blah = new TranslateTransform();
+			ComicViewer.ComicClosed += new RoutedEventHandler(ComicViewer_ComicClosed);
+		}
+
+		//*****************************************
+		public void CloseComicAnimationCompleted(object sender, EventArgs e) {
+			ComicViewer.Visibility = System.Windows.Visibility.Collapsed;
+			myStoryboard.Completed -= CloseComicAnimationCompleted;
+		}
+		//*****************************************
+		void ComicViewer_ComicClosed(object sender, RoutedEventArgs e) {
+
+			ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Transparent);
+
+			myStoryboard.Completed += CloseComicAnimationCompleted;
+			//adjust the animation so that it seems to come from the tile that
+			//was clicked
+			ZoomX.To = _currentOpenComicCoverTile.ActualWidth;
+			ZoomX.From = this.ActualWidth;
+			ZoomY.To = _currentOpenComicCoverTile.ActualHeight;
+			ZoomY.From = this.ActualHeight;
+			GeneralTransform objGeneralTransform = _currentOpenComicCoverTile.TransformToVisual(Application.Current.RootVisual as UIElement);
+			Point point = objGeneralTransform.Transform(new Point(0, 0));
+			XLoc.To = point.X - (ComicArchiveWrapPanel.ActualWidth / 2) + ((ComicArchiveScrollViewer.Margin.Left + ComicArchiveScrollViewer.Margin.Right) / 2);
+			XLoc.From = 0;
+			YLoc.To = point.Y - (ComicArchiveWrapPanel.ActualHeight / 2) + ((ComicArchiveScrollViewer.Margin.Top + ComicArchiveScrollViewer.Margin.Bottom) / 2);
+			YLoc.From = 0;
+
+			try {
+				myStoryboard.Begin();
+			} catch (Exception ex) {
+				string blah = ex.ToString();
+			}
 		}
 
 		//*****************************************
@@ -112,38 +146,41 @@ namespace TouchScreenComicViewer {
 		}
 
 		//*****************************************
+		private void OpenComicAnimationCompleted(Object sender, EventArgs e) {
+			ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Black);
+			//reset the ComicViewer to stretch mode
+			ComicViewer.Width = Double.NaN;
+			ComicViewer.Height = Double.NaN;
+			myStoryboard.Completed -= OpenComicAnimationCompleted;
+		}
+
+		//*****************************************
 		private void ComicCover_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
 
-			ComicCoverTile selectedComicCoverTile = (ComicCoverTile)sender;
+			_currentOpenComicCoverTile = (ComicCoverTile)sender;
 
 			//put the tile back where it was
 			TranslateTransform quickShift = new TranslateTransform();
 			quickShift.X = -1;
 			quickShift.Y = -1;
-			selectedComicCoverTile.RenderTransform = quickShift;
+			_currentOpenComicCoverTile.RenderTransform = quickShift;
 
-			string selectedComicFile = ((ComicListItem)(selectedComicCoverTile.DataContext)).ItemText;
+			string selectedComicFile = ((ComicListItem)(_currentOpenComicCoverTile.DataContext)).ItemText;
 			ComicBook openedComic = mComicArchiveMgr.OpenComic(selectedComicFile);
 			if (openedComic != null) {
 				ComicViewer.SetComic(openedComic);
 				LastComicLabel.Content = selectedComicFile;
 				ComicViewer.Visibility = System.Windows.Visibility.Visible;
 
-				myStoryboard.Completed += (ex, a) => { 
-					ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Black);
-					//reset the ComicViewer to stretch mode
-					ComicViewer.Width = Double.NaN;
-					ComicViewer.Height = Double.NaN;
-
-				};
+				myStoryboard.Completed += OpenComicAnimationCompleted;
 
 				ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Transparent);
 
 				//adjust the animation so that it seems to come from the tile that
 				//was clicked
-				ZoomX.From = selectedComicCoverTile.ActualWidth;
+				ZoomX.From = _currentOpenComicCoverTile.ActualWidth;
 				ZoomX.To = this.ActualWidth;
-				ZoomY.From = selectedComicCoverTile.ActualHeight;
+				ZoomY.From = _currentOpenComicCoverTile.ActualHeight;
 				ZoomY.To = this.ActualHeight;
 				GeneralTransform objGeneralTransform = ((ComicCoverTile)sender).TransformToVisual(Application.Current.RootVisual as UIElement);
 				Point point = objGeneralTransform.Transform(new Point(0, 0));
