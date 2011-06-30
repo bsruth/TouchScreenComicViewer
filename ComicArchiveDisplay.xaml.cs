@@ -78,6 +78,7 @@ namespace TouchScreenComicViewer {
 									cct.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
 									cct.DataContext = cli;
 									cct.MouseLeftButtonUp += new MouseButtonEventHandler(ComicCover_MouseLeftButtonUp);
+									cct.MouseLeftButtonDown += new MouseButtonEventHandler(ComicCover_MouseLeftButtonDown);
 									ComicArchiveWrapPanel.Children.Add(cct);
 								} catch (Exception ex) {
 									string exceptionString = ex.ToString();
@@ -99,9 +100,28 @@ namespace TouchScreenComicViewer {
 		}
 
 		//*****************************************
+		private void ComicCover_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+			ComicCoverTile selectedComicCoverTile = (ComicCoverTile)sender;
+			//shift the tile so it looks like it was pushed
+			TranslateTransform quickShift = new TranslateTransform();
+			quickShift.X = 1;
+			quickShift.Y = 1;
+			selectedComicCoverTile.RenderTransform = quickShift;
+			
+
+		}
+
+		//*****************************************
 		private void ComicCover_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
 
 			ComicCoverTile selectedComicCoverTile = (ComicCoverTile)sender;
+
+			//put the tile back where it was
+			TranslateTransform quickShift = new TranslateTransform();
+			quickShift.X = -1;
+			quickShift.Y = -1;
+			selectedComicCoverTile.RenderTransform = quickShift;
+
 			string selectedComicFile = ((ComicListItem)(selectedComicCoverTile.DataContext)).ItemText;
 			ComicBook openedComic = mComicArchiveMgr.OpenComic(selectedComicFile);
 			if (openedComic != null) {
