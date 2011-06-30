@@ -6,8 +6,13 @@
 						 xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"
     mc:Ignorable="d"
     d:DesignWidth="400">
-    
-    <Grid x:Name="LayoutRoot" Background="Transparent" MouseLeftButtonUp="ComicViewingMenu_MouseLeftButtonUp" Width="Auto" Height="Auto">
+	<UserControl.Resources>
+		<Storyboard x:Name="ExpandMenuStoryBoard">
+			<DoubleAnimation x:Name="ExpandY" Storyboard.TargetName="expandedMenu" Storyboard.TargetProperty="Height" From="0.0" Duration="0:0:0.2" />
+		</Storyboard>
+	</UserControl.Resources>
+	
+	<Grid x:Name="LayoutRoot" Background="Transparent" MouseLeftButtonUp="ComicViewingMenu_MouseLeftButtonUp" Width="Auto" Height="Auto">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
