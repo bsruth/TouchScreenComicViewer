@@ -11,8 +11,8 @@
 			<DoubleAnimation x:Name="ExpandY" Storyboard.TargetName="expandedMenu" Storyboard.TargetProperty="Height" From="0.0" Duration="0:0:0.2" />
 		</Storyboard>
 	</UserControl.Resources>
-	
-	<Grid x:Name="LayoutRoot" Background="Transparent" MouseLeftButtonUp="ComicViewingMenu_MouseLeftButtonUp" Width="Auto" Height="Auto">
+
+	<Grid x:Name="LayoutRoot" Background="Transparent" MouseLeftButtonUp="ComicViewingMenu_MouseLeftButtonUp" MouseLeftButtonDown="ComicViewingMenu_MouseLeftButtonDown" Width="Auto" Height="Auto">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>

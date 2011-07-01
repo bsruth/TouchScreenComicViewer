@@ -19,6 +19,13 @@ namespace TouchScreenComicViewer {
 			InitializeComponent();
 		}
 
+		public void CloseMenuWithAnimation()
+		{
+			ExpandY.From = fullHeightMenu;
+			ExpandY.To = 0;
+			ExpandMenuStoryBoard.Completed += CollapseExpandedMenuAnimationComplete;
+			ExpandMenuStoryBoard.Begin();
+		}
 		private void ComicViewingMenu_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
 			if (this.expandedMenu.Visibility == System.Windows.Visibility.Collapsed) {
 				this.expandedMenu.Visibility = System.Windows.Visibility.Visible;
@@ -27,11 +34,9 @@ namespace TouchScreenComicViewer {
 				ExpandY.From = 0;
 				ExpandMenuStoryBoard.Begin();
 			} else {
-				ExpandY.From = fullHeightMenu;
-				ExpandY.To = 0;
-				ExpandMenuStoryBoard.Completed += CollapseExpandedMenuAnimationComplete;
-				ExpandMenuStoryBoard.Begin();
+				CloseMenuWithAnimation();
 			}
+			e.Handled = true;
 		}
 
 		private void CloseComicBtn_click (object sender, RoutedEventArgs e) {
@@ -51,6 +56,10 @@ namespace TouchScreenComicViewer {
 		{
 			CollapseExpandedMenu();
 			ExpandMenuStoryBoard.Completed -= CollapseExpandedMenuAnimationComplete;
+		}
+
+		private void ComicViewingMenu_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+			e.Handled = true;
 		}
 	}
 }

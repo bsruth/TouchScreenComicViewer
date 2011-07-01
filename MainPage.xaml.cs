@@ -236,6 +236,10 @@ namespace TouchScreenComicViewer
 		void MainDisplayImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
 			this.touchEventActive = false;
+
+			if (ViewingMenu.Visibility == System.Windows.Visibility.Visible) {
+				ViewingMenu.CloseMenuWithAnimation();
+			}
 		}
 
 		//*****************************************
@@ -286,7 +290,6 @@ namespace TouchScreenComicViewer
 				handler(sender, e);
 			}
 		}
-
 		
 	} //main page class
 }// namespace

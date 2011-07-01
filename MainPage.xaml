@@ -6,7 +6,7 @@
 		xmlns:TSComicV="clr-namespace:TouchScreenComicViewer"
 		mc:Ignorable="d"
 		d:DesignHeight="400" d:DesignWidth="400" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk">
-		<Grid x:Name="LayoutRoot" RenderTransformOrigin="0 0">
+	<Grid x:Name="LayoutRoot" RenderTransformOrigin="0 0" MouseLeftButtonDown="MainDisplayImage_MouseLeftButtonDown" MouseLeftButtonUp="MainDisplayImage_MouseLeftButtonUp" MouseMove="MainDisplayImage_MouseMove">
 		<Grid.Background>
 			<SolidColorBrush x:Name="backgroundBrush" Color="Black"/>
 		</Grid.Background>
@@ -17,7 +17,7 @@
 				<Grid.RenderTransform>
 			<ScaleTransform x:Name="PageScale" ScaleX="1" ScaleY="1"/>
 		</Grid.RenderTransform>
-		<Image Name="MainDisplayImage" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible" Grid.ColumnSpan="2" MouseLeftButtonDown="MainDisplayImage_MouseLeftButtonDown" MouseLeftButtonUp="MainDisplayImage_MouseLeftButtonUp" MouseMove="MainDisplayImage_MouseMove"/>           
+		<Image Name="MainDisplayImage" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible" Grid.ColumnSpan="2"/>           
 				<Grid Height="335" Name="MenuGrid" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#9D000000" Visibility="Collapsed">
 
 			<Button Content="Full Screen" Style="{StaticResource WP7Button}" Height="60" HorizontalAlignment="Stretch"  Name="FullScreenBtn" VerticalAlignment="Top"  Click="FullScreenBtn_Click"/>
