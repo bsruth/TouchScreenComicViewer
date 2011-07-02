@@ -20,6 +20,7 @@ namespace TouchScreenComicViewer{
 		private Stream _comicBookFileStream;
 		private List<string> _filesInComicBook = new List<string>();
 		private BitmapImage _coverImage = null;
+		private BitmapImage _currentCachedImage = null;
 		private int _currentPageIndex = 0;
 		private static string[] VALID_IMAGE_FILE_EXT = { ".jpg" };
 		public int CurrentPageNumber {
@@ -53,6 +54,7 @@ namespace TouchScreenComicViewer{
 			{
 				_coverImage = GetImageFromComicFile(_filesInComicBook[0]);
 			}
+			_currentCachedImage = _coverImage;
 			return _coverImage;
 		}
 
@@ -68,18 +70,14 @@ namespace TouchScreenComicViewer{
 				CurrentPageNumber = nextPageIndex;
 			}
 
+			_currentCachedImage = pageImage;
 			return pageImage;
 
 		}
 
 		//*****************************************
 		public BitmapImage GetCurrentPageImage() {
-			BitmapImage pageImage = GetImageFromComicFile(_filesInComicBook[_currentPageIndex]);
-			if (pageImage != null) {
-				CurrentPageNumber = _currentPageIndex;
-			}
-
-			return pageImage;
+			return _currentCachedImage;
 
 		}
 
@@ -94,6 +92,7 @@ namespace TouchScreenComicViewer{
 				CurrentPageNumber = prevPageIndex;
 			}
 
+			_currentCachedImage = pageImage;
 			return pageImage;
 
 		}
