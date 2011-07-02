@@ -82,13 +82,16 @@ namespace TouchScreenComicViewer {
 
 			List<string> comics = mComicArchiveMgr.GetAvailableComics();
 
+			LoadingProgressBar.Value = 0;
+			LoadingProgressBar.Maximum = comics.Count;
+			LoadingProgressBar.Visibility = System.Windows.Visibility.Visible;
+
 			//the threading is so that one comic loads at a time and
 			//the UI doesn't look like it locked up as the list is refreshed
 			BackgroundWorker comicLoader = new BackgroundWorker();
 			Dispatcher myDisp = Application.Current.RootVisual.Dispatcher;
 			DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(myDisp); //needed to dispatch synchronously
 			comicLoader.WorkerReportsProgress = false;
-
 			comicLoader.DoWork += (sender, e) =>
 			{
 				foreach (string comic in comics) {
@@ -114,6 +117,10 @@ namespace TouchScreenComicViewer {
 									cct.MouseLeftButtonUp += new MouseButtonEventHandler(ComicCover_MouseLeftButtonUp);
 									cct.MouseLeftButtonDown += new MouseButtonEventHandler(ComicCover_MouseLeftButtonDown);
 									ComicArchiveWrapPanel.Children.Add(cct);
+									LoadingProgressBar.Value += 1;
+									if (LoadingProgressBar.Value == LoadingProgressBar.Maximum) {
+										LoadingProgressBar.Visibility = System.Windows.Visibility.Collapsed;
+									}
 								} catch (Exception ex) {
 									string exceptionString = ex.ToString();
 								}
