@@ -73,6 +73,17 @@ namespace TouchScreenComicViewer{
 		}
 
 		//*****************************************
+		public BitmapImage GetCurrentPageImage() {
+			BitmapImage pageImage = GetImageFromComicFile(_filesInComicBook[_currentPageIndex]);
+			if (pageImage != null) {
+				CurrentPageNumber = _currentPageIndex;
+			}
+
+			return pageImage;
+
+		}
+
+		//*****************************************
 		public BitmapImage GetPreviousPageImage() {
 			int prevPageIndex = _currentPageIndex - 1;
 			if (prevPageIndex < 0) {

@@ -175,7 +175,7 @@ namespace TouchScreenComicViewer
 
 			_currentComicBook = comicToOpen;
 			DataContext = _currentComicBook;
-			DisplayImage(_currentComicBook.GetCoverImage());
+			DisplayImage(_currentComicBook.GetCurrentPageImage());
 		}
 
 		//*****************************************
