@@ -145,8 +145,8 @@ namespace TouchScreenComicViewer {
 			ComicCoverTile selectedComicCoverTile = (ComicCoverTile)sender;
 			//shift the tile so it looks like it was pushed
 			TranslateTransform quickShift = new TranslateTransform();
-			quickShift.X = 1;
-			quickShift.Y = 1;
+			quickShift.X = 3;
+			quickShift.Y = 3;
 			selectedComicCoverTile.RenderTransform = quickShift;
 			
 
@@ -168,8 +168,8 @@ namespace TouchScreenComicViewer {
 
 			//put the tile back where it was
 			TranslateTransform quickShift = new TranslateTransform();
-			quickShift.X = -1;
-			quickShift.Y = -1;
+			quickShift.X = -3;
+			quickShift.Y = -3;
 			_currentOpenComicCoverTile.RenderTransform = quickShift;
 
 			string selectedComicFile = ((ComicListItem)(_currentOpenComicCoverTile.DataContext)).ItemText;
