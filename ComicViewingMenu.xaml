@@ -27,7 +27,7 @@
 			<sdk:Label Grid.Column="1" Content="{Binding Path=TotalPages}" HorizontalAlignment="Left" Margin="2,15,0,15" Name="totalPagesLbl" VerticalAlignment="Bottom" Height="15" Width="35" Foreground="Black"  Background="#9DE5E5E5" />
 		</Grid>
 		<Grid Grid.Row="1" Name="expandedMenu" Visibility="Collapsed">
-			<Button Style="{StaticResource WP7Button}" x:Name="CloseComicBtn" Height="35" Content="Close Comic" HorizontalAlignment="Stretch" Margin="20" Click="CloseComicBtn_click"/>
+			<Button Style="{StaticResource WP7Button}" x:Name="CloseComicBtn" Height="50" Content="Close Comic" HorizontalAlignment="Stretch" Margin="20" Click="CloseComicBtn_click"/>
 		</Grid>
 	</Grid>
 </UserControl>
