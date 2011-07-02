@@ -84,7 +84,11 @@ namespace TouchScreenComicViewer {
 
 			LoadingProgressBar.Value = 0;
 			LoadingProgressBar.Maximum = comics.Count;
-			LoadingProgressBar.Visibility = System.Windows.Visibility.Visible;
+			if(comics.Count == 0 ){
+				LoadingProgressBar.Visibility = System.Windows.Visibility.Collapsed;
+			} else {
+				LoadingProgressBar.Visibility = System.Windows.Visibility.Visible;
+			}
 
 			//the threading is so that one comic loads at a time and
 			//the UI doesn't look like it locked up as the list is refreshed
