@@ -17,7 +17,13 @@
 				<Grid.RenderTransform>
 			<ScaleTransform x:Name="PageScale" ScaleX="1" ScaleY="1"/>
 		</Grid.RenderTransform>
-		<Image Name="MainDisplayImage" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible" Grid.ColumnSpan="2"/>           
+		<Image Name="MainDisplayImage" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="Visible" Grid.ColumnSpan="2">
+			<Image.RenderTransform>
+				<TransformGroup>
+					<ScaleTransform x:Name="ImageZoomScale"/>
+				</TransformGroup>
+			</Image.RenderTransform>
+		</Image>
 				<Grid Height="335" Name="MenuGrid" VerticalAlignment="Top" HorizontalAlignment="Stretch" Background="#9D000000" Visibility="Collapsed">
 
 			<Button Content="Full Screen" Style="{StaticResource WP7Button}" Height="60" HorizontalAlignment="Stretch"  Name="FullScreenBtn" VerticalAlignment="Top"  Click="FullScreenBtn_Click"/>

@@ -29,7 +29,7 @@ namespace TouchScreenComicViewer
 		private const int swipePixelLength = 50; //number of pixels needed to trigger a swipe event.
 
 		public event RoutedEventHandler ComicClosed;
-
+		private bool _isZoomed = false;
 		private bool touchEventActive = false;
 
 		private ComicBook _currentComicBook;
@@ -235,10 +235,32 @@ namespace TouchScreenComicViewer
 		//*****************************************
 		void MainDisplayImage_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
-			this.touchEventActive = false;
-
-			if (ViewingMenu.Visibility == System.Windows.Visibility.Visible) {
+			if (ViewingMenu.IsMenuExpanded() == true) {
 				ViewingMenu.CloseMenuWithAnimation();
+			} else {
+
+				if (this.startPoint == e.GetPosition(null)) {
+					ZoomImage(!_isZoomed, e.GetPosition(MainDisplayImage));
+				}
+			}
+			this.touchEventActive = false;
+		}
+
+		//*****************************************
+		private void ZoomImage(bool zoom, Point zoomPoint)
+		{
+			if (_isZoomed != zoom) {
+				ImageZoomScale.CenterX = zoomPoint.X;
+				ImageZoomScale.CenterY = zoomPoint.Y;
+				if (_isZoomed == false) {
+					ImageZoomScale.ScaleX *= 3;
+					ImageZoomScale.ScaleY *= 3;
+				} else {
+					ImageZoomScale.ScaleX /= 3;
+					ImageZoomScale.ScaleY /= 3;
+				}
+				ImageZoomScale.Transform(zoomPoint);
+				_isZoomed = zoom;
 			}
 		}
 
