@@ -26,6 +26,12 @@ namespace TouchScreenComicViewer {
 			ExpandMenuStoryBoard.Completed += CollapseExpandedMenuAnimationComplete;
 			ExpandMenuStoryBoard.Begin();
 		}
+
+		public bool IsMenuExpanded() 
+		{
+			return (this.ActualHeight >= fullHeightMenu);
+		}
+
 		private void ComicViewingMenu_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
 			if (this.expandedMenu.Visibility == System.Windows.Visibility.Collapsed) {
 				this.expandedMenu.Visibility = System.Windows.Visibility.Visible;
