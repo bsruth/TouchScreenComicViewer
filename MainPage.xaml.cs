@@ -300,13 +300,20 @@ namespace TouchScreenComicViewer
 		//*****************************************
 		private void DisplayImage(BitmapImage imageToDisplay)
 		{
+			if (_isZoomed) {
+				ZoomImage(false, new Point(0, 0));
+			}
+
 			this.MainDisplayImage.Source = imageToDisplay;
 			this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
 		}
 
 		//*****************************************
 		private void CloseComicBtn_Click(object sender, RoutedEventArgs e) {
-			//Visibility = System.Windows.Visibility.Collapsed;
+			if (_isZoomed) {
+				ZoomImage(false, new Point(0, 0));
+			}
+
 			var handler = ComicClosed;
 			if (handler != null) {
 				handler(sender, e);
