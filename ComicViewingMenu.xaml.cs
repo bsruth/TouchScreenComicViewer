@@ -15,6 +15,7 @@ namespace TouchScreenComicViewer {
 
 		public event RoutedEventHandler ComicClosedButtonClicked;
 		private double fullHeightMenu = 100;
+		private bool _mouseDown = false;
 		public ComicViewingMenu() {
 			InitializeComponent();
 		}
@@ -33,6 +34,9 @@ namespace TouchScreenComicViewer {
 		}
 
 		private void ComicViewingMenu_MouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
+			if (_mouseDown == false) {
+				return;
+			}
 			if (this.expandedMenu.Visibility == System.Windows.Visibility.Collapsed) {
 				this.expandedMenu.Visibility = System.Windows.Visibility.Visible;
 				this.LayoutRoot.Background = new SolidColorBrush(Color.FromArgb(200, 0, 0, 0));
@@ -65,7 +69,12 @@ namespace TouchScreenComicViewer {
 		}
 
 		private void ComicViewingMenu_MouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+			_mouseDown = true;
 			e.Handled = true;
+		}
+
+		private void ComicViewingMenu_MouseLeave(object sender, MouseEventArgs e) {
+			_mouseDown = false;
 		}
 	}
 }
