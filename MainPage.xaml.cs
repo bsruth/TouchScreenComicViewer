@@ -26,6 +26,7 @@ namespace TouchScreenComicViewer
 						_originalWidth / _originalHeight;
 
 		private Point startPoint; //start point for beginning of a mouse down event
+		private Point panStartPoint; //modified start point for panning translation
 		private const int swipePixelLength = 50; //number of pixels needed to trigger a swipe event.
 
 		public event RoutedEventHandler ComicClosed;
@@ -229,6 +230,11 @@ namespace TouchScreenComicViewer
 		private void MainDisplayImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			this.startPoint = e.GetPosition(null);
+			if (_isZoomed) {
+				panStartPoint = startPoint;
+				panStartPoint.X -= ImagePan.X;
+				panStartPoint.Y -= ImagePan.Y;
+			}
 			this.touchEventActive = true;
 		}
 
@@ -262,6 +268,9 @@ namespace TouchScreenComicViewer
 				ImageZoomScale.Transform(zoomPoint);
 				_isZoomed = zoom;
 			}
+
+			ImagePan.X = 0;
+			ImagePan.Y = 0;
 		}
 
 		//*****************************************
@@ -271,24 +280,35 @@ namespace TouchScreenComicViewer
 			{
 				return;
 			}
-			if (e.GetPosition(null).X < (this.startPoint.X - swipePixelLength))
-			{
-				//swipe left
-				BitmapImage comicImage = _currentComicBook.GetNextPageImage();
-				if (comicImage != null) {
-					DisplayImage(comicImage);
-				}
-				touchEventActive = false;
+			if (_isZoomed) {
+				Point mousePosition = e.GetPosition(null);
+				System.Diagnostics.Debug.WriteLine("X: " + mousePosition.X + " Y: " + mousePosition.Y);
+				//pan zoomed image
+				ImagePan.X = (mousePosition.X - panStartPoint.X);
+				ImagePan.Y = (mousePosition.Y - panStartPoint.Y);
+				GeneralTransform tmp = this.TransformToVisual(MainDisplayImage);
+				System.Diagnostics.Debug.WriteLine("PanX: " + ImagePan.X + " Y: " + ImagePan.Y);
+				Point transPt = tmp.Transform(mousePosition);
+				System.Diagnostics.Debug.WriteLine("TransX: " + transPt.X + " TransY: " + transPt.Y);
+				ImagePan.Transform(transPt);
+			} else {
+				//change pages
+				if (e.GetPosition(null).X < (this.startPoint.X - swipePixelLength)) {
+					//swipe left
+					BitmapImage comicImage = _currentComicBook.GetNextPageImage();
+					if (comicImage != null) {
+						DisplayImage(comicImage);
+					}
+					touchEventActive = false;
 
-			}
-			else if (e.GetPosition(null).X > (this.startPoint.X + swipePixelLength))
-			{
-				//swipe right
-				BitmapImage comicImage = _currentComicBook.GetPreviousPageImage();
-				if (comicImage != null) {
-					DisplayImage(comicImage);
+				} else if (e.GetPosition(null).X > (this.startPoint.X + swipePixelLength)) {
+					//swipe right
+					BitmapImage comicImage = _currentComicBook.GetPreviousPageImage();
+					if (comicImage != null) {
+						DisplayImage(comicImage);
+					}
+					touchEventActive = false;
 				}
-				touchEventActive = false;
 			}
 		}
 
@@ -318,6 +338,10 @@ namespace TouchScreenComicViewer
 			if (handler != null) {
 				handler(sender, e);
 			}
+		}
+
+		private void LayoutRoot_MouseLeave(object sender, MouseEventArgs e) {
+			touchEventActive = false;
 		}
 		
 	} //main page class

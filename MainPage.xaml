@@ -6,7 +6,7 @@
 		xmlns:TSComicV="clr-namespace:TouchScreenComicViewer"
 		mc:Ignorable="d"
 		d:DesignHeight="400" d:DesignWidth="400" xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk">
-	<Grid x:Name="LayoutRoot" RenderTransformOrigin="0 0" MouseLeftButtonDown="MainDisplayImage_MouseLeftButtonDown" MouseLeftButtonUp="MainDisplayImage_MouseLeftButtonUp" MouseMove="MainDisplayImage_MouseMove">
+	<Grid x:Name="LayoutRoot" RenderTransformOrigin="0 0" MouseLeftButtonDown="MainDisplayImage_MouseLeftButtonDown" MouseLeftButtonUp="MainDisplayImage_MouseLeftButtonUp" MouseMove="MainDisplayImage_MouseMove" MouseLeave="LayoutRoot_MouseLeave">
 		<Grid.Background>
 			<SolidColorBrush x:Name="backgroundBrush" Color="Black"/>
 		</Grid.Background>
@@ -21,6 +21,7 @@
 			<Image.RenderTransform>
 				<TransformGroup>
 					<ScaleTransform x:Name="ImageZoomScale"/>
+					<TranslateTransform x:Name="ImagePan"/>
 				</TransformGroup>
 			</Image.RenderTransform>
 		</Image>
