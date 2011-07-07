@@ -44,6 +44,8 @@ namespace TouchScreenComicViewer
 			SizeChanged += new SizeChangedEventHandler(MainPage_SizeChanged);
 			Application.Current.Host.Content.FullScreenChanged += new EventHandler(Content_FullScreenChanged);
 			this.ViewingMenu.ComicClosedButtonClicked += new RoutedEventHandler(CloseComicBtn_Click);
+			this.ViewingMenu.PreviousPageButtonClicked += new RoutedEventHandler(ViewingMenu_PreviousPageButtonClicked);
+			this.ViewingMenu.NextPageButtonClicked += new RoutedEventHandler(ViewingMenu_NextPageButtonClicked);
 			//Touch.FrameReported += new TouchFrameEventHandler(Touch_FrameReported);
 		}
 
@@ -227,6 +229,16 @@ namespace TouchScreenComicViewer
 		}
 
 		//*****************************************
+		void ViewingMenu_PreviousPageButtonClicked(object sender, RoutedEventArgs e) {
+			GoToPreviousPage();
+		}
+
+		//*****************************************
+		void ViewingMenu_NextPageButtonClicked(object sender, RoutedEventArgs e) {
+			GoToNextPage();
+		}
+
+		//*****************************************
 		private void MainDisplayImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			this.startPoint = e.GetPosition(null);
@@ -295,25 +307,35 @@ namespace TouchScreenComicViewer
 				//change pages
 				if (e.GetPosition(null).X < (this.startPoint.X - swipePixelLength)) {
 					//swipe left
-					BitmapImage comicImage = _currentComicBook.GetNextPageImage();
-					if (comicImage != null) {
-						DisplayImage(comicImage);
-					}
+					GoToNextPage();
 					touchEventActive = false;
 
 				} else if (e.GetPosition(null).X > (this.startPoint.X + swipePixelLength)) {
 					//swipe right
-					BitmapImage comicImage = _currentComicBook.GetPreviousPageImage();
-					if (comicImage != null) {
-						DisplayImage(comicImage);
-					}
+					GoToPreviousPage();
 					touchEventActive = false;
 				}
 			}
 		}
 
+		//*****************************************
+		private void GoToNextPage() 
+		{
+			//swipe left
+			BitmapImage comicImage = _currentComicBook.GetNextPageImage();
+			if (comicImage != null) {
+				DisplayImage(comicImage);
+			}
+		}
 
-
+		//*****************************************
+		private void GoToPreviousPage()
+		{
+			BitmapImage comicImage = _currentComicBook.GetPreviousPageImage();
+			if (comicImage != null) {
+				DisplayImage(comicImage);
+			}
+		}
 
 		
 

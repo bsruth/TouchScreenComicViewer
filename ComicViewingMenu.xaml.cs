@@ -14,10 +14,18 @@ namespace TouchScreenComicViewer {
 	public partial class ComicViewingMenu : UserControl {
 
 		public event RoutedEventHandler ComicClosedButtonClicked;
+		public event RoutedEventHandler PreviousPageButtonClicked;
+		public event RoutedEventHandler NextPageButtonClicked;
+
 		private double fullHeightMenu = 100;
 		private bool _mouseDown = false;
+
 		public ComicViewingMenu() {
 			InitializeComponent();
+
+			System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(40, 0, 0, 0));
+			this.PrevButton.OpacityMask = opacityBrush;
+			this.NextButton.OpacityMask = opacityBrush;
 		}
 
 		public void CloseMenuWithAnimation()
@@ -40,6 +48,9 @@ namespace TouchScreenComicViewer {
 			if (this.expandedMenu.Visibility == System.Windows.Visibility.Collapsed) {
 				this.expandedMenu.Visibility = System.Windows.Visibility.Visible;
 				this.LayoutRoot.Background = new SolidColorBrush(Color.FromArgb(200, 0, 0, 0));
+				System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(255, 0, 0, 0));
+				this.PrevButton.OpacityMask = opacityBrush;
+				this.NextButton.OpacityMask = opacityBrush;
 				ExpandY.To = fullHeightMenu;
 				ExpandY.From = 0;
 				ExpandMenuStoryBoard.Begin();
@@ -60,6 +71,9 @@ namespace TouchScreenComicViewer {
 		private void CollapseExpandedMenu() {
 			this.expandedMenu.Visibility = System.Windows.Visibility.Collapsed;
 			this.LayoutRoot.Background = new SolidColorBrush(Colors.Transparent);
+			System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(40, 0, 0, 0));
+			this.PrevButton.OpacityMask = opacityBrush;
+			this.NextButton.OpacityMask = opacityBrush;
 		}
 
 		private void CollapseExpandedMenuAnimationComplete(Object sender, EventArgs e)
@@ -75,6 +89,20 @@ namespace TouchScreenComicViewer {
 
 		private void ComicViewingMenu_MouseLeave(object sender, MouseEventArgs e) {
 			_mouseDown = false;
+		}
+
+		private void PrevButton_Click(object sender, RoutedEventArgs e) {
+			var handler = PreviousPageButtonClicked;
+			if (handler != null) {
+				handler(sender, e);
+			}
+		}
+
+		private void NextButton_Click(object sender, RoutedEventArgs e) {
+			var handler = NextPageButtonClicked;
+			if (handler != null) {
+				handler(sender, e);
+			}
 		}
 	}
 }

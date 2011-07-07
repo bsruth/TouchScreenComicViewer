@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="TouchScreenComicViewer.ComicViewingMenu"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 						 xmlns:sdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation/sdk"
-    mc:Ignorable="d"
-    d:DesignWidth="400">
+		mc:Ignorable="d"
+		d:DesignWidth="400">
 	<UserControl.Resources>
 		<Storyboard x:Name="ExpandMenuStoryBoard">
 			<DoubleAnimation x:Name="ExpandY" Storyboard.TargetName="expandedMenu" Storyboard.TargetProperty="Height" From="0.0" Duration="0:0:0.2" />
@@ -22,12 +22,20 @@
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
-			<sdk:Label Grid.Column="0" Content="{Binding Path=CurrentPageNumber}" HorizontalAlignment="Right" Name="currentPageNumLbl" VerticalAlignment="Bottom" Height="15" Width="33" Foreground="Black" HorizontalContentAlignment="Right" Background="#9DE5E5E5" Margin="0,15,2,15" MouseLeftButtonUp="ComicViewingMenu_MouseLeftButtonUp" MouseLeftButtonDown="ComicViewingMenu_MouseLeftButtonDown" MouseLeave="ComicViewingMenu_MouseLeave"/>
-			<sdk:Label Grid.Column="1" Content="{Binding Path=TotalPages}" HorizontalAlignment="Left" Margin="2,15,0,15" Name="totalPagesLbl" VerticalAlignment="Bottom" Height="15" Width="35" Foreground="Black"  Background="#9DE5E5E5" MouseLeftButtonUp="ComicViewingMenu_MouseLeftButtonUp" MouseLeftButtonDown="ComicViewingMenu_MouseLeftButtonDown" MouseLeave="ComicViewingMenu_MouseLeave"/>
+			<Button Grid.Column="0" x:Name="PrevButton" Style="{StaticResource WP7Button}" HorizontalAlignment="Left" Click="PrevButton_Click" Margin="10,5" ToolTipService.ToolTip="Go to previous page">
+					<Image Source="/TouchScreenComicViewer;component/Images/left_arrow.png" Height="50" Width="40" HorizontalAlignment="Left"/>
+			</Button>
+			<sdk:Label Grid.Column="1" Content="{Binding Path=CurrentPageNumber}" HorizontalAlignment="Right" Name="currentPageNumLbl" VerticalAlignment="Bottom" Height="25" Width="33" Foreground="Black" HorizontalContentAlignment="Right" Background="#9DE5E5E5" Margin="0,15,2,5" MouseLeftButtonUp="ComicViewingMenu_MouseLeftButtonUp" MouseLeftButtonDown="ComicViewingMenu_MouseLeftButtonDown" MouseLeave="ComicViewingMenu_MouseLeave"/>
+			<sdk:Label Grid.Column="2" Content="{Binding Path=TotalPages}" HorizontalAlignment="Left" Margin="2,15,0,5" Name="totalPagesLbl" VerticalAlignment="Bottom" Height="25" Width="35" Foreground="Black"  Background="#9DE5E5E5" MouseLeftButtonUp="ComicViewingMenu_MouseLeftButtonUp" MouseLeftButtonDown="ComicViewingMenu_MouseLeftButtonDown" MouseLeave="ComicViewingMenu_MouseLeave"/>
+			<Button Grid.Column="3" x:Name="NextButton" Style="{StaticResource WP7Button}" HorizontalAlignment="Right" Click="NextButton_Click" Margin="10,5" ToolTipService.ToolTip="Go to next page">
+				<Image Source="/TouchScreenComicViewer;component/Images/right_arrow.png" Height="50" Width="40" HorizontalAlignment="Right"/>
+			</Button>
 		</Grid>
 		<Grid Grid.Row="1" Name="expandedMenu" Visibility="Collapsed">
-			<Button Style="{StaticResource WP7Button}" x:Name="CloseComicBtn" Height="50" Content="Close Comic" HorizontalAlignment="Stretch" Margin="20" Click="CloseComicBtn_click"/>
+			<Button Style="{StaticResource WP7Button}" x:Name="CloseComicBtn" Height="50" Content="Close Comic" HorizontalAlignment="Stretch" Margin="20" Click="CloseComicBtn_click" ToolTipService.ToolTip="Close comic and view collection"/>
 		</Grid>
 	</Grid>
 </UserControl>
