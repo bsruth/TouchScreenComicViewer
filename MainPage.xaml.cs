@@ -299,13 +299,7 @@ namespace TouchScreenComicViewer
 				Point mousePosition = e.GetPosition(null);
 				System.Diagnostics.Debug.WriteLine("X: " + mousePosition.X + " Y: " + mousePosition.Y);
 				//pan zoomed image
-				ImagePan.X = (mousePosition.X - panStartPoint.X);
-				ImagePan.Y = (mousePosition.Y - panStartPoint.Y);
-				GeneralTransform tmp = this.TransformToVisual(MainDisplayImage);
-				System.Diagnostics.Debug.WriteLine("PanX: " + ImagePan.X + " Y: " + ImagePan.Y);
-				Point transPt = tmp.Transform(mousePosition);
-				System.Diagnostics.Debug.WriteLine("TransX: " + transPt.X + " TransY: " + transPt.Y);
-				ImagePan.Transform(transPt);
+				PanImage(panStartPoint, mousePosition);
 			} else {
 				//change pages
 				if (e.GetPosition(null).X < (this.startPoint.X - swipePixelLength)) {
@@ -340,13 +334,22 @@ namespace TouchScreenComicViewer
 			}
 		}
 
-		
+		//*****************************************
+		private void PanImage(Point startPoint, Point endPoint) {
+			ImagePan.X = (endPoint.X - startPoint.X);
+			ImagePan.Y = (endPoint.Y - startPoint.Y);
+			GeneralTransform tmp = this.TransformToVisual(MainDisplayImage);
+			System.Diagnostics.Debug.WriteLine("PanX: " + ImagePan.X + " Y: " + ImagePan.Y);
+			Point transPt = tmp.Transform(endPoint);
+			System.Diagnostics.Debug.WriteLine("TransX: " + transPt.X + " TransY: " + transPt.Y);
+			ImagePan.Transform(transPt);
+		}
 
 		//*****************************************
 		private void DisplayImage(BitmapImage imageToDisplay)
 		{
 			if (_isZoomed) {
-				ZoomImage(false, new Point(0, 0));
+				ZoomImage(true, new Point(0, 0));
 			}
 
 			this.MainDisplayImage.Source = imageToDisplay;
