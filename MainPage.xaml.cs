@@ -44,8 +44,11 @@ namespace TouchScreenComicViewer
 			SizeChanged += new SizeChangedEventHandler(MainPage_SizeChanged);
 			Application.Current.Host.Content.FullScreenChanged += new EventHandler(Content_FullScreenChanged);
 			this.ViewingMenu.ComicClosedButtonClicked += new RoutedEventHandler(CloseComicBtn_Click);
-			this.ViewingMenu.PreviousPageButtonClicked += new RoutedEventHandler(ViewingMenu_PreviousPageButtonClicked);
-			this.ViewingMenu.NextPageButtonClicked += new RoutedEventHandler(ViewingMenu_NextPageButtonClicked);
+
+			System.Windows.Media.SolidColorBrush opacityBrush = new SolidColorBrush(Color.FromArgb(40, 0, 0, 0));
+			this.PrevButton.OpacityMask = opacityBrush;
+			this.NextButton.OpacityMask = opacityBrush;
+
 			//Touch.FrameReported += new TouchFrameEventHandler(Touch_FrameReported);
 		}
 
@@ -229,12 +232,12 @@ namespace TouchScreenComicViewer
 		}
 
 		//*****************************************
-		void ViewingMenu_PreviousPageButtonClicked(object sender, RoutedEventArgs e) {
+		private void PrevButton_Click(object sender, RoutedEventArgs e) {
 			GoToPreviousPage();
 		}
 
 		//*****************************************
-		void ViewingMenu_NextPageButtonClicked(object sender, RoutedEventArgs e) {
+		private void NextButton_Click(object sender, RoutedEventArgs e) {
 			GoToNextPage();
 		}
 
