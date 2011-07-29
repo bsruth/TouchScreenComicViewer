@@ -25,8 +25,8 @@ namespace TouchScreenComicViewer
 		private const double _originalAspectRatio =
 						_originalWidth / _originalHeight;
 
-		private Point startPoint; //start point for beginning of a mouse down event
-		private Point panStartPoint; //modified start point for panning translation
+		private Point _startPoint; //start point for beginning of a mouse down event
+		private Point _panStartPoint; //modified start point for panning translation
 		private const int swipePixelLength = 50; //number of pixels needed to trigger a swipe event.
 
 		public event RoutedEventHandler ComicClosed;
@@ -244,11 +244,11 @@ namespace TouchScreenComicViewer
 		//*****************************************
 		private void MainDisplayImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
-			this.startPoint = e.GetPosition(null);
+			this._startPoint = e.GetPosition(null);
 			if (_isZoomed) {
-				panStartPoint = startPoint;
-				panStartPoint.X -= ImagePan.X;
-				panStartPoint.Y -= ImagePan.Y;
+				_panStartPoint = _startPoint;
+				_panStartPoint.X -= ImagePan.X;
+				_panStartPoint.Y -= ImagePan.Y;
 			}
 			this.touchEventActive = true;
 		}
@@ -260,7 +260,7 @@ namespace TouchScreenComicViewer
 				ViewingMenu.CloseMenuWithAnimation();
 			} else {
 
-				if (this.startPoint == e.GetPosition(null)) {
+				if (this._startPoint == e.GetPosition(null)) {
 					ZoomImage(!_isZoomed, e.GetPosition(MainDisplayImage));
 				}
 			}
@@ -299,15 +299,15 @@ namespace TouchScreenComicViewer
 				Point mousePosition = e.GetPosition(null);
 				System.Diagnostics.Debug.WriteLine("X: " + mousePosition.X + " Y: " + mousePosition.Y);
 				//pan zoomed image
-				PanImage(panStartPoint, mousePosition);
+				PanImage(_panStartPoint, mousePosition);
 			} else {
 				//change pages
-				if (e.GetPosition(null).X < (this.startPoint.X - swipePixelLength)) {
+				if (e.GetPosition(null).X < (this._startPoint.X - swipePixelLength)) {
 					//swipe left
 					GoToNextPage();
 					touchEventActive = false;
 
-				} else if (e.GetPosition(null).X > (this.startPoint.X + swipePixelLength)) {
+				} else if (e.GetPosition(null).X > (this._startPoint.X + swipePixelLength)) {
 					//swipe right
 					GoToPreviousPage();
 					touchEventActive = false;
@@ -338,18 +338,15 @@ namespace TouchScreenComicViewer
 		private void PanImage(Point startPoint, Point endPoint) {
 			ImagePan.X = (endPoint.X - startPoint.X);
 			ImagePan.Y = (endPoint.Y - startPoint.Y);
-			GeneralTransform tmp = this.TransformToVisual(MainDisplayImage);
-			System.Diagnostics.Debug.WriteLine("PanX: " + ImagePan.X + " Y: " + ImagePan.Y);
-			Point transPt = tmp.Transform(endPoint);
-			System.Diagnostics.Debug.WriteLine("TransX: " + transPt.X + " TransY: " + transPt.Y);
-			ImagePan.Transform(transPt);
+			ImagePan.Transform(new Point(0,0));
 		}
 
 		//*****************************************
 		private void DisplayImage(BitmapImage imageToDisplay)
 		{
 			if (_isZoomed) {
-				ZoomImage(true, new Point(0, 0));
+				ZoomImage(false, new Point(0, 0));
+				ZoomImage(true, new Point(50, 0));
 			}
 
 			this.MainDisplayImage.Source = imageToDisplay;
