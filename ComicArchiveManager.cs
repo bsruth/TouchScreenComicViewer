@@ -22,6 +22,13 @@ namespace TouchScreenComicViewer {
 		private Dictionary<string,ComicBook> _comicBookList = new Dictionary<string,ComicBook>();
 
 		public ComicArchiveManager() {
+
+			IsoStorageUtilities.FileRemoved += (fileRemoved, ev) =>
+			{
+				RemoveComicFromArchive(fileRemoved as string);
+			};
+
+
 			if (IsoStorageUtilities.DoesFileExist(COMIC_ARCHIVE_META_FILE) == false) {
 				IsoStorageUtilities.CreateIsolatedStorageFile(COMIC_ARCHIVE_META_FILE);
 			}
@@ -55,6 +62,13 @@ namespace TouchScreenComicViewer {
 
 			return true;
 		}
+
+		//*****************************************
+		public bool RemoveComicFromArchive(string comicFileName) {
+			this._comicBookList.Remove(comicFileName);
+			return true;
+		}
+
 		//*****************************************
 		public BitmapImage GetComicCover(string comicFileName) {
 			ComicBook requestedComic;

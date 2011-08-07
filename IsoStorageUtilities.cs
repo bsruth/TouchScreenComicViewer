@@ -15,6 +15,8 @@ using System.Collections.Generic;
 namespace TouchScreenComicViewer {
 	public class IsoStorageUtilities {
 
+		static public RoutedEventHandler FileRemoved; //fired when a file is removed from the store
+
 		//*****************************************
 		//returns the number of bytes removed from the store
 		static public long RemoveOldestFileFromIsoStore(IsolatedStorageFile isoStore) {
@@ -39,37 +41,37 @@ namespace TouchScreenComicViewer {
 			long numBytesRemoved = oldestFile.Length;
 			oldestFile.Close();
 			isoStore.DeleteFile(oldestFileName);
+
+			var handler = FileRemoved;
+			if (handler != null) {
+				handler(oldestFileName, new RoutedEventArgs());
+			}
 			return numBytesRemoved;
+
 		}
 
-		
+
 
 		//*****************************************
-		static public bool DoesFileExist(string fileName)
-		{
-			using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication() ) {
+		static public bool DoesFileExist(string fileName) {
+			using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
 				return iso.FileExists(fileName);
 			}
 		}
 
 		//*****************************************
-		static public bool CreateIsolatedStorageFile(string fileName) 
-		{
-			try {
-				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
-					using (IsolatedStorageFileStream isoStream =
-						new IsolatedStorageFileStream(fileName, FileMode.Create, iso)) {
-					}
+		static public bool CreateIsolatedStorageFile(string fileName) {
+			using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
+				using (IsolatedStorageFileStream isoStream =
+					new IsolatedStorageFileStream(fileName, FileMode.Create, iso)) {
 				}
-			} catch (Exception e) {
 			}
 
 			return DoesFileExist(fileName);
 		}
 
 		//*****************************************
-		static public FileStream OpenIsolatedStorageFileStream(string fileName, FileMode openMode = FileMode.Open) 
-		{
+		static public FileStream OpenIsolatedStorageFileStream(string fileName, FileMode openMode = FileMode.Open) {
 			try {
 				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
 					IsolatedStorageFileStream fileStream = new IsolatedStorageFileStream(fileName, openMode, iso);
@@ -81,12 +83,11 @@ namespace TouchScreenComicViewer {
 		}
 
 		//*****************************************
-		static public List<string> GetIsolatedStorageFilesWithExtension(string fileExtension) 
-		{
+		static public List<string> GetIsolatedStorageFilesWithExtension(string fileExtension) {
 			List<string> filesWithExt = new List<string>();
 			try {
 				using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
-					if(!fileExtension.StartsWith(".")) {
+					if (!fileExtension.StartsWith(".")) {
 						fileExtension = "." + fileExtension;
 					}
 					filesWithExt.AddRange(iso.GetFileNames("*" + fileExtension));
@@ -159,8 +160,10 @@ namespace TouchScreenComicViewer {
 						}
 					}
 				}
+
 			}
 			return true;
+
 		}
 
 	}
