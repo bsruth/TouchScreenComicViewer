@@ -36,6 +36,12 @@ namespace TouchScreenComicViewer {
 			mComicArchiveMgr = new ComicArchiveManager();
 			blah = new TranslateTransform();
 			ComicViewer.ComicClosed += new RoutedEventHandler(ComicViewer_ComicClosed);
+			LoadingComicsDisp.FileLoadingCompleted += (senderFL, eFL) =>
+			{
+				this.ComicArchiveWrapPanel.Visibility = System.Windows.Visibility.Visible;
+				this.openComicBtn.Visibility = System.Windows.Visibility.Visible;
+				RefreshComicList();
+			};
 		}
 
 		//*****************************************
@@ -219,7 +225,7 @@ namespace TouchScreenComicViewer {
 			//the user multiple times.
 			IsolatedStorageFile iso2 = IsolatedStorageFile.GetUserStoreForApplication();
 			if (iso2.Quota < QUOTA_SIZE) {
-				if (!iso2.IncreaseQuotaTo(QUOTA_SIZE)) //50MB
+				if (!iso2.IncreaseQuotaTo(QUOTA_SIZE))
 				{
 					throw new Exception("Can't store the image.");
 				} else {
@@ -229,72 +235,11 @@ namespace TouchScreenComicViewer {
 
 			if (dlg.ShowDialog() == true) {
 
-				//inefficient hack
-				int numFiles = 0;
 				IEnumerator<FileInfo> fileEnumerator = dlg.Files.GetEnumerator();
-				foreach (FileInfo file in dlg.Files) {
-					++numFiles;
-				}
-				fileEnumerator.Reset();
-				LoadingProgressBar.Value = 0;
-				LoadingProgressBar.Maximum = numFiles;
-				if (numFiles == 0) {
-					LoadingProgressBar.Visibility = System.Windows.Visibility.Collapsed;
-				} else {
-					LoadingProgressBar.Visibility = System.Windows.Visibility.Visible;
-				}
-
-				//the threading is so that one comic loads at a time and
-				//the UI doesn't look like it locked up as the list is refreshed
-				BackgroundWorker comicLoader = new BackgroundWorker();
-				comicLoader.RunWorkerCompleted += (completedSender, completedE) =>
-					{
-						this.ComicArchiveWrapPanel.Visibility = System.Windows.Visibility.Visible;
-						RefreshComicList();
-						this.openComicBtn.Visibility = System.Windows.Visibility.Visible;
-					};
-				Dispatcher myDisp = Application.Current.RootVisual.Dispatcher;
-				DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(myDisp); //needed to dispatch synchronously
-				comicLoader.WorkerReportsProgress = false;
-				comicLoader.DoWork += (workSender, workE) =>
-				{
-					try {
-					while(fileEnumerator.MoveNext()) {
-
-							//wait on the UI to finish loading this comic
-							//before we move on to the next comic in the list
-							myDispSync.Send((obj) =>
-							{
-								try {
-									IEnumerator<FileInfo> comicFile = obj as IEnumerator<FileInfo>;
-
-									mComicArchiveMgr.AddComicToArchive(comicFile.Current);
-									LoadingProgressBar.Value += 1;
-									if (LoadingProgressBar.Value == LoadingProgressBar.Maximum) {
-										LoadingProgressBar.Visibility = System.Windows.Visibility.Collapsed;
-									}
-								} catch (Exception ex) {
-									string exceptionString = ex.ToString();
-								}
-							}, fileEnumerator);
-
-						
-					}
-					} catch (Exception ex) {
-						string exceptionString = ex.ToString();
-					}
-				};
-
-				try {
-					this.ComicArchiveWrapPanel.Visibility = System.Windows.Visibility.Collapsed;
-					this.openComicBtn.Visibility = System.Windows.Visibility.Collapsed;
-					comicLoader.RunWorkerAsync();
-				} catch (Exception ex) {
-					ex.ToString();
-				}
-
-
-				
+				this.ComicArchiveWrapPanel.Visibility = System.Windows.Visibility.Collapsed;
+				this.openComicBtn.Visibility = System.Windows.Visibility.Collapsed;
+				LoadingComicsDisp.Visibility = System.Windows.Visibility.Visible;
+				LoadingComicsDisp.LoadFiles(fileEnumerator, mComicArchiveMgr);
 			}
 		}
 
