@@ -87,6 +87,9 @@
       <DependentUpon>ComicViewingMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="IsoStorageUtilities.cs" />
+    <Compile Include="LoadingComicsProgress.xaml.cs">
+      <DependentUpon>LoadingComicsProgress.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -110,6 +113,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ComicViewingMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LoadingComicsProgress.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
