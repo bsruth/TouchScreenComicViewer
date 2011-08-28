@@ -98,6 +98,14 @@ namespace TouchScreenComicViewer {
 			return filesWithExt;
 		}
 
+		static public void DeleteFileFromIsoStorage(string fileName) {
+		using (IsolatedStorageFile iso = IsolatedStorageFile.GetUserStoreForApplication()) {
+			if(iso.FileExists(fileName)) {
+				iso.DeleteFile(fileName);
+			}
+		}
+
+		}
 		//*****************************************
 		static public bool CopyFileToIsoStorage(FileInfo fileToCopy) {
 			// Save all selected files into application's isolated storage
