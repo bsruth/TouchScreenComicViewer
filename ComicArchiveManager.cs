@@ -59,7 +59,7 @@ namespace TouchScreenComicViewer {
 				return false;
 			}
 			ComicBook comicToAdd = new ComicBook(comicFile.Name);
-			if(comicToAdd.GetCoverImage() == null) {
+			if(comicToAdd.TotalPages < 1) {
 				IsoStorageUtilities.DeleteFileFromIsoStorage(comicFile.Name);
 				return false;
 			}
