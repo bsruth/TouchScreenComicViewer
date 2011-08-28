@@ -58,7 +58,12 @@ namespace TouchScreenComicViewer {
 				//TODO: error message
 				return false;
 			}
-			this._comicBookList.Add(comicFile.Name, new ComicBook(comicFile.Name));
+			ComicBook comicToAdd = new ComicBook(comicFile.Name);
+			if(comicToAdd.GetCoverImage() == null) {
+				IsoStorageUtilities.DeleteFileFromIsoStorage(comicFile.Name);
+				return false;
+			}
+			this._comicBookList.Add(comicFile.Name, comicToAdd);
 
 			return true;
 		}
