@@ -52,6 +52,9 @@ namespace TouchScreenComicViewer{
 		{
 			if (_coverImage == null)
 			{
+				if(_filesInComicBook.Count < 1) {
+					return null;
+				}
 				_coverImage = GetImageFromComicFile(_filesInComicBook[0]);
 			}
 			_currentCachedImage = _coverImage;
