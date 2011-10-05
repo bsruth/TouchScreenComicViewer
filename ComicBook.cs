@@ -22,7 +22,7 @@ namespace TouchScreenComicViewer{
 		private BitmapImage _coverImage = null;
 		private BitmapImage _currentCachedImage = null;
 		private int _currentPageIndex = 0;
-		private static string[] VALID_IMAGE_FILE_EXT = { ".jpg" };
+		private static string[] VALID_IMAGE_FILE_EXT = { ".jpg", ".png" };
 		public int CurrentPageNumber {
 			get { return _currentPageIndex + 1;}
 			protected set { 
