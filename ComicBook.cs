@@ -33,6 +33,8 @@ namespace TouchScreenComicViewer{
 
 		public int TotalPages { get { return _filesInComicBook.Count; } }
 
+		public string ComicBookTitle { get { return _comicBookFileName;} }
+
 		//*****************************************
 		public ComicBook(string comicBookFileName) {
 			_comicBookFileName = comicBookFileName;
