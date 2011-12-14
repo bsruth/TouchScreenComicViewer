@@ -12,7 +12,7 @@
 		</Storyboard>
 	</UserControl.Resources>
 
-	<Grid x:Name="LayoutRoot" Background="Transparent" Width="Auto" Height="Auto">
+	<Grid x:Name="LayoutRoot" Background="Transparent" Width="Auto" Height="Auto" MouseLeftButtonUp="ComicViewingMenu_MouseLeftButtonUp" MouseLeftButtonDown="ComicViewingMenu_MouseLeftButtonDown" MouseLeave="ComicViewingMenu_MouseLeave">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
@@ -25,8 +25,8 @@
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
-			<sdk:Label Grid.Column="1" Content="{Binding Path=CurrentPageNumber}" HorizontalAlignment="Right" Name="currentPageNumLbl" VerticalAlignment="Bottom" Height="25" Width="33" Foreground="Black" HorizontalContentAlignment="Right" Background="#9DE5E5E5" Margin="0,15,2,5" MouseLeftButtonUp="ComicViewingMenu_MouseLeftButtonUp" MouseLeftButtonDown="ComicViewingMenu_MouseLeftButtonDown" MouseLeave="ComicViewingMenu_MouseLeave"/>
-			<sdk:Label Grid.Column="2" Content="{Binding Path=TotalPages}" HorizontalAlignment="Left" Margin="2,15,0,5" Name="totalPagesLbl" VerticalAlignment="Bottom" Height="25" Width="35" Foreground="Black"  Background="#9DE5E5E5" MouseLeftButtonUp="ComicViewingMenu_MouseLeftButtonUp" MouseLeftButtonDown="ComicViewingMenu_MouseLeftButtonDown" MouseLeave="ComicViewingMenu_MouseLeave"/>
+			<sdk:Label Grid.Column="1" Content="{Binding Path=CurrentPageNumber}" HorizontalAlignment="Right" Name="currentPageNumLbl" VerticalAlignment="Bottom" Height="25" Width="33" Foreground="Black" HorizontalContentAlignment="Right" Background="#9DE5E5E5" Margin="0,15,2,5"/>
+			<sdk:Label Grid.Column="2" Content="{Binding Path=TotalPages}" HorizontalAlignment="Left" Margin="2,15,0,5" Name="totalPagesLbl" VerticalAlignment="Bottom" Height="25" Width="35" Foreground="Black"  Background="#9DE5E5E5"/>
 		</Grid>
 		<Grid Grid.Row="1" Name="expandedMenu" Visibility="Collapsed">
 			<Button Style="{StaticResource WP7Button}" x:Name="CloseComicBtn" Height="50" Content="Close Comic" HorizontalAlignment="Stretch" Margin="20" Click="CloseComicBtn_click" ToolTipService.ToolTip="Close comic and view collection"/>
