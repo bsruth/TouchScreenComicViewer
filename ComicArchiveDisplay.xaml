@@ -28,7 +28,8 @@
 		<Button Content="Add Comics..." Height="31" Style="{StaticResource WP7Button}" Name="openComicBtn" Margin="12,0,0,11" VerticalAlignment="Bottom" Click="OpenComicBtn_Click" HorizontalAlignment="Left" Width="110" />
 		<sdk:Label Margin="197,0,24,11" Name="LastComicLabel" Foreground="White" Height="28" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
 		<sdk:Label Margin="128,0,0,11" Name="label1" Foreground="White" Content="Last Comic:" HorizontalAlignment="Left" Width="71" Height="28" VerticalAlignment="Bottom" />
-		<ProgressBar Name="LoadingProgressBar" Margin="128,0,12,12" Height="27" VerticalAlignment="Bottom" Foreground="Green" />
+		<ProgressBar Name="LoadingProgressBar" Margin="128,0,128,12" Height="27" VerticalAlignment="Bottom" Foreground="Green" />
+		<Button Content="EXIT" Height="31" HorizontalAlignment="Right" Margin="0,0,12,11" Name="exitBtn" Style="{StaticResource WP7Button}" VerticalAlignment="Bottom" Width="110" Click="CloseBtn_Clicked"/>
 		<TSComicV:LoadingComicsProgress x:Name="LoadingComicsDisp" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 		<TSComicV:MainPage x:Name="ComicViewer" Visibility="Collapsed" Margin="0,0,0,0">
 			<TSComicV:MainPage.RenderTransform>

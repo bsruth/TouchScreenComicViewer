@@ -40,6 +40,7 @@ namespace TouchScreenComicViewer {
 			{
 				this.ComicArchiveWrapPanel.Visibility = System.Windows.Visibility.Visible;
 				this.openComicBtn.Visibility = System.Windows.Visibility.Visible;
+				this.exitBtn.Visibility = System.Windows.Visibility.Visible;
 				RefreshComicList();
 			};
 		}
@@ -238,9 +239,14 @@ namespace TouchScreenComicViewer {
 				IEnumerator<FileInfo> fileEnumerator = dlg.Files.GetEnumerator();
 				this.ComicArchiveWrapPanel.Visibility = System.Windows.Visibility.Collapsed;
 				this.openComicBtn.Visibility = System.Windows.Visibility.Collapsed;
+				this.exitBtn.Visibility = System.Windows.Visibility.Collapsed;
 				LoadingComicsDisp.Visibility = System.Windows.Visibility.Visible;
 				LoadingComicsDisp.LoadFiles(fileEnumerator, mComicArchiveMgr);
 			}
+		}
+
+		private void CloseBtn_Clicked(object sender, RoutedEventArgs e) {
+			System.Windows.Browser.HtmlPage.Window.Invoke("close");
 		}
 
 	}
