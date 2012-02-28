@@ -42,6 +42,7 @@ namespace TouchScreenComicViewer {
 			}
 			// Move the stream back to the beginning
 			zipStream.Seek(0, SeekOrigin.Begin);
+			names.Sort();
 			return names.ToArray();
 		}
 
