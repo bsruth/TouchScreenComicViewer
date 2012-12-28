@@ -121,7 +121,7 @@ namespace TouchScreenComicViewer {
 									//now get the cover image
 									cli.ItemBMP = mComicArchiveMgr.GetComicCover(comicString);
 									ComicCoverTile cct = new ComicCoverTile();
-									cct.Height = 150;
+									cct.Height = 300;
 									cct.Width = cct.Height * cli.ItemBMP.PixelWidth / cli.ItemBMP.PixelHeight;
 									cct.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
 									cct.DataContext = cli;
