@@ -21,7 +21,7 @@
 			<ColumnDefinition Width="200*" />
 		</Grid.ColumnDefinitions>
 		<ScrollViewer Name ="ComicArchiveScrollViewer" Margin="12,12,12,49" VerticalScrollBarVisibility="Auto">
-			<controls:WrapPanel Background="Black" Name="ComicArchiveWrapPanel" Orientation="Horizontal" >
+			<controls:WrapPanel Background="Black" Name="ComicArchiveWrapPanel" Orientation="Horizontal" HorizontalAlignment="Center">
 			</controls:WrapPanel>
 		</ScrollViewer>
 		
