@@ -62,11 +62,11 @@ namespace TouchScreenComicViewer {
 			ZoomX.From = this.ActualWidth;
 			ZoomY.To = _currentOpenComicCoverTile.ActualHeight;
 			ZoomY.From = this.ActualHeight;
-			GeneralTransform objGeneralTransform = _currentOpenComicCoverTile.TransformToVisual(Application.Current.RootVisual as UIElement);
-			Point point = objGeneralTransform.Transform(new Point(0, 0));
-			XLoc.To = point.X - (ComicArchiveWrapPanel.ActualWidth / 2) + ((ComicArchiveScrollViewer.Margin.Left + ComicArchiveScrollViewer.Margin.Right) / 2);
+			GeneralTransform objGeneralTransform = _currentOpenComicCoverTile.TransformToVisual(this as UIElement);
+			Point point = objGeneralTransform.Transform(new Point(-this.ActualWidth/2, -this.ActualHeight/2));
+            XLoc.To = point.X + (_currentOpenComicCoverTile.ActualWidth / 2);
 			XLoc.From = 0;
-			YLoc.To = point.Y - (ComicArchiveWrapPanel.ActualHeight / 2) + ((ComicArchiveScrollViewer.Margin.Top + ComicArchiveScrollViewer.Margin.Bottom) / 2);
+            YLoc.To = point.Y + (_currentOpenComicCoverTile.ActualHeight / 2);
 			YLoc.From = 0;
 
 			try {
@@ -192,6 +192,7 @@ namespace TouchScreenComicViewer {
 
 				myStoryboard.Completed += OpenComicAnimationCompleted;
 
+
 				ComicViewer.LayoutRoot.Background = new SolidColorBrush(Colors.Transparent);
 
 				//adjust the animation so that it seems to come from the tile that
@@ -200,11 +201,11 @@ namespace TouchScreenComicViewer {
 				ZoomX.To = this.ActualWidth;
 				ZoomY.From = _currentOpenComicCoverTile.ActualHeight;
 				ZoomY.To = this.ActualHeight;
-				GeneralTransform objGeneralTransform = ((ComicCoverTile)sender).TransformToVisual(Application.Current.RootVisual as UIElement);
-				Point point = objGeneralTransform.Transform(new Point(0, 0));
-				XLoc.From = point.X - (ComicArchiveWrapPanel.ActualWidth / 2) + ((ComicArchiveScrollViewer.Margin.Left + ComicArchiveScrollViewer.Margin.Right) / 2);
+				GeneralTransform objGeneralTransform = ((ComicCoverTile)sender).TransformToVisual(this as UIElement);
+				Point point = objGeneralTransform.Transform(new Point(-this.ActualWidth/2, -this.ActualHeight/2 ));
+                XLoc.From = point.X + (_currentOpenComicCoverTile.ActualWidth/2);
 				XLoc.To = 0;
-				YLoc.From = point.Y - (ComicArchiveWrapPanel.ActualHeight / 2) + ((ComicArchiveScrollViewer.Margin.Top + ComicArchiveScrollViewer.Margin.Bottom) / 2);
+                YLoc.From = point.Y + (_currentOpenComicCoverTile.ActualHeight/2);
 				YLoc.To = 0;
 
 				try {
