@@ -21,6 +21,8 @@ namespace TouchScreenComicViewer{
 		private List<string> _filesInComicBook = new List<string>();
 		private BitmapImage _coverImage = null;
 		private BitmapImage _currentCachedImage = null;
+        private BitmapImage _nextImage = null;
+        private BitmapImage _previousImage = null;
 		private int _currentPageIndex = 0;
 		private static string[] VALID_IMAGE_FILE_EXT = { ".jpg", ".png" };
 		public int CurrentPageNumber {
@@ -63,23 +65,41 @@ namespace TouchScreenComicViewer{
 			return _coverImage;
 		}
 
+        private void SetupPageCache()
+        {
+            _nextImage = GetImageFromComicFile(_filesInComicBook[GetNextPageIndex()]);
+            _previousImage = GetImageFromComicFile(_filesInComicBook[GetPreviousPageIndex()]);
+        }
+
 		//*****************************************
 		public BitmapImage GetNextPageImage() {
-			int nextPageIndex = _currentPageIndex + 1;
-			if (nextPageIndex >= TotalPages) {
-				nextPageIndex = 0;
-			}
 
-			BitmapImage pageImage = GetImageFromComicFile(_filesInComicBook[nextPageIndex]);
-			if (pageImage != null) {
-				CurrentPageNumber = nextPageIndex;
-			}
+            BitmapImage pageImage = _nextImage;
+            int nextPageIndex = GetNextPageIndex();
+            if (pageImage == null)
+            {
+                pageImage = GetImageFromComicFile(_filesInComicBook[nextPageIndex]);                
+            }
 
+            CurrentPageNumber = nextPageIndex;
 			_currentCachedImage = pageImage;
+
+            SetupPageCache();
+
 			return pageImage;
 
 		}
 
+        private int GetNextPageIndex()
+        {
+            int nextPageIndex = _currentPageIndex + 1;
+            if (nextPageIndex >= TotalPages)
+            {
+                nextPageIndex = 0;
+            }
+
+            return nextPageIndex;
+        }
 		//*****************************************
 		public BitmapImage GetCurrentPageImage() {
 			return _currentCachedImage;
@@ -88,19 +108,34 @@ namespace TouchScreenComicViewer{
 
 		//*****************************************
 		public BitmapImage GetPreviousPageImage() {
-			int prevPageIndex = _currentPageIndex - 1;
-			if (prevPageIndex < 0) {
-				prevPageIndex = TotalPages - 1;
-			}
-			BitmapImage pageImage = GetImageFromComicFile(_filesInComicBook[prevPageIndex]);
-			if (pageImage != null) {
-				CurrentPageNumber = prevPageIndex;
+
+            int prevPageIndex = GetPreviousPageIndex();
+            BitmapImage pageImage = _previousImage;
+             
+            if (_previousImage == null)
+            {
+                GetImageFromComicFile(_filesInComicBook[prevPageIndex]);
 			}
 
+            CurrentPageNumber = prevPageIndex;
 			_currentCachedImage = pageImage;
+
+            SetupPageCache();
+
 			return pageImage;
 
 		}
+
+        private int GetPreviousPageIndex()
+        {
+            int prevPageIndex = _currentPageIndex - 1;
+            if (prevPageIndex < 0)
+            {
+                prevPageIndex = TotalPages - 1;
+            }
+
+            return prevPageIndex;
+        }
 
 		//*****************************************
 		private BitmapImage GetImageFromComicFile(string imageName)
