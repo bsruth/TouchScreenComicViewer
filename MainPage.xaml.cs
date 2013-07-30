@@ -359,6 +359,8 @@ namespace TouchScreenComicViewer
 				ZoomImage(false, new Point(0, 0));
 			}
 
+            _currentComicBook.CloseComic();
+
 			var handler = ComicClosed;
 			if (handler != null) {
 				handler(sender, e);

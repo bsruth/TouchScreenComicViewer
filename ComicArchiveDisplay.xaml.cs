@@ -186,6 +186,7 @@ namespace TouchScreenComicViewer {
 			string selectedComicFile = ((ComicListItem)(_currentOpenComicCoverTile.DataContext)).ItemText;
 			ComicBook openedComic = mComicArchiveMgr.OpenComic(selectedComicFile);
 			if (openedComic != null) {
+                openedComic.OpenComic();
 				ComicViewer.SetComic(openedComic);
 				LastComicLabel.Content = selectedComicFile;
 				ComicViewer.Visibility = System.Windows.Visibility.Visible;

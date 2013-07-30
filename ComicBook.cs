@@ -19,12 +19,13 @@ namespace TouchScreenComicViewer{
 		private string _comicBookFileName;
 		private Stream _comicBookFileStream;
 		private List<string> _filesInComicBook = new List<string>();
-		private BitmapImage _coverImage = null;
-		private BitmapImage _currentCachedImage = null;
-        private BitmapImage _nextImage = null;
-        private BitmapImage _previousImage = null;
+        private BitmapImage _coverImage = null;
+        private BitmapImage _currentCachedImage = null;
 		private int _currentPageIndex = 0;
 		private static string[] VALID_IMAGE_FILE_EXT = { ".jpg", ".png" };
+
+        private List<MemoryStream> _cachedComicImages = new List<MemoryStream>();
+
 		public int CurrentPageNumber {
 			get { return _currentPageIndex + 1;}
 			protected set { 
@@ -58,34 +59,28 @@ namespace TouchScreenComicViewer{
 				if(_filesInComicBook.Count < 1) {
 					return null;
 				}
-				_coverImage = GetImageFromComicFile(_filesInComicBook[0]);
+                using (var coverStream = GetImageFromComicFile(_filesInComicBook[0]))
+                {
+                    _coverImage = new BitmapImage();
+                    _coverImage.SetSource(coverStream);
+                }
+                
 			}
 			_currentCachedImage = _coverImage;
 			return _coverImage;
 		}
 
-        private void SetupPageCache()
-        {
-            _nextImage = GetImageFromComicFile(_filesInComicBook[GetNextPageIndex()]);
-            _previousImage = GetImageFromComicFile(_filesInComicBook[GetPreviousPageIndex()]);
-        }
-
 		//*****************************************
 		public BitmapImage GetNextPageImage() {
 
-            BitmapImage pageImage = _nextImage;
             int nextPageIndex = GetNextPageIndex();
-            if (pageImage == null)
-            {
-                pageImage = GetImageFromComicFile(_filesInComicBook[nextPageIndex]);                
-            }
-
+          
             CurrentPageNumber = nextPageIndex;
-			_currentCachedImage = pageImage;
+            _currentCachedImage = new BitmapImage();
+            _currentCachedImage.SetSource(_cachedComicImages[nextPageIndex]);
 
-            SetupPageCache();
 
-			return pageImage;
+            return _currentCachedImage;
 
 		}
 
@@ -109,19 +104,12 @@ namespace TouchScreenComicViewer{
 		public BitmapImage GetPreviousPageImage() {
 
             int prevPageIndex = GetPreviousPageIndex();
-            BitmapImage pageImage = _previousImage;
-             
-            if (_previousImage == null)
-            {
-                GetImageFromComicFile(_filesInComicBook[prevPageIndex]);
-			}
-
+         
             CurrentPageNumber = prevPageIndex;
-			_currentCachedImage = pageImage;
+            _currentCachedImage = new BitmapImage();
+            _currentCachedImage.SetSource(_cachedComicImages[prevPageIndex]);
 
-            SetupPageCache();
-
-			return pageImage;
+			return _currentCachedImage;
 
 		}
 
@@ -137,18 +125,43 @@ namespace TouchScreenComicViewer{
         }
 
 		//*****************************************
-		private BitmapImage GetImageFromComicFile(string imageName)
+		private MemoryStream GetImageFromComicFile(string imageName)
 		{
-			BitmapImage imageFile = null;
+			MemoryStream imageFileStream = null;
 			Stream coverFileStream = ZipFileUtilities.GetFileStreamFromZIPFile(_comicBookFileName, imageName);
 			if (coverFileStream != null) {
-				imageFile = new BitmapImage();
-				imageFile.SetSource(coverFileStream);
-				coverFileStream.Close();
+                imageFileStream = new MemoryStream();
+                coverFileStream.CopyTo(imageFileStream);
+                BitmapImage tmpImg = new BitmapImage();
+                tmpImg.SetSource(imageFileStream);               
 			}
-			return imageFile;
+            return imageFileStream;
 		}
 
+        private void CacheImagesInComic()
+        {
+           if(_cachedComicImages.Count == 0) {
+            foreach(var comicFile in _filesInComicBook) 
+            {
+                var comicStream = GetImageFromComicFile(comicFile);                
+                _cachedComicImages.Add(comicStream);
+            }
+           }
+        }
+
+        public void OpenComic()
+        {
+            CacheImagesInComic();
+        }
+
+        public void CloseComic()
+        {
+            foreach (var comicStream in _cachedComicImages)
+            {
+                comicStream.Close();
+            }
+            _cachedComicImages.Clear();
+        }
 
         /// <summary>
         /// Gets a list of all supported comic image files in the comic archive.
