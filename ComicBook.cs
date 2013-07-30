@@ -131,22 +131,24 @@ namespace TouchScreenComicViewer{
 			Stream coverFileStream = ZipFileUtilities.GetFileStreamFromZIPFile(_comicBookFileName, imageName);
 			if (coverFileStream != null) {
                 imageFileStream = new MemoryStream();
-                coverFileStream.CopyTo(imageFileStream);
-                BitmapImage tmpImg = new BitmapImage();
-                tmpImg.SetSource(imageFileStream);               
+                coverFileStream.CopyTo(imageFileStream);      
 			}
             return imageFileStream;
 		}
 
         private void CacheImagesInComic()
         {
-           if(_cachedComicImages.Count == 0) {
-            foreach(var comicFile in _filesInComicBook) 
+            new System.Threading.Thread(() =>
             {
-                var comicStream = GetImageFromComicFile(comicFile);                
-                _cachedComicImages.Add(comicStream);
-            }
-           }
+                if (_cachedComicImages.Count == 0)
+                {
+                    foreach (var comicFile in _filesInComicBook)
+                    {
+                        var comicStream = GetImageFromComicFile(comicFile);
+                        _cachedComicImages.Add(comicStream);
+                    }
+                }
+            }).Start();
         }
 
         public void OpenComic()
