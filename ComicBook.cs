@@ -109,9 +109,7 @@ namespace TouchScreenComicViewer{
 		public void GoToNextPage() {
 
             int nextPageIndex = GetNextPageIndex();
-          
-            CurrentPageNumber = nextPageIndex;
-            CurrentPageImage.SetSource(_cachedComicImages[nextPageIndex]);
+            GoToPage(nextPageIndex);
 		}
 
         private int GetNextPageIndex()
@@ -124,14 +122,18 @@ namespace TouchScreenComicViewer{
 
             return nextPageIndex;
         }
-	
+
+        private void GoToPage(int pageNumber)
+        {
+            CurrentPageNumber = pageNumber;
+            CurrentPageImage.SetSource(_cachedComicImages[pageNumber]);
+        }
 		//*****************************************
         public void GoToPreviousPage()
         {
 
             int prevPageIndex = GetPreviousPageIndex();
-            CurrentPageNumber = prevPageIndex;
-            CurrentPageImage.SetSource(_cachedComicImages[prevPageIndex]);
+            GoToPage(prevPageIndex);
         }
 
         private int GetPreviousPageIndex()
