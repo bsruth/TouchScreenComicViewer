@@ -181,7 +181,7 @@ namespace TouchScreenComicViewer
 
 			_currentComicBook = comicToOpen;
 			DataContext = _currentComicBook;
-			DisplayImage(_currentComicBook.GetCurrentPageImage());
+			DisplayImage();
 		}
 
 		//*****************************************
@@ -319,19 +319,15 @@ namespace TouchScreenComicViewer
 		private void GoToNextPage() 
 		{
 			//swipe left
-			BitmapImage comicImage = _currentComicBook.GetNextPageImage();
-			if (comicImage != null) {
-				DisplayImage(comicImage);
-			}
+			_currentComicBook.GoToNextPage();
+			DisplayImage();
 		}
 
 		//*****************************************
 		private void GoToPreviousPage()
 		{
-			BitmapImage comicImage = _currentComicBook.GetPreviousPageImage();
-			if (comicImage != null) {
-				DisplayImage(comicImage);
-			}
+			_currentComicBook.GoToPreviousPage();
+			DisplayImage();
 		}
 
 		//*****************************************
@@ -342,14 +338,12 @@ namespace TouchScreenComicViewer
 		}
 
 		//*****************************************
-		private void DisplayImage(BitmapImage imageToDisplay)
+		private void DisplayImage()
 		{
 			if (_isZoomed) {
 				ZoomImage(false, new Point(0, 0));
 				ZoomImage(true, new Point(50, 0));
-			}
-
-			this.MainDisplayImage.Source = imageToDisplay;
+			}			
 			this.MainDisplayImage.Visibility = System.Windows.Visibility.Visible;
 		}
 

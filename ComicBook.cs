@@ -20,13 +20,16 @@ namespace TouchScreenComicViewer{
 		private Stream _comicBookFileStream;
 		private List<string> _filesInComicBook = new List<string>();
         private BitmapImage _coverImage = null;
-        private BitmapImage _currentCachedImage = null;
+        private BitmapImage _currentPageImage = new BitmapImage();
 		private int _currentPageIndex = 0;
 		private static string[] VALID_IMAGE_FILE_EXT = { ".jpg", ".png" };
 
         private List<MemoryStream> _cachedComicImages = new List<MemoryStream>();
 
-		public int CurrentPageNumber {
+
+        #region Properties
+        
+        public int CurrentPageNumber {
 			get { return _currentPageIndex + 1;}
 			protected set { 
 				_currentPageIndex = value;
@@ -34,11 +37,32 @@ namespace TouchScreenComicViewer{
 			}
 		}
 
+
+        public BitmapImage CurrentPageImage
+        {
+            get
+            {
+                return _currentPageImage;
+            }
+
+            private set
+            {
+                if(value != null && _currentPageImage != value)
+                {
+                    _currentPageImage = value;
+                    RaisePropertyChanged("CurrentPageImage");
+                }
+            }
+        }
+
 		public int TotalPages { get { return _filesInComicBook.Count; } }
 
 		public string ComicBookTitle { get { return _comicBookFileName;} }
 
-		//*****************************************
+
+        #endregion
+
+        //*****************************************
 		public ComicBook(string comicBookFileName) {
 			_comicBookFileName = comicBookFileName;
             _filesInComicBook = GetFilesInComicBook();
@@ -66,22 +90,17 @@ namespace TouchScreenComicViewer{
                 }
                 
 			}
-			_currentCachedImage = _coverImage;
+            CurrentPageImage.SetSource(GetImageFromComicFile(_filesInComicBook[0]));
 			return _coverImage;
 		}
 
 		//*****************************************
-		public BitmapImage GetNextPageImage() {
+		public void GoToNextPage() {
 
             int nextPageIndex = GetNextPageIndex();
           
             CurrentPageNumber = nextPageIndex;
-            _currentCachedImage = new BitmapImage();
-            _currentCachedImage.SetSource(_cachedComicImages[nextPageIndex]);
-
-
-            return _currentCachedImage;
-
+            CurrentPageImage.SetSource(_cachedComicImages[nextPageIndex]);
 		}
 
         private int GetNextPageIndex()
@@ -94,24 +113,15 @@ namespace TouchScreenComicViewer{
 
             return nextPageIndex;
         }
+	
 		//*****************************************
-		public BitmapImage GetCurrentPageImage() {
-			return _currentCachedImage;
-
-		}
-
-		//*****************************************
-		public BitmapImage GetPreviousPageImage() {
+        public void GoToPreviousPage()
+        {
 
             int prevPageIndex = GetPreviousPageIndex();
-         
             CurrentPageNumber = prevPageIndex;
-            _currentCachedImage = new BitmapImage();
-            _currentCachedImage.SetSource(_cachedComicImages[prevPageIndex]);
-
-			return _currentCachedImage;
-
-		}
+            CurrentPageImage.SetSource(_cachedComicImages[prevPageIndex]);
+        }
 
         private int GetPreviousPageIndex()
         {
