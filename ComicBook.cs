@@ -19,7 +19,7 @@ namespace TouchScreenComicViewer{
 		private string _comicBookFileName;
 		private Stream _comicBookFileStream;
 		private List<string> _filesInComicBook = new List<string>();
-        private BitmapImage _coverImage = null;
+        private BitmapImage _coverImage = new BitmapImage();
         private BitmapImage _currentPageImage = new BitmapImage();
 		private int _currentPageIndex = 0;
 		private static string[] VALID_IMAGE_FILE_EXT = { ".jpg", ".png" };
@@ -55,6 +55,23 @@ namespace TouchScreenComicViewer{
             }
         }
 
+        public BitmapImage CoverImage
+        {
+            get
+            {
+                return _coverImage;
+            }
+
+            private set
+            {
+                if(value != null && _coverImage != value)
+                {
+                    _coverImage = value;
+                    RaisePropertyChanged("CoverImage");
+                }
+            }
+        }
+
 		public int TotalPages { get { return _filesInComicBook.Count; } }
 
 		public string ComicBookTitle { get { return _comicBookFileName;} }
@@ -66,6 +83,19 @@ namespace TouchScreenComicViewer{
 		public ComicBook(string comicBookFileName) {
 			_comicBookFileName = comicBookFileName;
             _filesInComicBook = GetFilesInComicBook();
+
+            if (_filesInComicBook.Count > 1)
+            {
+                using (var coverStream = GetImageFromComicFile(_filesInComicBook[0]))
+                {
+                    CoverImage.SetSource(coverStream);
+                    CurrentPageImage.SetSource(coverStream);
+                }
+            }
+            else
+            {
+               //TODO: Show image saying "NO IMAGES"
+            }
 		}
 
 
@@ -73,25 +103,6 @@ namespace TouchScreenComicViewer{
 		public string GetComicFileName() 
 		{
 			return _comicBookFileName;
-		}
-
-		//*****************************************
-		public BitmapImage GetCoverImage()
-		{
-			if (_coverImage == null)
-			{
-				if(_filesInComicBook.Count < 1) {
-					return null;
-				}
-                using (var coverStream = GetImageFromComicFile(_filesInComicBook[0]))
-                {
-                    _coverImage = new BitmapImage();
-                    _coverImage.SetSource(coverStream);
-                }
-                
-			}
-            CurrentPageImage.SetSource(GetImageFromComicFile(_filesInComicBook[0]));
-			return _coverImage;
 		}
 
 		//*****************************************

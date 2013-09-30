@@ -78,7 +78,7 @@ namespace TouchScreenComicViewer {
 		public BitmapImage GetComicCover(string comicFileName) {
 			ComicBook requestedComic;
 			if (_comicBookList.TryGetValue(comicFileName, out requestedComic) == true) {
-				return requestedComic.GetCoverImage();
+				return requestedComic.CoverImage;
 			}
 			return null;
 		}
