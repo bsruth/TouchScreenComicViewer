@@ -161,17 +161,19 @@ namespace TouchScreenComicViewer{
 
         private void CacheImagesInComic()
         {
-            new System.Threading.Thread(() =>
+            if (_cachedComicImages.Count == 0)
             {
-                if (_cachedComicImages.Count == 0)
+                new System.Threading.Thread(() =>
                 {
+
                     foreach (var comicFile in _filesInComicBook)
                     {
                         var comicStream = GetImageFromComicFile(comicFile);
                         _cachedComicImages.Add(comicStream);
                     }
-                }
-            }).Start();
+
+                }).Start();
+            }
         }
 
         public void OpenComic()
