@@ -12,6 +12,7 @@ using System.IO;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Windows.Threading;
 
 namespace TouchScreenComicViewer{
 	public class ComicBook : INotifyPropertyChanged {
@@ -19,10 +20,11 @@ namespace TouchScreenComicViewer{
 		private string _comicBookFileName;
 		private Stream _comicBookFileStream;
 		private List<string> _filesInComicBook = new List<string>();
-        private BitmapImage _coverImage = new BitmapImage();
-        private BitmapImage _currentPageImage = new BitmapImage();
+        private BitmapImage _coverImage = null;
+        private BitmapImage _currentPageImage = null;
 		private int _currentPageIndex = 0;
 		private static string[] VALID_IMAGE_FILE_EXT = { ".jpg", ".png" };
+
 
         private List<MemoryStream> _cachedComicImages = new List<MemoryStream>();
 
@@ -59,6 +61,10 @@ namespace TouchScreenComicViewer{
         {
             get
             {
+                if (_coverImage == null)
+                {
+                    LoadCover();
+                }
                 return _coverImage;
             }
 
@@ -83,22 +89,38 @@ namespace TouchScreenComicViewer{
 		public ComicBook(string comicBookFileName) {
 			_comicBookFileName = comicBookFileName;
             _filesInComicBook = GetFilesInComicBook();
+            LoadCover();
+		}
 
+        private void LoadCover()
+        {
             if (_filesInComicBook.Count > 1)
             {
-                using (var coverStream = GetImageFromComicFile(_filesInComicBook[0]))
+                //Dispatcher myDisp = Application.Current.RootVisual.Dispatcher;
+                var disp = Deployment.Current.Dispatcher;
+                DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(disp); //needed to dispatch synchronously                  
+                myDispSync.Send((obj) =>
                 {
-                    CoverImage.SetSource(coverStream);
-                    CurrentPageImage.SetSource(coverStream);
-                }
+
+                    using (var coverStream = GetImageFromComicFile(_filesInComicBook[0]))
+                    {
+                        CoverImage = new BitmapImage();
+                        CurrentPageImage = new BitmapImage();
+                        CoverImage.SetSource(coverStream);
+                        CurrentPageImage.SetSource(coverStream);
+                    }
+                }, null);
+
+
+
             }
             else
             {
-               //TODO: Show image saying "NO IMAGES"
+                //TODO: Show image saying "NO IMAGES"
             }
-		}
+        }
 
-
+      
 		//*****************************************
 		public string GetComicFileName() 
 		{
