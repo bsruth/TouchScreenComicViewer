@@ -541,8 +541,21 @@
 			<ColumnDefinition Width="200*" />
 		</Grid.ColumnDefinitions>
 		<ScrollViewer Name ="ComicArchiveScrollViewer" Margin="12,12,12,49" VerticalScrollBarVisibility="Auto" Style="{StaticResource ScrollViewerStyle1}">
-			<controls:WrapPanel Background="Black" Name="ComicArchiveWrapPanel" Orientation="Horizontal" HorizontalAlignment="Center">
-			</controls:WrapPanel>
+            <ListBox Name="ComicArchiveList" Background="Transparent" VerticalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <controls:WrapPanel Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Stretch" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <TSComicV:ComicCoverTile Height="300" MouseLeftButtonDown="ComicCover_MouseLeftButtonDown" 
+                                                     MouseLeftButtonUp="ComicCover_MouseLeftButtonUp" HorizontalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
 		</ScrollViewer>
 		
 		<Button Content="Add Comics..." Height="31" Style="{StaticResource WP7Button}" Name="openComicBtn" Margin="12,0,0,11" VerticalAlignment="Bottom" Click="OpenComicBtn_Click" HorizontalAlignment="Left" Width="110" />

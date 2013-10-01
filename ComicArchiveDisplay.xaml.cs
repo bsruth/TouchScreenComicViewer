@@ -16,10 +16,6 @@ using System.ComponentModel;
 using System.Windows.Threading;
 
 namespace TouchScreenComicViewer {
-	public class ComicListItem {
-		public string ItemText { get; set; }
-		public BitmapImage ItemBMP { get; set; }
-	}
 
 	public partial class ComicArchiveDisplay : UserControl {
 		
@@ -38,7 +34,7 @@ namespace TouchScreenComicViewer {
 			ComicViewer.ComicClosed += new RoutedEventHandler(ComicViewer_ComicClosed);
 			LoadingComicsDisp.FileLoadingCompleted += (senderFL, eFL) =>
 			{
-				this.ComicArchiveWrapPanel.Visibility = System.Windows.Visibility.Visible;
+                this.ComicArchiveList.Visibility = System.Windows.Visibility.Visible;
 				this.openComicBtn.Visibility = System.Windows.Visibility.Visible;
 				this.exitBtn.Visibility = System.Windows.Visibility.Visible;
 				RefreshComicList();
@@ -84,7 +80,7 @@ namespace TouchScreenComicViewer {
 		//*****************************************
 		private void RefreshComicList() {
 
-			ComicArchiveWrapPanel.Children.Clear();
+            ComicArchiveList.Items.Clear();
 
 
 			List<string> comics = mComicArchiveMgr.GetAvailableComics();
@@ -115,19 +111,8 @@ namespace TouchScreenComicViewer {
 							{
 								try {
 									string comicString = obj as string;
-
-									ComicListItem cli = new ComicListItem();
-									cli.ItemText = comicString;
-									//now get the cover image
-									cli.ItemBMP = mComicArchiveMgr.GetComicCover(comicString);
-									ComicCoverTile cct = new ComicCoverTile();
-									cct.Height = 300;
-									cct.Width = cct.Height * cli.ItemBMP.PixelWidth / cli.ItemBMP.PixelHeight;
-									cct.VerticalAlignment = System.Windows.VerticalAlignment.Stretch;
-									cct.DataContext = cli;
-									cct.MouseLeftButtonUp += new MouseButtonEventHandler(ComicCover_MouseLeftButtonUp);
-									cct.MouseLeftButtonDown += new MouseButtonEventHandler(ComicCover_MouseLeftButtonDown);
-									ComicArchiveWrapPanel.Children.Add(cct);
+                                    var currentComic = mComicArchiveMgr.GetComic(comicString);
+                                    ComicArchiveList.Items.Add(currentComic);
 									LoadingProgressBar.Value += 1;
 									if (LoadingProgressBar.Value == LoadingProgressBar.Maximum) {
 										LoadingProgressBar.Visibility = System.Windows.Visibility.Collapsed;
@@ -183,7 +168,7 @@ namespace TouchScreenComicViewer {
 			quickShift.Y = -3;
 			_currentOpenComicCoverTile.RenderTransform = quickShift;
 
-			string selectedComicFile = ((ComicListItem)(_currentOpenComicCoverTile.DataContext)).ItemText;
+			string selectedComicFile = ((ComicBook)(_currentOpenComicCoverTile.DataContext)).GetComicFileName();
 			ComicBook openedComic = mComicArchiveMgr.OpenComic(selectedComicFile);
 			if (openedComic != null) {
                 openedComic.OpenComic();
@@ -239,7 +224,7 @@ namespace TouchScreenComicViewer {
 			if (dlg.ShowDialog() == true) {
 
 				IEnumerator<FileInfo> fileEnumerator = dlg.Files.GetEnumerator();
-				this.ComicArchiveWrapPanel.Visibility = System.Windows.Visibility.Collapsed;
+                this.ComicArchiveList.Visibility = System.Windows.Visibility.Collapsed;
 				this.openComicBtn.Visibility = System.Windows.Visibility.Collapsed;
 				this.exitBtn.Visibility = System.Windows.Visibility.Collapsed;
 				LoadingComicsDisp.Visibility = System.Windows.Visibility.Visible;
