@@ -51,6 +51,14 @@ namespace TouchScreenComicViewer {
 			return comicBookList;
 		}
 
+        public ComicBook GetComic(string comicFileName)
+        {
+            ComicBook requestedComic;
+            _comicBookList.TryGetValue(comicFileName, out requestedComic);
+
+            return requestedComic;
+        }
+
 		//*****************************************
 		public bool AddComicToArchive(FileInfo comicFile) {
 
