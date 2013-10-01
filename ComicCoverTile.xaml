@@ -4,11 +4,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="300">
-    
-    <Grid x:Name="LayoutRoot" Background="Black">
-		<Image Height="Auto" HorizontalAlignment="Left" Name="image1" Source="{Binding Path=ItemBMP}" Stretch="Fill" Margin="5" VerticalAlignment="Top" Width="Auto" ToolTipService.ToolTip="{Binding Path=ItemText}"/>
-        <Border Background="#77222222" Height="100" VerticalAlignment="Bottom" Margin="5">
-        <TextBlock Text="{Binding ItemText}" FontSize="14" TextWrapping="Wrap" Foreground="#ffffffff" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+    <Grid x:Name="LayoutRoot" Background="Transparent" Width="Auto" Height="Auto">
+        <Image HorizontalAlignment="Left" Name="image1" Source="{Binding Path=CoverImage}" Stretch="Uniform" Margin="5" VerticalAlignment="Top" ToolTipService.ToolTip="{Binding Path=ComicBookTitle}"/>
+        <Border Background="#77222222" Height="100" VerticalAlignment="Bottom" Margin="5" MaxWidth="{Binding ElementName=image1, Path=ActualWidth}">
+            <TextBlock Text="{Binding ComicBookTitle}" FontSize="14" TextWrapping="Wrap" Foreground="#ffffffff" VerticalAlignment="Center" HorizontalAlignment="Center" />
         </Border>
     </Grid>
 </UserControl>
