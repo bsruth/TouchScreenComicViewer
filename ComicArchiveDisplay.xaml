@@ -3,6 +3,7 @@
 		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:scm="clr-namespace:System.ComponentModel;assembly=System.Windows"
 		xmlns:TSComicV="clr-namespace:TouchScreenComicViewer"
 		xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Toolkit"
 		mc:Ignorable="d"
@@ -14,7 +15,12 @@
 			<DoubleAnimation x:Name="XLoc" Storyboard.TargetName="ComicViewer" Storyboard.TargetProperty="(UIElement.RenderTransform).blah.X" Duration="0:0:0.3"/>
 			<DoubleAnimation x:Name="YLoc" Storyboard.TargetName="ComicViewer" Storyboard.TargetProperty="(UIElement.RenderTransform).blah.Y" Duration="0:0:0.3"/>
 		</Storyboard>
-		<Style x:Key="ScrollBarStyle1" TargetType="ScrollBar">
+        <CollectionViewSource x:Key="cvs" Source="{Binding ComicArchiveList}">
+            <CollectionViewSource.SortDescriptions>
+                <scm:SortDescription PropertyName="ComicBookTitle" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+        <Style x:Key="ScrollBarStyle1" TargetType="ScrollBar">
 			<Setter Property="MinWidth" Value="17"/>
 			<Setter Property="MinHeight" Value="17"/>
 			<Setter Property="IsTabStop" Value="False"/>
@@ -541,7 +547,7 @@
 			<ColumnDefinition Width="200*" />
 		</Grid.ColumnDefinitions>
 		<ScrollViewer Name ="ComicArchiveScrollViewer" Margin="12,12,12,49" VerticalScrollBarVisibility="Auto" Style="{StaticResource ScrollViewerStyle1}">
-            <ListBox Name="ComicArchiveList" Background="Transparent" VerticalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox Name="ComicArchiveList" Background="Transparent" VerticalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding Source={StaticResource cvs}}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <controls:WrapPanel Background="Transparent" Orientation="Horizontal" HorizontalAlignment="Stretch" />
@@ -561,7 +567,7 @@
 		<Button Content="Add Comics..." Height="31" Style="{StaticResource WP7Button}" Name="openComicBtn" Margin="12,0,0,11" VerticalAlignment="Bottom" Click="OpenComicBtn_Click" HorizontalAlignment="Left" Width="110" />
 		<sdk:Label Margin="197,0,24,11" Name="LastComicLabel" Foreground="White" Height="28" VerticalAlignment="Bottom" HorizontalContentAlignment="Left" VerticalContentAlignment="Center" />
 		<sdk:Label Margin="128,0,0,11" Name="label1" Foreground="White" Content="Last Comic:" HorizontalAlignment="Left" Width="71" Height="28" VerticalAlignment="Bottom" />
-		<ProgressBar Name="LoadingProgressBar" Margin="128,0,128,12" Height="27" VerticalAlignment="Bottom" Foreground="Green" />
+		<ProgressBar Name="LoadingProgressBar" Margin="128,0,128,12" Height="27" VerticalAlignment="Bottom" Foreground="Green" Visibility="Collapsed" />
 		<Button Content="EXIT" Height="31" HorizontalAlignment="Right" Margin="0,0,12,11" Name="exitBtn" Style="{StaticResource WP7Button}" VerticalAlignment="Bottom" Width="110" Click="CloseBtn_Clicked"/>
 		<TSComicV:LoadingComicsProgress x:Name="LoadingComicsDisp" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 		<TSComicV:MainPage x:Name="ComicViewer" Visibility="Collapsed" Margin="0,0,0,0">

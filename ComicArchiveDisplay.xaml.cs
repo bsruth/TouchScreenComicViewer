@@ -30,6 +30,7 @@ namespace TouchScreenComicViewer {
 			InitializeComponent();
 
 			mComicArchiveMgr = new ComicArchiveManager();
+            this.DataContext = mComicArchiveMgr;
 			blah = new TranslateTransform();
 			ComicViewer.ComicClosed += new RoutedEventHandler(ComicViewer_ComicClosed);
 			LoadingComicsDisp.FileLoadingCompleted += (senderFL, eFL) =>
@@ -79,59 +80,6 @@ namespace TouchScreenComicViewer {
 
 		//*****************************************
 		private void RefreshComicList() {
-
-            ComicArchiveList.Items.Clear();
-
-
-			List<string> comics = mComicArchiveMgr.GetAvailableComics();
-
-			LoadingProgressBar.Value = 0;
-			LoadingProgressBar.Maximum = comics.Count;
-			if(comics.Count == 0 ){
-				LoadingProgressBar.Visibility = System.Windows.Visibility.Collapsed;
-			} else {
-				LoadingProgressBar.Visibility = System.Windows.Visibility.Visible;
-			}
-
-			//the threading is so that one comic loads at a time and
-			//the UI doesn't look like it locked up as the list is refreshed
-			BackgroundWorker comicLoader = new BackgroundWorker();
-			Dispatcher myDisp = Application.Current.RootVisual.Dispatcher;
-			DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(myDisp); //needed to dispatch synchronously
-			comicLoader.WorkerReportsProgress = false;
-			comicLoader.DoWork += (sender, e) =>
-			{
-				foreach (string comic in comics) {
-					try {
-						BackgroundWorker worker = sender as BackgroundWorker;
-
-						//wait on the UI to finish loading this comic
-						//before we move on to the next comic in the list
-						myDispSync.Send((obj) =>
-							{
-								try {
-									string comicString = obj as string;
-                                    var currentComic = mComicArchiveMgr.GetComic(comicString);
-                                    ComicArchiveList.Items.Add(currentComic);
-									LoadingProgressBar.Value += 1;
-									if (LoadingProgressBar.Value == LoadingProgressBar.Maximum) {
-										LoadingProgressBar.Visibility = System.Windows.Visibility.Collapsed;
-									}
-								} catch (Exception ex) {
-									string exceptionString = ex.ToString();
-								}
-							}, comic);
-
-					} catch (Exception ex) {
-						string exceptionString = ex.ToString();
-					}
-				}
-			};
-
-			comicLoader.RunWorkerAsync();
-			
-
-
 
 			LastComicLabel.Content = mComicArchiveMgr.GetLastOpenedComic();
 		}

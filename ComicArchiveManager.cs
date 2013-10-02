@@ -12,6 +12,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using System.Text.RegularExpressions;
+using System.Collections.ObjectModel;
+using System.Windows.Threading;
 
 namespace TouchScreenComicViewer {
 	public class ComicArchiveManager {
@@ -19,11 +21,18 @@ namespace TouchScreenComicViewer {
 		const string COMIC_ARCHIVE_META_FILE = "comic_archive_meta.txt";
 		const string LAST_COMIC_META_STRING = "lastcomic";
 		private string mLastComicOpened = "";
-		private Dictionary<string,ComicBook> _comicBookList = new Dictionary<string,ComicBook>();
+
+        public ObservableCollection<ComicBook> ComicArchiveList
+        {
+            get;
+            set;
+        }
 
 		public ComicArchiveManager() {
 
-			IsoStorageUtilities.FileRemoved += (fileRemoved, ev) =>
+            ComicArchiveList = new ObservableCollection<ComicBook>();
+            
+            IsoStorageUtilities.FileRemoved += (fileRemoved, ev) =>
 			{
 				RemoveComicFromArchive(fileRemoved as string);
 			};
@@ -36,7 +45,7 @@ namespace TouchScreenComicViewer {
 			List<string> comicBookFileNames = IsoStorageUtilities.GetIsolatedStorageFilesWithExtension(COMIC_ARCHIVE_ZIP_EXT);
 			foreach (string fileName in comicBookFileNames) {
 				ComicBook newComic = new ComicBook(fileName);
-				_comicBookList.Add(fileName, newComic);
+                ComicArchiveList.Add(newComic);
 			}
 
 		}
@@ -44,7 +53,8 @@ namespace TouchScreenComicViewer {
 		//*****************************************
 		public List<string> GetAvailableComics() {
 			List<string> comicBookList = new List<string>();
-			foreach (ComicBook comic in _comicBookList.Values) {
+            foreach (ComicBook comic in ComicArchiveList)
+            {
 				comicBookList.Add(comic.GetComicFileName());
 			}
 			comicBookList.Sort();
@@ -53,8 +63,16 @@ namespace TouchScreenComicViewer {
 
         public ComicBook GetComic(string comicFileName)
         {
-            ComicBook requestedComic;
-            _comicBookList.TryGetValue(comicFileName, out requestedComic);
+            ComicBook requestedComic = null;
+            foreach (var item in ComicArchiveList)
+            {
+                if (item.GetComicFileName() == comicFileName)
+                {
+                    requestedComic = item;
+                    break;
+                }
+
+            }
 
             return requestedComic;
         }
@@ -71,21 +89,39 @@ namespace TouchScreenComicViewer {
 				IsoStorageUtilities.DeleteFileFromIsoStorage(comicFile.Name);
 				return false;
 			}
-			this._comicBookList.Add(comicFile.Name, comicToAdd);
+            var disp = Deployment.Current.Dispatcher;
+            DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(disp); //needed to dispatch synchronously                  
+            myDispSync.Send((obj) =>
+            {
+                ComicArchiveList.Add(comicToAdd);
+            }, null);
+            
 
 			return true;
 		}
 
 		//*****************************************
 		public bool RemoveComicFromArchive(string comicFileName) {
-			this._comicBookList.Remove(comicFileName);
+            ComicBook foundBook = GetComic(comicFileName);
+           
+            if (foundBook != null)
+            {
+                var disp = Deployment.Current.Dispatcher;
+                DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(disp); //needed to dispatch synchronously                  
+                myDispSync.Send((obj) =>
+                {
+                    ComicArchiveList.Remove(foundBook);
+                }, null);
+                
+            }
 			return true;
 		}
 
 		//*****************************************
 		public BitmapImage GetComicCover(string comicFileName) {
-			ComicBook requestedComic;
-			if (_comicBookList.TryGetValue(comicFileName, out requestedComic) == true) {
+			ComicBook requestedComic = GetComic(comicFileName);
+            if(requestedComic != null)
+            {
 				return requestedComic.CoverImage;
 			}
 			return null;
@@ -93,8 +129,7 @@ namespace TouchScreenComicViewer {
 
 		//*****************************************
 		public ComicBook OpenComic(string comicFileName) {
-			ComicBook requestedComic = null;
-			_comicBookList.TryGetValue(comicFileName, out requestedComic);
+			ComicBook requestedComic = GetComic(comicFileName);
 			if (requestedComic != null) {
 				SetLastOpenedComic(comicFileName);
 			}
