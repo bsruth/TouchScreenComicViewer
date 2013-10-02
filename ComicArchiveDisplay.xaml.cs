@@ -38,7 +38,6 @@ namespace TouchScreenComicViewer {
                 this.ComicArchiveList.Visibility = System.Windows.Visibility.Visible;
 				this.openComicBtn.Visibility = System.Windows.Visibility.Visible;
 				this.exitBtn.Visibility = System.Windows.Visibility.Visible;
-				RefreshComicList();
 			};
 		}
 
@@ -71,17 +70,6 @@ namespace TouchScreenComicViewer {
 			} catch (Exception ex) {
 				string blah = ex.ToString();
 			}
-		}
-
-		//*****************************************
-		private void ComicArchiveDisplayPage_Loaded(object sender, RoutedEventArgs e) {
-			RefreshComicList();
-		}
-
-		//*****************************************
-		private void RefreshComicList() {
-
-			LastComicLabel.Content = mComicArchiveMgr.GetLastOpenedComic();
 		}
 
 		//*****************************************
@@ -121,7 +109,6 @@ namespace TouchScreenComicViewer {
 			if (openedComic != null) {
                 openedComic.OpenComic();
 				ComicViewer.SetComic(openedComic);
-				LastComicLabel.Content = selectedComicFile;
 				ComicViewer.Visibility = System.Windows.Visibility.Visible;
 
 				myStoryboard.Completed += OpenComicAnimationCompleted;

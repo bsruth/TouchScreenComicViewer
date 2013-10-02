@@ -14,21 +14,58 @@ using System.Windows.Media.Imaging;
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
+using System.ComponentModel;
 
 namespace TouchScreenComicViewer {
-	public class ComicArchiveManager {
+    public class ComicArchiveManager : INotifyPropertyChanged
+    {
 		const string COMIC_ARCHIVE_ZIP_EXT = ".cbz";
 		const string COMIC_ARCHIVE_META_FILE = "comic_archive_meta.txt";
 		const string LAST_COMIC_META_STRING = "lastcomic";
-		private string mLastComicOpened = "";
+		private string _lastComicOpened = "";
 
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
+
+        #region Properties
         public ObservableCollection<ComicBook> ComicArchiveList
         {
             get;
             set;
         }
 
-		public ComicArchiveManager() {
+
+        public string LastComicOpened
+        {
+            get
+            {
+                return _lastComicOpened;
+            }
+            private set
+            {
+                if (_lastComicOpened != value)
+                {
+                    _lastComicOpened = value;
+                    OnPropertyChanged("LastComicOpened");
+                }
+            }
+        }
+
+        #endregion
+        public ComicArchiveManager() {
 
             ComicArchiveList = new ObservableCollection<ComicBook>();
             
@@ -41,6 +78,8 @@ namespace TouchScreenComicViewer {
 			if (IsoStorageUtilities.DoesFileExist(COMIC_ARCHIVE_META_FILE) == false) {
 				IsoStorageUtilities.CreateIsolatedStorageFile(COMIC_ARCHIVE_META_FILE);
 			}
+
+            LastComicOpened = GetLastOpenedComic();
 
 			List<string> comicBookFileNames = IsoStorageUtilities.GetIsolatedStorageFilesWithExtension(COMIC_ARCHIVE_ZIP_EXT);
 			foreach (string fileName in comicBookFileNames) {
@@ -139,7 +178,7 @@ namespace TouchScreenComicViewer {
 		//*****************************************
 		public void SetLastOpenedComic(string comicFileName) 
 		{
-			mLastComicOpened = comicFileName;
+			LastComicOpened = comicFileName;
 			Stream metaFileStream = IsoStorageUtilities.OpenIsolatedStorageFileStream(COMIC_ARCHIVE_META_FILE);
 			if (metaFileStream != null) {
 				StreamReader sr = new StreamReader(metaFileStream);
@@ -162,8 +201,8 @@ namespace TouchScreenComicViewer {
 		}
 
 		//*****************************************
-		public string GetLastOpenedComic() {
-			if (mLastComicOpened == "") {
+		private string GetLastOpenedComic() {
+            string lastComicOpened = "";
 				Stream metaFileStream = IsoStorageUtilities.OpenIsolatedStorageFileStream(COMIC_ARCHIVE_META_FILE);
 				if (metaFileStream != null) {
 					StreamReader sr = new StreamReader(metaFileStream);
@@ -172,16 +211,15 @@ namespace TouchScreenComicViewer {
 						if (metaLine.Contains(LAST_COMIC_META_STRING)) {
 							string metaValue = metaLine.Substring(LAST_COMIC_META_STRING.Length);
 							metaValue.Trim();
-							this.mLastComicOpened = metaValue;
+                            lastComicOpened = metaValue;
 							break;
 						}
 					}
 					sr.Close();
 					metaFileStream.Close();
 				}
-			}
 
-			return mLastComicOpened;
+			return lastComicOpened;
 		}
 
 
