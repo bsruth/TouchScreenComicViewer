@@ -23,6 +23,7 @@ namespace TouchScreenComicViewer{
         private BitmapImage _coverImage = null;
         private BitmapImage _currentPageImage = null;
 		private int _currentPageIndex = 0;
+        private Func<string, string, MemoryStream> _decompressFunction;
 
 
         private List<MemoryStream> _cachedComicImages = new List<MemoryStream>();
@@ -85,9 +86,10 @@ namespace TouchScreenComicViewer{
         #endregion
 
         //*****************************************
-		public ComicBook(string comicBookFileName, List<string> filesInComicBook) {
+		public ComicBook(string comicBookFileName, List<string> filesInComicBook, Func<string, string, MemoryStream> decompressFunction) {
 			_comicBookFileName = comicBookFileName;
             _filesInComicBook = filesInComicBook;
+            _decompressFunction = decompressFunction;
             LoadCover();
 		}
 
@@ -101,7 +103,7 @@ namespace TouchScreenComicViewer{
                 myDispSync.Send((obj) =>
                 {
 
-                    using (var coverStream = GetImageFromComicFile(_filesInComicBook[0]))
+                    using (var coverStream = _decompressFunction(_comicBookFileName, _filesInComicBook[0]))
                     {
                         CoverImage = new BitmapImage();
                         CurrentPageImage = new BitmapImage();
@@ -168,19 +170,7 @@ namespace TouchScreenComicViewer{
             return prevPageIndex;
         }
 
-		//*****************************************
-		private MemoryStream GetImageFromComicFile(string imageName)
-		{
-			MemoryStream imageFileStream = null;
-			Stream coverFileStream = ZipFileUtilities.GetFileStreamFromZIPFile(_comicBookFileName, imageName);
-			if (coverFileStream != null) {
-                imageFileStream = new MemoryStream();
-                coverFileStream.CopyTo(imageFileStream);      
-			}
-            return imageFileStream;
-		}
-
-        private void CacheImagesInComic(Func<string,string, MemoryStream> streamDecompressFunction)
+        private void CacheImagesInComic()
         {
             if (_cachedComicImages.Count == 0)
             {
@@ -189,7 +179,7 @@ namespace TouchScreenComicViewer{
 
                     foreach (var comicFile in _filesInComicBook)
                     {
-                        var comicStream = streamDecompressFunction(_comicBookFileName, comicFile);// GetImageFromComicFile(comicFile);
+                        var comicStream = _decompressFunction(_comicBookFileName, comicFile);// GetImageFromComicFile(comicFile);
                         _cachedComicImages.Add(comicStream);
                     }
 
@@ -197,9 +187,9 @@ namespace TouchScreenComicViewer{
             }
         }
 
-        public void OpenComic(Func<string,string,MemoryStream> streamDecompressFunction)
+        public void OpenComic()
         {
-            CacheImagesInComic(streamDecompressFunction);
+            CacheImagesInComic();
         }
 
         public void CloseComic()

@@ -84,7 +84,7 @@ namespace TouchScreenComicViewer {
 
 			List<string> comicBookFileNames = IsoStorageUtilities.GetIsolatedStorageFilesWithExtension(COMIC_ARCHIVE_ZIP_EXT);
 			foreach (string fileName in comicBookFileNames) {
-				ComicBook newComic = new ComicBook(fileName, GetFilesInComicBook(fileName));
+				ComicBook newComic = new ComicBook(fileName, GetFilesInComicBook(fileName), GetImageFromComicFile);
                 ComicArchiveList.Add(newComic);
 			}
 
@@ -170,7 +170,7 @@ namespace TouchScreenComicViewer {
 				//TODO: error message
 				return false;
 			}
-			ComicBook comicToAdd = new ComicBook(comicFile.Name, GetFilesInComicBook(comicFile.Name));
+			ComicBook comicToAdd = new ComicBook(comicFile.Name, GetFilesInComicBook(comicFile.Name), GetImageFromComicFile);
 			if(comicToAdd.TotalPages < 1) {
 				IsoStorageUtilities.DeleteFileFromIsoStorage(comicFile.Name);
 				return false;
