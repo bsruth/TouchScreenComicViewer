@@ -23,6 +23,7 @@ namespace TouchScreenComicViewer {
 		const string COMIC_ARCHIVE_META_FILE = "comic_archive_meta.txt";
 		const string LAST_COMIC_META_STRING = "lastcomic";
 		private string _lastComicOpened = "";
+        private static string[] VALID_IMAGE_FILE_EXT = { ".jpg", ".png" };
 
 
         #region INotifyPropertyChanged Members
@@ -83,14 +84,60 @@ namespace TouchScreenComicViewer {
 
 			List<string> comicBookFileNames = IsoStorageUtilities.GetIsolatedStorageFilesWithExtension(COMIC_ARCHIVE_ZIP_EXT);
 			foreach (string fileName in comicBookFileNames) {
-				ComicBook newComic = new ComicBook(fileName);
+				ComicBook newComic = new ComicBook(fileName, GetFilesInComicBook(fileName));
                 ComicArchiveList.Add(newComic);
 			}
 
 		}
 
-		//*****************************************
-		public List<string> GetAvailableComics() {
+        /// <summary>
+        /// Gets a list of all supported comic image files in the comic archive.
+        /// </summary>
+        /// <returns></returns>
+        private List<string> GetFilesInComicBook(string comicBookFileName)
+        {
+            var filesInComicBook = new List<string>();
+            var comicBookFileStream = IsoStorageUtilities.OpenIsolatedStorageFileStream(comicBookFileName);
+            if (comicBookFileStream == null)
+            {
+                return filesInComicBook;
+            }
+
+            string[] filesInArchive = ZipFileUtilities.GetZipContents(comicBookFileStream);
+            filesInComicBook.Clear();
+            //remove all non-image files from the list of files
+            foreach (string fileName in filesInArchive)
+            {
+                foreach (string ext in VALID_IMAGE_FILE_EXT)
+                {
+                    if (fileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase))
+                    {
+                        filesInComicBook.Add(fileName);
+                        break;
+                    }
+                }
+            }
+
+            comicBookFileStream.Close();
+
+            return filesInComicBook;
+
+        }
+
+        public MemoryStream GetImageFromComicFile(string comicFileName, string imageName)
+        {
+            MemoryStream imageFileStream = null;
+            Stream coverFileStream = ZipFileUtilities.GetFileStreamFromZIPFile(comicFileName, imageName);
+            if (coverFileStream != null)
+            {
+                imageFileStream = new MemoryStream();
+                coverFileStream.CopyTo(imageFileStream);
+            }
+            return imageFileStream;
+        }
+
+        //*****************************************
+        public List<string> GetAvailableComics() {
 			List<string> comicBookList = new List<string>();
             foreach (ComicBook comic in ComicArchiveList)
             {
@@ -123,7 +170,7 @@ namespace TouchScreenComicViewer {
 				//TODO: error message
 				return false;
 			}
-			ComicBook comicToAdd = new ComicBook(comicFile.Name);
+			ComicBook comicToAdd = new ComicBook(comicFile.Name, GetFilesInComicBook(comicFile.Name));
 			if(comicToAdd.TotalPages < 1) {
 				IsoStorageUtilities.DeleteFileFromIsoStorage(comicFile.Name);
 				return false;
