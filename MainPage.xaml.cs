@@ -16,6 +16,7 @@ using System.Text;
 using System.Windows.Resources;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
+using System.Windows.Threading;
 
 namespace TouchScreenComicViewer
 {
@@ -43,7 +44,17 @@ namespace TouchScreenComicViewer
         public ComicBookViewModel (ComicBook comic)
         {
             Comic = comic;
-            CurrentPageImage = comic.CurrentPageImage;
+            var disp = Deployment.Current.Dispatcher;
+            DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(disp); //needed to dispatch synchronously                  
+            myDispSync.Send((obj) =>
+            {
+                CurrentPageImage = new BitmapImage();                    
+            }, null);
+
+            using (MemoryStream imageStream = new MemoryStream(comic.CurrentPageImage))
+            {
+                CurrentPageImage.SetSource(imageStream);
+            }
             CurrentPageNumber = Comic.CurrentPageNumber;
         }
 
@@ -84,14 +95,20 @@ namespace TouchScreenComicViewer
         internal void GoToNextPage()
         {
             Comic.GoToNextPage();
-            CurrentPageImage = Comic.CurrentPageImage;
+            using (MemoryStream imageStream = new MemoryStream(Comic.CurrentPageImage))
+            {
+                CurrentPageImage.SetSource(imageStream);
+            }
             CurrentPageNumber = Comic.CurrentPageNumber;
         }
 
         internal void GoToPreviousPage()
         {
             Comic.GoToPreviousPage();
-            CurrentPageImage = Comic.CurrentPageImage;
+            using (MemoryStream imageStream = new MemoryStream(Comic.CurrentPageImage))
+            {
+                CurrentPageImage.SetSource(imageStream);
+            }
             CurrentPageNumber = Comic.CurrentPageNumber;
         }
 

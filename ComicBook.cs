@@ -18,11 +18,10 @@ namespace TouchScreenComicViewer{
 	public class ComicBook : INotifyPropertyChanged {
 		//members
 		private string _comicBookFileName;
-		private Stream _comicBookFileStream;
 		private List<string> _filesInComicBook = new List<string>();
         private BitmapImage _coverImage = null;
         private byte[] _coverImageBuffer = null;
-        private BitmapImage _currentPageImage = null;
+        private byte[] _currentImageBuffer = null;
 		private int _currentPageIndex = 0;
         private Func<string, string, MemoryStream> _decompressFunction;
 
@@ -41,18 +40,18 @@ namespace TouchScreenComicViewer{
 		}
 
 
-        public BitmapImage CurrentPageImage
+        public byte[] CurrentPageImage
         {
             get
             {
-                return _currentPageImage;
+                return _currentImageBuffer;
             }
 
             private set
             {
-                if(value != null && _currentPageImage != value)
+                if(value != null && _currentImageBuffer != value)
                 {
-                    _currentPageImage = value;
+                    _currentImageBuffer = value;
                     RaisePropertyChanged("CurrentPageImage");
                 }
             }
@@ -112,9 +111,8 @@ namespace TouchScreenComicViewer{
                     using (MemoryStream coverStream = new MemoryStream(_coverImageBuffer))
                     {
                         CoverImage = new BitmapImage();
-                        CurrentPageImage = new BitmapImage();
                         CoverImage.SetSource(coverStream);
-                        CurrentPageImage.SetSource(coverStream);
+                        _currentImageBuffer = coverStream.ToArray();
                     }
                 }, null);
             }
@@ -154,7 +152,8 @@ namespace TouchScreenComicViewer{
             CurrentPageNumber = pageNumber;
             using (MemoryStream imageStream = new MemoryStream(_cachedComicImages[pageNumber]))
             {
-                CurrentPageImage.SetSource(imageStream);
+
+                CurrentPageImage = imageStream.ToArray();
             }
         }
 		//*****************************************
