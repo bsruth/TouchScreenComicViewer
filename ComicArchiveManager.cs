@@ -15,6 +15,7 @@ using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
 using System.Windows.Threading;
 using System.ComponentModel;
+using TouchScreenComicViewerCore;
 
 namespace TouchScreenComicViewer {
 

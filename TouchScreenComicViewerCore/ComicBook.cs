@@ -2,8 +2,9 @@
 using System.IO;
 using System.ComponentModel;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-namespace TouchScreenComicViewer{
+namespace TouchScreenComicViewerCore{
 	public class ComicBook : INotifyPropertyChanged {
 		//members
 		private string _comicBookFileName;
@@ -150,9 +151,8 @@ namespace TouchScreenComicViewer{
         {
             if (_cachedComicImages.Count == 0)
             {
-                new System.Threading.Thread(() =>
+                Task.Factory.StartNew(() =>
                 {
-
                     foreach (var comicFile in _filesInComicBook)
                     {
                         using (var comicStream = _decompressFunction(_comicBookFileName, comicFile))
@@ -160,8 +160,7 @@ namespace TouchScreenComicViewer{
                             _cachedComicImages.Add(comicStream.ToArray());
                         }
                     }
-
-                }).Start();
+                });
             }
         }
 

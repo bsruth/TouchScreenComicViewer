@@ -84,7 +84,6 @@
       <DependentUpon>ComicArchiveDisplay.xaml</DependentUpon>
     </Compile>
     <Compile Include="ComicArchiveManager.cs" />
-    <Compile Include="ComicBook.cs" />
     <Compile Include="ComicCoverTile.xaml.cs">
       <DependentUpon>ComicCoverTile.xaml</DependentUpon>
     </Compile>
@@ -176,6 +175,10 @@
     <ProjectReference Include="..\SilverlightToolkit\Release\Silverlight5\Source\Controls.Toolkit\Controls.Toolkit.csproj">
       <Project>{1cdb9a12-b7ca-471a-ba35-8198f2fe4a51}</Project>
       <Name>Controls.Toolkit</Name>
+    </ProjectReference>
+    <ProjectReference Include="TouchScreenComicViewerCore\TouchScreenComicViewerCore.csproj">
+      <Project>{2abb9305-f1ac-46a1-a738-2167600fa7fd}</Project>
+      <Name>TouchScreenComicViewerCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

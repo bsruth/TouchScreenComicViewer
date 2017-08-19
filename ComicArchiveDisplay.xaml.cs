@@ -14,6 +14,7 @@ using System.Windows.Media.Imaging;
 using System.IO.IsolatedStorage;
 using System.ComponentModel;
 using System.Windows.Threading;
+using TouchScreenComicViewerCore;
 
 namespace TouchScreenComicViewer {
 

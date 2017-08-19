@@ -17,6 +17,7 @@ using System.Windows.Resources;
 using System.Windows.Media.Imaging;
 using System.ComponentModel;
 using System.Windows.Threading;
+using TouchScreenComicViewerCore;
 
 namespace TouchScreenComicViewer
 {

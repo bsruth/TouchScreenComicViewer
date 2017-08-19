@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TouchScreenComicViewer", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controls.Toolkit", "..\SilverlightToolkit\Release\Silverlight5\Source\Controls.Toolkit\Controls.Toolkit.csproj", "{1CDB9A12-B7CA-471A-BA35-8198F2FE4A51}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TouchScreenComicViewerCore", "TouchScreenComicViewerCore\TouchScreenComicViewerCore.csproj", "{2ABB9305-F1AC-46A1-A738-2167600FA7FD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{1CDB9A12-B7CA-471A-BA35-8198F2FE4A51}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CDB9A12-B7CA-471A-BA35-8198F2FE4A51}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CDB9A12-B7CA-471A-BA35-8198F2FE4A51}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2ABB9305-F1AC-46A1-A738-2167600FA7FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2ABB9305-F1AC-46A1-A738-2167600FA7FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2ABB9305-F1AC-46A1-A738-2167600FA7FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2ABB9305-F1AC-46A1-A738-2167600FA7FD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
