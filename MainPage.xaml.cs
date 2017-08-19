@@ -51,7 +51,7 @@ namespace TouchScreenComicViewer
                 CurrentPageImage = new BitmapImage();                    
             }, null);
 
-            using (MemoryStream imageStream = new MemoryStream(comic.CurrentPageImage))
+            using (MemoryStream imageStream = new MemoryStream(comic.CurrentImageBuffer))
             {
                 CurrentPageImage.SetSource(imageStream);
             }
@@ -95,7 +95,7 @@ namespace TouchScreenComicViewer
         internal void GoToNextPage()
         {
             Comic.GoToNextPage();
-            using (MemoryStream imageStream = new MemoryStream(Comic.CurrentPageImage))
+            using (MemoryStream imageStream = new MemoryStream(Comic.CurrentImageBuffer))
             {
                 CurrentPageImage.SetSource(imageStream);
             }
@@ -105,7 +105,7 @@ namespace TouchScreenComicViewer
         internal void GoToPreviousPage()
         {
             Comic.GoToPreviousPage();
-            using (MemoryStream imageStream = new MemoryStream(Comic.CurrentPageImage))
+            using (MemoryStream imageStream = new MemoryStream(Comic.CurrentImageBuffer))
             {
                 CurrentPageImage.SetSource(imageStream);
             }

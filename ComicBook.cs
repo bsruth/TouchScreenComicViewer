@@ -40,7 +40,7 @@ namespace TouchScreenComicViewer{
 		}
 
 
-        public byte[] CurrentPageImage
+        public byte[] CurrentImageBuffer
         {
             get
             {
@@ -150,11 +150,7 @@ namespace TouchScreenComicViewer{
         private void GoToPage(int pageNumber)
         {
             CurrentPageNumber = pageNumber;
-            using (MemoryStream imageStream = new MemoryStream(_cachedComicImages[pageNumber]))
-            {
-
-                CurrentPageImage = imageStream.ToArray();
-            }
+            CurrentImageBuffer = _cachedComicImages[pageNumber];
         }
 		//*****************************************
         public void GoToPreviousPage()
