@@ -27,7 +27,7 @@ namespace TouchScreenComicViewer{
         private Func<string, string, MemoryStream> _decompressFunction;
 
 
-        private List<MemoryStream> _cachedComicImages = new List<MemoryStream>();
+        private List<byte[]> _cachedComicImages = new List<byte[]>();
 
 
         #region Properties
@@ -152,8 +152,7 @@ namespace TouchScreenComicViewer{
         private void GoToPage(int pageNumber)
         {
             CurrentPageNumber = pageNumber;
-            var imageBuffer = _cachedComicImages[pageNumber].ToArray();
-            using (MemoryStream imageStream = new MemoryStream(imageBuffer))
+            using (MemoryStream imageStream = new MemoryStream(_cachedComicImages[pageNumber]))
             {
                 CurrentPageImage.SetSource(imageStream);
             }
@@ -186,8 +185,10 @@ namespace TouchScreenComicViewer{
 
                     foreach (var comicFile in _filesInComicBook)
                     {
-                        var comicStream = _decompressFunction(_comicBookFileName, comicFile);// GetImageFromComicFile(comicFile);
-                        _cachedComicImages.Add(comicStream);
+                        using (var comicStream = _decompressFunction(_comicBookFileName, comicFile))
+                        {
+                            _cachedComicImages.Add(comicStream.ToArray());
+                        }
                     }
 
                 }).Start();
@@ -201,10 +202,6 @@ namespace TouchScreenComicViewer{
 
         public void CloseComic()
         {
-            foreach (var comicStream in _cachedComicImages)
-            {
-                comicStream.Close();
-            }
             _cachedComicImages.Clear();
         }
 
