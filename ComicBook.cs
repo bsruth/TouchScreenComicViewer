@@ -21,6 +21,7 @@ namespace TouchScreenComicViewer{
 		private Stream _comicBookFileStream;
 		private List<string> _filesInComicBook = new List<string>();
         private BitmapImage _coverImage = null;
+        private byte[] _coverImageBuffer = null;
         private BitmapImage _currentPageImage = null;
 		private int _currentPageIndex = 0;
         private Func<string, string, MemoryStream> _decompressFunction;
@@ -97,13 +98,18 @@ namespace TouchScreenComicViewer{
         {
             if (_filesInComicBook.Count > 1)
             {
+                using (var coverStream = _decompressFunction(_comicBookFileName, _filesInComicBook[0]))
+                {
+                    _coverImageBuffer = coverStream.ToArray();
+                }
+               
                 //Dispatcher myDisp = Application.Current.RootVisual.Dispatcher;
                 var disp = Deployment.Current.Dispatcher;
                 DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(disp); //needed to dispatch synchronously                  
                 myDispSync.Send((obj) =>
                 {
 
-                    using (var coverStream = _decompressFunction(_comicBookFileName, _filesInComicBook[0]))
+                    using (MemoryStream coverStream = new MemoryStream(_coverImageBuffer))
                     {
                         CoverImage = new BitmapImage();
                         CurrentPageImage = new BitmapImage();
@@ -111,9 +117,6 @@ namespace TouchScreenComicViewer{
                         CurrentPageImage.SetSource(coverStream);
                     }
                 }, null);
-
-
-
             }
             else
             {
@@ -149,7 +152,11 @@ namespace TouchScreenComicViewer{
         private void GoToPage(int pageNumber)
         {
             CurrentPageNumber = pageNumber;
-            CurrentPageImage.SetSource(_cachedComicImages[pageNumber]);
+            var imageBuffer = _cachedComicImages[pageNumber].ToArray();
+            using (MemoryStream imageStream = new MemoryStream(imageBuffer))
+            {
+                CurrentPageImage.SetSource(imageStream);
+            }
         }
 		//*****************************************
         public void GoToPreviousPage()
