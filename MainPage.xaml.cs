@@ -15,10 +15,75 @@ using System.Windows.Interop;
 using System.Text;
 using System.Windows.Resources;
 using System.Windows.Media.Imaging;
+using System.ComponentModel;
 
 namespace TouchScreenComicViewer
 {
-	public partial class MainPage : UserControl
+
+    public class ComicBookViewModel : INotifyPropertyChanged {
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void RaisePropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
+
+
+        private BitmapImage _currentPageImage = null;
+      
+        public ComicBookViewModel (ComicBook comic)
+        {
+            Comic = comic;
+            CurrentPageImage = comic.CurrentPageImage;
+        }
+
+        public BitmapImage CurrentPageImage
+        {
+            get
+            {
+                return _currentPageImage;
+            }
+
+            private set
+            {
+                if (value != null && _currentPageImage != value)
+                {
+                    _currentPageImage = value;
+                    RaisePropertyChanged("CurrentPageImage");
+                }
+            }
+        }
+
+        public ComicBook Comic { get; set; }
+
+        internal void GoToNextPage()
+        {
+            Comic.GoToNextPage();
+            CurrentPageImage = Comic.CurrentPageImage;
+        }
+
+        internal void GoToPreviousPage()
+        {
+            Comic.GoToPreviousPage();
+            CurrentPageImage = Comic.CurrentPageImage;
+        }
+
+        internal void CloseComic()
+        {
+            Comic.CloseComic();
+        }
+    }
+
+
+    public partial class MainPage : UserControl
 	{
 		private const double _originalWidth = 970;
 		private const double _originalHeight = 1470;
@@ -33,7 +98,7 @@ namespace TouchScreenComicViewer
 		private bool _isZoomed = false;
 		private bool touchEventActive = false;
 
-		private ComicBook _currentComicBook;
+		private ComicBookViewModel _currentComicBook;
 
 		//*****************************************
 		public MainPage()
@@ -179,7 +244,7 @@ namespace TouchScreenComicViewer
 		public void SetComic(ComicBook comicToOpen)
 		{
 
-			_currentComicBook = comicToOpen;
+			_currentComicBook = new ComicBookViewModel(comicToOpen);
 			DataContext = _currentComicBook;
 			DisplayImage();
 		}
