@@ -103,8 +103,8 @@ namespace TouchScreenComicViewer {
 			quickShift.X = -3;
 			quickShift.Y = -3;
 			_currentOpenComicCoverTile.RenderTransform = quickShift;
-
-			string selectedComicFile = ((ComicBook)(_currentOpenComicCoverTile.DataContext)).GetComicFileName();
+            
+			string selectedComicFile = ((ComicCoverViewModel)(_currentOpenComicCoverTile.DataContext)).ComicBookTitle;
 			ComicBook openedComic = mComicArchiveMgr.OpenComic(selectedComicFile);
 			if (openedComic != null) {
                 openedComic.OpenComic();

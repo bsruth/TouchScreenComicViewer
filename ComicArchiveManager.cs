@@ -17,6 +17,56 @@ using System.Windows.Threading;
 using System.ComponentModel;
 
 namespace TouchScreenComicViewer {
+
+    public class ComicCoverViewModel : INotifyPropertyChanged
+    {
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        void OnPropertyChanged(string propertyName)
+        {
+            var handler = PropertyChanged;
+            if (handler != null)
+            {
+                handler(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #endregion
+
+        private BitmapImage _coverImage = null;
+        public ComicCoverViewModel(ComicBook comic)
+        {
+            Comic = comic;
+            CoverImage = comic.CoverImage;
+        }
+
+        public ComicBook Comic { get; set; }
+
+        public BitmapImage CoverImage
+        {
+            get
+            {
+                if (_coverImage == null)
+                {
+                    _coverImage = Comic.CoverImage;
+                }
+                return _coverImage;
+            }
+
+            private set
+            {
+                if (value != null && _coverImage != value)
+                {
+                    _coverImage = value;
+                    OnPropertyChanged("CoverImage");
+                }
+            }
+        }
+
+        public string ComicBookTitle { get { return Comic.ComicBookTitle; } }
+    }
     public class ComicArchiveManager : INotifyPropertyChanged
     {
 		const string COMIC_ARCHIVE_ZIP_EXT = ".cbz";
@@ -42,7 +92,7 @@ namespace TouchScreenComicViewer {
         #endregion
 
         #region Properties
-        public ObservableCollection<ComicBook> ComicArchiveList
+        public ObservableCollection<ComicCoverViewModel> ComicArchiveList
         {
             get;
             set;
@@ -68,7 +118,7 @@ namespace TouchScreenComicViewer {
         #endregion
         public ComicArchiveManager() {
 
-            ComicArchiveList = new ObservableCollection<ComicBook>();
+            ComicArchiveList = new ObservableCollection<ComicCoverViewModel>();
             
             IsoStorageUtilities.FileRemoved += (fileRemoved, ev) =>
 			{
@@ -85,7 +135,7 @@ namespace TouchScreenComicViewer {
 			List<string> comicBookFileNames = IsoStorageUtilities.GetIsolatedStorageFilesWithExtension(COMIC_ARCHIVE_ZIP_EXT);
 			foreach (string fileName in comicBookFileNames) {
 				ComicBook newComic = new ComicBook(fileName, GetFilesInComicBook(fileName), GetImageFromComicFile);
-                ComicArchiveList.Add(newComic);
+                ComicArchiveList.Add(new ComicCoverViewModel(newComic));
 			}
 
 		}
@@ -139,20 +189,20 @@ namespace TouchScreenComicViewer {
         //*****************************************
         public List<string> GetAvailableComics() {
 			List<string> comicBookList = new List<string>();
-            foreach (ComicBook comic in ComicArchiveList)
+            foreach (ComicCoverViewModel comic in ComicArchiveList)
             {
-				comicBookList.Add(comic.GetComicFileName());
+				comicBookList.Add(comic.Comic.GetComicFileName());
 			}
 			comicBookList.Sort();
 			return comicBookList;
 		}
 
-        public ComicBook GetComic(string comicFileName)
+        public ComicCoverViewModel GetComic(string comicFileName)
         {
-            ComicBook requestedComic = null;
-            foreach (var item in ComicArchiveList)
+            ComicCoverViewModel requestedComic = null;
+            foreach (ComicCoverViewModel item in ComicArchiveList)
             {
-                if (item.GetComicFileName() == comicFileName)
+                if (item.Comic.GetComicFileName() == comicFileName)
                 {
                     requestedComic = item;
                     break;
@@ -179,7 +229,7 @@ namespace TouchScreenComicViewer {
             DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(disp); //needed to dispatch synchronously                  
             myDispSync.Send((obj) =>
             {
-                ComicArchiveList.Add(comicToAdd);
+                ComicArchiveList.Add(new ComicCoverViewModel(comicToAdd));
             }, null);
             
 
@@ -188,7 +238,7 @@ namespace TouchScreenComicViewer {
 
 		//*****************************************
 		public bool RemoveComicFromArchive(string comicFileName) {
-            ComicBook foundBook = GetComic(comicFileName);
+            ComicCoverViewModel foundBook = GetComic(comicFileName);
            
             if (foundBook != null)
             {
@@ -204,22 +254,12 @@ namespace TouchScreenComicViewer {
 		}
 
 		//*****************************************
-		public BitmapImage GetComicCover(string comicFileName) {
-			ComicBook requestedComic = GetComic(comicFileName);
-            if(requestedComic != null)
-            {
-				return requestedComic.CoverImage;
-			}
-			return null;
-		}
-
-		//*****************************************
 		public ComicBook OpenComic(string comicFileName) {
-			ComicBook requestedComic = GetComic(comicFileName);
+            ComicCoverViewModel requestedComic = GetComic(comicFileName);
 			if (requestedComic != null) {
 				SetLastOpenedComic(comicFileName);
 			}
-			return requestedComic;
+			return requestedComic.Comic;
 		}
 
 		//*****************************************
