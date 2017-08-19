@@ -39,7 +39,16 @@ namespace TouchScreenComicViewer {
         public ComicCoverViewModel(ComicBook comic)
         {
             Comic = comic;
-            CoverImage = comic.CoverImage;
+            var disp = Deployment.Current.Dispatcher;
+            DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(disp); //needed to dispatch synchronously                  
+            myDispSync.Send((obj) =>
+            {
+                CoverImage = new BitmapImage();
+            }, null);
+            using (MemoryStream imageStream = new MemoryStream(comic.CoverImage))
+            {
+                CoverImage.SetSource(imageStream);
+            }
         }
 
         public ComicBook Comic { get; set; }
@@ -50,7 +59,10 @@ namespace TouchScreenComicViewer {
             {
                 if (_coverImage == null)
                 {
-                    _coverImage = Comic.CoverImage;
+                    using (MemoryStream imageStream = new MemoryStream(Comic.CoverImage))
+                    {
+                        _coverImage.SetSource(imageStream);
+                    }
                 }
                 return _coverImage;
             }

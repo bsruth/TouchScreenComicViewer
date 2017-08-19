@@ -1,25 +1,13 @@
 ﻿using System;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 using System.IO;
-using System.Windows.Media.Imaging;
 using System.ComponentModel;
 using System.Collections.Generic;
-using System.Windows.Threading;
 
 namespace TouchScreenComicViewer{
 	public class ComicBook : INotifyPropertyChanged {
 		//members
 		private string _comicBookFileName;
 		private List<string> _filesInComicBook = new List<string>();
-        private BitmapImage _coverImage = null;
         private byte[] _coverImageBuffer = null;
         private byte[] _currentImageBuffer = null;
 		private int _currentPageIndex = 0;
@@ -52,27 +40,27 @@ namespace TouchScreenComicViewer{
                 if(value != null && _currentImageBuffer != value)
                 {
                     _currentImageBuffer = value;
-                    RaisePropertyChanged("CurrentPageImage");
+                    RaisePropertyChanged("CurrentImageBuffer");
                 }
             }
         }
 
-        public BitmapImage CoverImage
+        public byte[] CoverImage
         {
             get
             {
-                if (_coverImage == null)
+                if(_coverImageBuffer == null)
                 {
                     LoadCover();
                 }
-                return _coverImage;
+                return _coverImageBuffer;
             }
 
             private set
             {
-                if(value != null && _coverImage != value)
+                if (value != null && _coverImageBuffer != value)
                 {
-                    _coverImage = value;
+                    _coverImageBuffer = value;
                     RaisePropertyChanged("CoverImage");
                 }
             }
@@ -100,21 +88,8 @@ namespace TouchScreenComicViewer{
                 using (var coverStream = _decompressFunction(_comicBookFileName, _filesInComicBook[0]))
                 {
                     _coverImageBuffer = coverStream.ToArray();
+                    _currentImageBuffer = _coverImageBuffer;
                 }
-               
-                //Dispatcher myDisp = Application.Current.RootVisual.Dispatcher;
-                var disp = Deployment.Current.Dispatcher;
-                DispatcherSynchronizationContext myDispSync = new DispatcherSynchronizationContext(disp); //needed to dispatch synchronously                  
-                myDispSync.Send((obj) =>
-                {
-
-                    using (MemoryStream coverStream = new MemoryStream(_coverImageBuffer))
-                    {
-                        CoverImage = new BitmapImage();
-                        CoverImage.SetSource(coverStream);
-                        _currentImageBuffer = coverStream.ToArray();
-                    }
-                }, null);
             }
             else
             {
