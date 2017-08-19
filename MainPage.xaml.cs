@@ -38,11 +38,13 @@ namespace TouchScreenComicViewer
 
 
         private BitmapImage _currentPageImage = null;
+        private int _currentPageNumber = 0;
       
         public ComicBookViewModel (ComicBook comic)
         {
             Comic = comic;
             CurrentPageImage = comic.CurrentPageImage;
+            CurrentPageNumber = Comic.CurrentPageNumber;
         }
 
         public BitmapImage CurrentPageImage
@@ -62,24 +64,43 @@ namespace TouchScreenComicViewer
             }
         }
 
+        public int CurrentPageNumber
+        {
+            get { return _currentPageNumber; }
+            protected set
+            {
+                _currentPageNumber = value;
+                RaisePropertyChanged("CurrentPageNumber");
+            }
+        }
+
+        public int TotalPages { get { return Comic.TotalPages; } }
+
+        public string ComicBookTitle { get { return Comic.ComicBookTitle; } }
+
+
         public ComicBook Comic { get; set; }
 
         internal void GoToNextPage()
         {
             Comic.GoToNextPage();
             CurrentPageImage = Comic.CurrentPageImage;
+            CurrentPageNumber = Comic.CurrentPageNumber;
         }
 
         internal void GoToPreviousPage()
         {
             Comic.GoToPreviousPage();
             CurrentPageImage = Comic.CurrentPageImage;
+            CurrentPageNumber = Comic.CurrentPageNumber;
         }
 
         internal void CloseComic()
         {
             Comic.CloseComic();
         }
+
+
     }
 
 
